@@ -11,31 +11,40 @@ Windows 10/11 music player for SoundCloud, YouTube Music, Spotify and local file
 
 No .NET on the PC? Push the project to GitHub: the included Actions workflow builds a ready-to-run `LiquidCloud-win-x64` zip.
 
-## What's new compared to the original
+## What's in LiquidCloud
 
-- **Themes**: Glass, Aurora, Sunset, Ocean, Sakura, Ember, Forest, Mono.
-- **Your own background**: PNG, JPG, JPEG or animated GIF, with darken and blur sliders.
-  Buttons, sliders and panels take their colors from the picture, and bright pictures are darkened automatically so text stays readable.
-- **SoundCloud inside the player**: "Browse SoundCloud" opens the real soundcloud.com in the left panel.
-  Sign in on SoundCloud's own page (Glass never sees your password), scroll your feed, likes and playlists,
-  and press play on anything: it plays in Glass. "Play this page in Glass" loads a whole playlist or profile.
-- **Your SoundCloud in the player**: under the SoundCloud tab press "Sign in to SoundCloud", sign in once on
-  SoundCloud's page, and your **Likes**, **Feed** and **Playlists** appear as normal lists in Glass.
-  The login token is stored encrypted for your Windows user only (`%AppData%\GlassPlayer\soundcloud-token.bin`).
-  This uses SoundCloud's website API, not an official one, so it's meant for personal use and may break if SoundCloud changes things.
-- **Lyrics from the song file**: read from the file's tags or a `.lrc` file next to it. Shown under the cover;
-  "Lyrics ⤢" opens them across the whole panel while the cover glides into the corner. Timed lyrics follow the music;
-  click a line to jump to it.
-- **Particles**: dots, snow, stars or bubbles, with amount, size, speed and color.
-- **More animation**: pulsing play button, cover morph, theme swatches, adjustable animation speed.
-- **Bigger settings menu**: panel opacity, corner roundness, glow, lyric size and more.
-- **Lighter on memory**: virtualized song list, small thumbnails, covers and wallpapers decoded at screen size,
-  effects pause while you use other windows, the SoundCloud browser is closed when you leave it,
-  and memory is handed back to Windows when Glass is minimized. Also: import whole folders, drag & drop files.
+**Layout.** Sidebar (Home, Discover, Library, SoundCloud web, Themes, your playlists, account), a page area in the middle,
+and the player on the right with *Playing / Lyrics / Up next* tabs. Full-window player (F11) and an always-on-top mini player (Ctrl+M).
 
-- **Endless autoplay**: when a SoundCloud or YouTube list ends, it keeps going with suggested songs (like SoundCloud).
-- **Faster starts**: songs stream right away instead of downloading first, the next song is prepared ~25 s early,
-  and SoundCloud's key is remembered so the first search is quick.
+**Home.** Continue listening, Recently played, Your rotation, Made for you (mixes around your top artists),
+Recommended for you, Favorite tracks, New discoveries, Recently added, your playlists, popular playlists.
+
+**Discover.** Real SoundCloud search with tabs for Top, Tracks, Artists, Playlists and Albums, suggestions while you type,
+search history, genres, trending, new this week, popular artists. Results load more as you scroll.
+YouTube Music and Spotify are still available as sources. Paste any link into the search box to play it.
+
+**Player.** Play/pause, previous/next, shuffle (every song once per cycle), repeat off / all / one, seek, volume and mute,
+favorites, add to playlist, a global queue you can reorder by dragging, lyrics from the file, level bars driven by
+your real audio output, and LiquidCloud remembers the queue and position between launches.
+
+**Playlists.** LiquidCloud playlists (create, rename, describe, custom cover, add/remove, drag to reorder, play, shuffle, repeat,
+delete) and your SoundCloud playlists (add/remove songs, create new private ones). Every change tells you whether it was
+saved in LiquidCloud or on SoundCloud; if SoundCloud refuses a change, you see the error instead of a fake success.
+
+**Themes.** Theme studio with built-in cold-blue "liquid glass" themes and your own: colors, glass tint and opacity,
+blur, glow, corner radius, shadows, background gradient. Live preview, save, duplicate, delete, set as default,
+import/export as `.lctheme` files. Custom wallpaper (PNG/JPG/GIF) and particles are in Settings.
+
+**Intro.** "LiquidCloud. Hi, {name}. Nice {time of day}, isn't it?" when the app opens (can be turned off).
+
+**Motion.** One motion system (shared durations and easing curves), only opacity/transform animations,
+and it follows Windows' "Show animations" setting plus an in-app *Reduce motion* switch.
+
+**Keyboard.** Space, Ctrl+←/→, Shift+←/→ (seek), Ctrl+↑/↓ (volume), M, S, R, L, Q, Ctrl+K, Ctrl+M, F11, Alt+←.
+Media keys work in the background.
+
+**About SoundCloud.** LiquidCloud uses the same web API soundcloud.com uses (not the official developer API, which needs a paid
+Artist Pro plan). It's meant for personal use and may break if SoundCloud changes its website.
 
 ## Discord status (optional)
 
