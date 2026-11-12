@@ -21,6 +21,7 @@ public partial class MainWindow
     string lastCaught = "";
     DateTime lastCaughtAt;
     readonly DispatcherTimer signInPoll = new() { Interval = TimeSpan.FromSeconds(2) };
+    string? scPendingUrl; // where to go once the web view has started
 
     static readonly string ScData = Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.LocalApplicationData), "LiquidCloud", "soundcloud-web");
     const string ScHome = "https://soundcloud.com/discover";
@@ -36,8 +37,12 @@ public partial class MainWindow
             Motion.Enter(BrowseView, 0, 10);
             try
             {
+                if (url != null)
+                {
+                    if (sc?.CoreWebView2 != null) sc.CoreWebView2.Navigate(url);
+                    else scPendingUrl = url;
+                }
                 await EnsureScAsync();
-                if (url != null) sc?.CoreWebView2?.Navigate(url);
             }
             catch (Exception ex)
             {
@@ -80,7 +85,8 @@ public partial class MainWindow
         {
             if (cfg.CatchScPlay && core.IsDocumentPlayingAudio) await CatchScPlayAsync();
         };
-        core.Navigate(ScHome);
+        core.Navigate(scPendingUrl ?? ScHome);
+        scPendingUrl = null;
     }
 
     static string Pretty(string url) => url.Replace("https://", "").Split('?')[0];
@@ -154,8 +160,11 @@ public partial class MainWindow
     // ---- SoundCloud sign-in ----
     async Task StartScSignInAsync()
     {
+        const string signIn = "https://soundcloud.com/signin";
+        if (sc?.CoreWebView2 != null) sc.CoreWebView2.Navigate(signIn);
+        else scPendingUrl = signIn;
         Navigate("web");
-        await SetBrowsingAsync(true, "https://soundcloud.com/signin");
+        await Task.CompletedTask;
         Toast("Sign in on the SoundCloud page. LiquidCloud picks it up automatically.", "");
         signInPoll.Tick -= SignInPollTick;
         signInPoll.Tick += SignInPollTick;

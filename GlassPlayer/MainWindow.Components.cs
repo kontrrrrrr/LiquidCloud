@@ -43,17 +43,30 @@ public partial class MainWindow
         catch { return null; }
     }
 
-    TextBlock Txt(string text, double size = 14, FontWeight? weight = null, string brush = "TextBrush", bool wrap = false) => new()
+    // text and icons follow the theme live (resource references), so theme previews recolor open pages too
+    TextBlock Txt(string text, double size = 14, FontWeight? weight = null, string brush = "TextBrush", bool wrap = false)
     {
-        Text = text, FontSize = size, FontWeight = weight ?? FontWeights.Normal, Foreground = Res(brush),
-        TextTrimming = TextTrimming.CharacterEllipsis, TextWrapping = wrap ? TextWrapping.Wrap : TextWrapping.NoWrap
-    };
+        var t = new TextBlock
+        {
+            Text = text, FontSize = size, FontWeight = weight ?? FontWeights.Normal,
+            TextTrimming = TextTrimming.CharacterEllipsis, TextWrapping = wrap ? TextWrapping.Wrap : TextWrapping.NoWrap
+        };
+        t.SetResourceReference(TextBlock.ForegroundProperty, brush);
+        return t;
+    }
 
-    TextBlock Glyph(string glyph, double size = 14, string brush = "TextBrush") => new()
+    TextBlock Glyph(string glyph, double size = 14, string brush = "TextBrush")
     {
-        Text = glyph, FontFamily = (FontFamily)FindResource("Icons"), FontSize = size, Foreground = Res(brush),
-        VerticalAlignment = VerticalAlignment.Center, HorizontalAlignment = HorizontalAlignment.Center
-    };
+        var t = new TextBlock
+        {
+            Text = glyph, FontFamily = (FontFamily)FindResource("Icons"), FontSize = size,
+            VerticalAlignment = VerticalAlignment.Center, HorizontalAlignment = HorizontalAlignment.Center
+        };
+        t.SetResourceReference(TextBlock.ForegroundProperty, brush);
+        return t;
+    }
+
+    static T Dyn<T>(T el, DependencyProperty prop, string key) where T : FrameworkElement { el.SetResourceReference(prop, key); return el; }
 
     Button RoundButton(string glyph, string tip, Action click, double size = 34, double font = 14)
     {
@@ -89,7 +102,7 @@ public partial class MainWindow
     {
         var sp = new StackPanel { Orientation = Orientation.Horizontal };
         foreach (var c in chips) sp.Children.Add(c);
-        return new Border { CornerRadius = Radius("ControlRadius"), Background = Res("FieldBrush"), Padding = new Thickness(3), Child = sp, HorizontalAlignment = HorizontalAlignment.Left };
+        return Dyn(new Border { CornerRadius = Radius("ControlRadius"), Padding = new Thickness(3), Child = sp, HorizontalAlignment = HorizontalAlignment.Left }, Border.BackgroundProperty, "FieldBrush");
     }
 
     // ---- page scaffold ----
@@ -352,7 +365,7 @@ public partial class MainWindow
     FrameworkElement TrackRow(Track t, IList<Track> context, int index, string contextName, RowOrigin? origin, bool showIndex = true)
     {
         var row = new Grid { Height = 58, Cursor = Cursors.Hand, Background = Brushes.Transparent };
-        var hover = new Border { CornerRadius = Radius("ControlRadius"), Background = Res("HoverBrush"), Opacity = 0 };
+        var hover = Dyn(new Border { CornerRadius = Radius("ControlRadius"), Opacity = 0 }, Border.BackgroundProperty, "HoverBrush");
         row.Children.Add(hover);
 
         var g = new Grid { Margin = new Thickness(8, 0, 6, 0) };

@@ -26,6 +26,9 @@ public partial class MainWindow
     ThemeDef? previewTheme; // the theme editor shows changes live before you save
     string? activeThemeId;  // the theme in use right now (cfg.Theme is the default one used at startup)
 
+    /// <summary>Theme tokens live in the application's resources so menus, tooltips and popups follow the theme too.</summary>
+    static ResourceDictionary AppRes => Application.Current.Resources;
+
     ThemeDef CurrentTheme => previewTheme ?? ThemeStore.Find(activeThemeId ?? cfg.Theme);
 
     void InitLook()
@@ -73,30 +76,30 @@ public partial class MainWindow
         var glass = th.GlassC;
         double op = Math.Clamp(th.GlassOpacity, 0, 1);
 
-        Resources["AccentBrush"] = Solid(accent);
-        Resources["AccentSoftBrush"] = Solid(A(accent, .26));
-        Resources["OnAccentBrush"] = Solid(Themes.Luminance(accent) > .58 ? Color.FromRgb(10, 18, 34) : Colors.White);
-        Resources["TextBrush"] = Solid(text);
-        Resources["TextDimBrush"] = Solid(A(text, .66));
-        Resources["TextFaintBrush"] = Solid(A(text, .40));
-        Resources["HoverBrush"] = Solid(A(ink, lightUi ? .06 : .07));
-        Resources["PressBrush"] = Solid(A(ink, lightUi ? .10 : .13));
-        Resources["FieldBrush"] = Solid(A(ink, lightUi ? .05 : .06));
-        Resources["LineBrush"] = Solid(A(ink, lightUi ? .14 : .13));
-        Resources["SkeletonBrush"] = skeletonBrush;
+        AppRes["AccentBrush"] = Solid(accent);
+        AppRes["AccentSoftBrush"] = Solid(A(accent, .26));
+        AppRes["OnAccentBrush"] = Solid(Themes.Luminance(accent) > .58 ? Color.FromRgb(10, 18, 34) : Colors.White);
+        AppRes["TextBrush"] = Solid(text);
+        AppRes["TextDimBrush"] = Solid(A(text, .66));
+        AppRes["TextFaintBrush"] = Solid(A(text, .40));
+        AppRes["HoverBrush"] = Solid(A(ink, lightUi ? .06 : .07));
+        AppRes["PressBrush"] = Solid(A(ink, lightUi ? .10 : .13));
+        AppRes["FieldBrush"] = Solid(A(ink, lightUi ? .05 : .06));
+        AppRes["LineBrush"] = Solid(A(ink, lightUi ? .14 : .13));
+        AppRes["SkeletonBrush"] = skeletonBrush;
         skeletonBrush.Color = A(ink, .09);
 
         var bgc = th.BackgroundC;
-        Resources["SheetBrush"] = Solid(A(Themes.Mix(bgc, glass, .06), .94));
-        Resources["MenuBrush"] = Solid(A(Themes.Mix(bgc, glass, .10), .97));
-        Resources["BgBaseBrush"] = Linear(th.Gradient1C, th.Gradient2C, th.GradientAngle);
-        Resources["Blob1Brush"] = Blob(fromBg ? accent : th.PrimaryC, th.Glow);
-        Resources["Blob2Brush"] = Blob(fromBg ? Themes.Shift(accent, 40) : th.SecondaryC, th.Glow);
+        AppRes["SheetBrush"] = Solid(A(Themes.Mix(bgc, glass, .06), .94));
+        AppRes["MenuBrush"] = Solid(A(Themes.Mix(bgc, glass, .10), .97));
+        AppRes["BgBaseBrush"] = Linear(th.Gradient1C, th.Gradient2C, th.GradientAngle);
+        AppRes["Blob1Brush"] = Blob(fromBg ? accent : th.PrimaryC, th.Glow);
+        AppRes["Blob2Brush"] = Blob(fromBg ? Themes.Shift(accent, 40) : th.SecondaryC, th.Glow);
 
         // glass: level 1 (panels) and level 2 (cards, popups), each with a light top-left edge and a soft sheen
         var tint = fromBg ? Themes.Mix(glass, accent, .25) : glass;
-        Resources["GlassFill"] = Linear(A(tint, op), A(tint, op * .3));
-        Resources["GlassFillRaised"] = Linear(A(tint, Math.Min(1, op * 1.6 + .03)), A(tint, op * .55));
+        AppRes["GlassFill"] = Linear(A(tint, op), A(tint, op * .3));
+        AppRes["GlassFillRaised"] = Linear(A(tint, Math.Min(1, op * 1.6 + .03)), A(tint, op * .55));
         double edge = .25 + .5 * th.Glow;
         var edgeBrush = new LinearGradientBrush(new GradientStopCollection
         {
@@ -105,19 +108,19 @@ public partial class MainWindow
             new GradientStop(A(Colors.White, edge * .5), 1)
         }, new Point(0, 0), new Point(1, 1));
         edgeBrush.Freeze();
-        Resources["GlassEdge"] = edgeBrush;
+        AppRes["GlassEdge"] = edgeBrush;
 
         double r = Math.Clamp(th.Radius, 0, 48);
-        Resources["GlassRadius"] = new CornerRadius(r);
-        Resources["CardRadius"] = new CornerRadius(Math.Max(4, r * .66));
-        Resources["ControlRadius"] = new CornerRadius(Math.Max(4, r * .5));
+        AppRes["GlassRadius"] = new CornerRadius(r);
+        AppRes["CardRadius"] = new CornerRadius(Math.Max(4, r * .66));
+        AppRes["ControlRadius"] = new CornerRadius(Math.Max(4, r * .5));
 
         var shadow = new DropShadowEffect { BlurRadius = 44, ShadowDepth = 12, Direction = 270, Opacity = Math.Clamp(th.Shadow, 0, 1) };
         shadow.Freeze();
-        Resources["GlassShadow"] = shadow;
+        AppRes["GlassShadow"] = shadow;
         var soft = new DropShadowEffect { BlurRadius = 26, ShadowDepth = 6, Direction = 270, Opacity = Math.Clamp(th.Shadow * .85, 0, 1) };
         soft.Freeze();
-        Resources["SoftShadow"] = soft;
+        AppRes["SoftShadow"] = soft;
 
         // "blur" softens everything behind the glass (wallpaper and light blobs)
         bool hasBg = BgImage.Visibility == Visibility.Visible;

@@ -703,7 +703,7 @@ public partial class MainWindow
             Top = area.Bottom - Height - 24;
             Topmost = true;
             ResizeMode = ResizeMode.NoResize;
-            Chrome.CaptionHeight = 108;
+            SetCaption(108);
             Particles.Visibility = Visibility.Collapsed;
             Motion.PopIn(MiniBar, .9);
         }
@@ -711,7 +711,7 @@ public partial class MainWindow
         {
             Topmost = false;
             ResizeMode = ResizeMode.CanResize;
-            Chrome.CaptionHeight = 52;
+            SetCaption(52);
             MiniBar.Visibility = Visibility.Collapsed;
             TitleBar.Visibility = Body.Visibility = Visibility.Visible;
             MinWidth = 1040; MinHeight = 660;
@@ -722,6 +722,13 @@ public partial class MainWindow
         }
         ApplyActivity();
     }
+
+    /// <summary>The draggable title area: the whole mini player, or the 52 px title bar.</summary>
+    void SetCaption(double height) => System.Windows.Shell.WindowChrome.SetWindowChrome(this, new System.Windows.Shell.WindowChrome
+    {
+        CaptionHeight = height, GlassFrameThickness = new Thickness(-1), ResizeBorderThickness = new Thickness(height > 60 ? 0 : 6),
+        CornerRadius = new CornerRadius(0), UseAeroCaptionButtons = false
+    });
 
     void Full_Click(object s, RoutedEventArgs e) => SetFullPlayer(!fullPlayer);
 
