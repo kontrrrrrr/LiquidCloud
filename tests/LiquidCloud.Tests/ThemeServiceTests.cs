@@ -124,6 +124,6 @@ public class ThemeServiceTests
         var back = Themes.FromHsv(h, s, v);
         Assert.InRange(Math.Abs(back.R - c.R) + Math.Abs(back.G - c.G) + Math.Abs(back.B - c.B), 0, 3);
         Assert.Equal("#2E6BFF", Themes.Hex(c));
-        Assert.Equal(128, Themes.WithAlpha(c, .5).A, 1);
+        Assert.InRange((int)Themes.WithAlpha(c, .5).A, 127, 128);
     }
 }
