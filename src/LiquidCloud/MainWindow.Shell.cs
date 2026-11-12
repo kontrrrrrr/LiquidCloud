@@ -858,6 +858,7 @@ public partial class MainWindow
         CenterCol.Width = new GridLength(on ? 0 : 1, on ? GridUnitType.Pixel : GridUnitType.Star);
         NowCol.Width = on ? new GridLength(1, GridUnitType.Star) : new GridLength(380);
         NowPanel.Padding = on ? new Thickness(60, 26, 60, 30) : new Thickness(26, 18, 26, 20);
+        Controls.MaxWidth = on ? 760 : double.PositiveInfinity; // full window: controls stay a comfortable width, centered
         FullBtn.Content = on ? "" : "";
         FullBtn.ToolTip = Loc.T(on ? "Exit full-window player (F11)" : "Full-window player (F11)");
         if (on && browsing && sc != null) sc.Visibility = Visibility.Hidden;

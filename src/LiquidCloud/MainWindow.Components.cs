@@ -141,18 +141,32 @@ public partial class MainWindow
         if (subtitle != null) subtitle = Loc.T(subtitle);
         if (eyebrow != null) eyebrow = Loc.T(eyebrow);
         var g = new Grid { Margin = new Thickness(0, 0, 0, 18) };
+        g.RowDefinitions.Add(new RowDefinition { Height = GridLength.Auto });
+        g.RowDefinitions.Add(new RowDefinition { Height = GridLength.Auto });
         var sp = new StackPanel();
         if (eyebrow != null) sp.Children.Add(Txt(eyebrow.ToUpperInvariant(), 11, FontWeights.SemiBold, "AccentBrush"));
-        var t = Txt(title, 32, FontWeights.SemiBold);
+        var t = Txt(title, 32, FontWeights.SemiBold, "TextBrush", true);
         t.FontFamily = new FontFamily("Segoe UI Variable Display, Segoe UI");
+        t.MaxHeight = 90; // at most two lines, then "…"
         sp.Children.Add(t);
         if (!string.IsNullOrEmpty(subtitle)) { var st = Txt(subtitle!, 14, null, "TextDimBrush", true); st.Margin = new Thickness(0, 4, 0, 0); sp.Children.Add(st); }
         g.Children.Add(sp);
-        if (right != null)
+        if (right is FrameworkElement fe)
         {
-            if (right is FrameworkElement fe) { fe.HorizontalAlignment = HorizontalAlignment.Right; fe.VerticalAlignment = VerticalAlignment.Bottom; }
-            g.Children.Add(right);
-            sp.Margin = new Thickness(0, 0, 260, 0);
+            g.Children.Add(fe);
+            // wide page: the extra control sits on the right; narrow page: it moves under the title instead of squeezing it
+            void Layout()
+            {
+                fe.Measure(new Size(double.PositiveInfinity, double.PositiveInfinity));
+                bool side = g.ActualWidth <= 0 || g.ActualWidth - fe.DesiredSize.Width > 360;
+                Grid.SetRow(fe, side ? 0 : 1);
+                fe.HorizontalAlignment = side ? HorizontalAlignment.Right : HorizontalAlignment.Left;
+                fe.VerticalAlignment = VerticalAlignment.Bottom;
+                fe.Margin = side ? new Thickness(0) : new Thickness(0, 12, 0, 0);
+                sp.Margin = side ? new Thickness(0, 0, fe.DesiredSize.Width + 16, 0) : new Thickness(0);
+            }
+            g.SizeChanged += (_, e) => { if (e.WidthChanged) Layout(); };
+            Layout();
         }
         return g;
     }
@@ -385,7 +399,10 @@ public partial class MainWindow
         g.ColumnDefinitions.Add(new ColumnDefinition { Width = new GridLength(showIndex ? 34 : 0) });
         g.ColumnDefinitions.Add(new ColumnDefinition { Width = new GridLength(44) });
         g.ColumnDefinitions.Add(new ColumnDefinition { Width = new GridLength(1, GridUnitType.Star) });
-        g.ColumnDefinitions.Add(new ColumnDefinition { Width = new GridLength(1, GridUnitType.Star), MaxWidth = 220 });
+        var sourceCol = new ColumnDefinition { Width = new GridLength(1, GridUnitType.Star), MaxWidth = 220 };
+        g.ColumnDefinitions.Add(sourceCol);
+        // narrow list: the title gets the room, the source column goes away
+        g.SizeChanged += (_, e) => { if (e.WidthChanged) sourceCol.Width = e.NewSize.Width < 560 ? new GridLength(0) : new GridLength(1, GridUnitType.Star); };
         g.ColumnDefinitions.Add(new ColumnDefinition { Width = new GridLength(56) });
         g.ColumnDefinitions.Add(new ColumnDefinition { Width = GridLength.Auto });
 

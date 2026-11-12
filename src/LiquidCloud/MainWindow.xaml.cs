@@ -472,7 +472,7 @@ public partial class MainWindow : Window
         }
         if (files.Count == 0) { Toast(Loc.T("No audio files found"), ""); return; }
         var tracks = files.Select(LocalFiles.ToTrack).ToList();
-        ShowTrackListPage(Loc.T("From this PC"), Loc.Songs(tracks.Count), tracks, "");
+        ShowTrackListPage(Loc.T("From this PC"), Loc.T("Files from this PC"), tracks, "");
         PlayContext(tracks, 0, Loc.T("Files from this PC"));
     }
 

@@ -858,7 +858,7 @@ class LocalFiles : IProvider
         var parts = name.Split(" - ", 2);
         return parts.Length == 2
             ? new Track(path, parts[1].Trim(), parts[0].Trim(), null, null, "Local", path)
-            : new Track(path, name, "This PC", null, null, "Local", path);
+            : new Track(path, name, Loc.T("This PC"), null, null, "Local", path);
     }
 }
 
