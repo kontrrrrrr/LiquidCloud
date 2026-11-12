@@ -59,6 +59,16 @@ static class ScApi
     /// one shared request when several parts of the UI ask for the same thing, cancellation, retry with a fresh client id,
     /// and logging (secrets masked).
     /// </summary>
+    /// <summary>One shared request per key; forgotten as soon as it finishes, even if every caller stopped waiting.</summary>
+    static async Task<string> FetchSharedAsync(string key, string path, bool withAuth, bool auth)
+    {
+        var t = FetchAsync(path, withAuth, auth);
+        // if every caller stopped waiting (page closed), the error is still observed here instead of surfacing as "unobserved"
+        t.ContinueWith(x => x.Exception?.Handle(_ => true), TaskContinuationOptions.OnlyOnFaulted | TaskContinuationOptions.ExecuteSynchronously);
+        try { return await t; }
+        finally { InFlight.TryRemove(key, out _); }
+    }
+
     public static async Task<JsonDocument> GetAsync(string path, bool auth = false, CancellationToken ct = default)
     {
         AppEnv.EnsureOnline();
@@ -70,10 +80,8 @@ static class ScApi
         if (!auth && Responses.TryGetValue(key, out var hit) && DateTime.UtcNow - hit.At < CacheFor)
             return JsonDocument.Parse(hit.Body);
 
-        var job = InFlight.GetOrAdd(key, _ => new Lazy<Task<string>>(() => FetchAsync(path, withAuth, auth)));
-        string body;
-        try { body = await job.Value.WaitAsync(ct); }
-        finally { if (job.Value.IsCompleted) InFlight.TryRemove(key, out _); }
+        var job = InFlight.GetOrAdd(key, _ => new Lazy<Task<string>>(() => FetchSharedAsync(key, path, withAuth, auth)));
+        string body = await job.Value.WaitAsync(ct);
 
         if (!auth)
         {

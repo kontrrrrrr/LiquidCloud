@@ -351,6 +351,9 @@ public partial class MainWindow
                 var tracksTask = ScApi.SearchTracksAsync(query);
                 var usersTask = ScApi.SearchUsersAsync(query);
                 var setsTask = ScApi.SearchPlaylistsAsync(query);
+                // wait for all three so a failure in one is never left unobserved; each result is checked below
+                try { await Task.WhenAll(tracksTask, usersTask, setsTask); }
+                catch (Exception ex) when (ex is not OperationCanceledException) { Log.Info("Search", "Some search results failed: " + ex.Message); }
                 var tracks = (await tracksTask).Items;
                 List<ScUser> users = new(); List<ScSet> sets = new();
                 // artists and playlists are extras on the Top tab: if they fail, songs still show

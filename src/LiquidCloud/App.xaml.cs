@@ -23,7 +23,8 @@ public partial class App : Application
         TaskScheduler.UnobservedTaskException += (_, e) =>
         {
             // a background task failed and nobody was waiting for it: keep running, but write it down
-            Log.Warn("Task", "Unobserved background error", e.Exception?.GetBaseException());
+            var ex = e.Exception?.GetBaseException();
+            Log.Warn("Task", "Unobserved background error" + (ex?.StackTrace != null ? "\n" + ex.StackTrace : ""), ex);
             e.SetObserved();
         };
     }
