@@ -571,11 +571,11 @@ public partial class MainWindow
         return sp;
     }
 
-    /// <summary>One shared animation makes every skeleton on screen shimmer together (cheap).</summary>
-    void StartSkeletonShimmer()
+    /// <summary>Skeletons gently pulse while content loads (the pulse stops when the skeleton is replaced).</summary>
+    static void Shimmer(UIElement el)
     {
         if (Motion.Reduced) return;
-        skeletonBrush.BeginAnimation(Brush.OpacityProperty, new DoubleAnimation(.45, 1, TimeSpan.FromSeconds(.9)) { AutoReverse = true, RepeatBehavior = RepeatBehavior.Forever, EasingFunction = Motion.InOut });
+        el.BeginAnimation(UIElement.OpacityProperty, new DoubleAnimation(.45, 1, TimeSpan.FromSeconds(.9)) { AutoReverse = true, RepeatBehavior = RepeatBehavior.Forever, EasingFunction = Motion.InOut });
     }
 
     FrameworkElement EmptyState(string glyph, string title, string text, string? actionText = null, Action? action = null)
@@ -607,8 +607,9 @@ public partial class MainWindow
     void LoadInto(Panel slot, string skeleton, Func<Task<FrameworkElement>> build, int skeletonCount = 6)
     {
         slot.Children.Clear();
-        slot.Children.Add(Skeleton(skeleton, skeletonCount));
-        StartSkeletonShimmer();
+        var sk = Skeleton(skeleton, skeletonCount);
+        Shimmer(sk);
+        slot.Children.Add(sk);
         _ = Run();
         async Task Run()
         {

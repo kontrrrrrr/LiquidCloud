@@ -86,8 +86,7 @@ public partial class MainWindow
         AppRes["PressBrush"] = Solid(A(ink, lightUi ? .10 : .13));
         AppRes["FieldBrush"] = Solid(A(ink, lightUi ? .05 : .06));
         AppRes["LineBrush"] = Solid(A(ink, lightUi ? .14 : .13));
-        AppRes["SkeletonBrush"] = skeletonBrush;
-        skeletonBrush.Color = A(ink, .09);
+        AppRes["SkeletonBrush"] = Solid(A(ink, .09)); // app resources are frozen, so a new brush each time
 
         var bgc = th.BackgroundC;
         AppRes["SheetBrush"] = Solid(A(Themes.Mix(bgc, glass, .06), .94));
@@ -137,8 +136,6 @@ public partial class MainWindow
 
         if (IsLoaded) { UpdateModeButtons(); UpdateLikeButton(); }
     }
-
-    readonly SolidColorBrush skeletonBrush = new(Color.FromArgb(0x18, 255, 255, 255));
 
     // ---- background image / gif ----
     void ApplyBackground()
