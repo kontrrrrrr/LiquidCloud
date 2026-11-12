@@ -13,6 +13,9 @@
     <PackageReference Include="xunit" Version="2.*" />
     <PackageReference Include="xunit.runner.visualstudio" Version="2.*" />
   </ItemGroup>
+  <ItemGroup>
+    <Using Include="Xunit" />
+  </ItemGroup>
   <!-- the tests compile the app's logic files directly: no WPF window, no network, no audio device needed -->
   <ItemGroup>
     <Compile Include="..\..\src\LiquidCloud\Core\PlayQueue.cs" Link="App\PlayQueue.cs" />
