@@ -1,18 +1,18 @@
 using System;
-using System.Collections.Generic;
 using System.IO;
 using System.Linq;
 using System.Text.Json;
 using System.Threading.Tasks;
 using System.Windows;
+using System.Windows.Threading;
 using Microsoft.Web.WebView2.Core;
 using Microsoft.Web.WebView2.Wpf;
 
 namespace GlassPlayer;
 
 /// <summary>
-/// The real soundcloud.com inside Glass. You sign in on SoundCloud's own page (Glass never sees your password;
-/// the login cookie stays in %LocalAppData%\LiquidCloud\soundcloud-web). Press play on any song and it plays in Glass.
+/// The real soundcloud.com as a page inside LiquidCloud. You sign in on SoundCloud's own page (LiquidCloud never sees
+/// your password; the login cookie stays in %LocalAppData%\LiquidCloud\soundcloud-web). Press play on any song and it plays here.
 /// </summary>
 public partial class MainWindow
 {
@@ -20,37 +20,28 @@ public partial class MainWindow
     bool browsing;
     string lastCaught = "";
     DateTime lastCaughtAt;
+    readonly DispatcherTimer signInPoll = new() { Interval = TimeSpan.FromSeconds(2) };
 
     static readonly string ScData = Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.LocalApplicationData), "LiquidCloud", "soundcloud-web");
     const string ScHome = "https://soundcloud.com/discover";
 
-    double BrowseWidth() => Math.Max(350, ContentGrid.ActualWidth - 16 - 380);
-
-    async void Browse_Click(object s, RoutedEventArgs e) => await SetBrowsingAsync(!browsing);
-
-    async Task SetBrowsingAsync(bool on)
+    /// <summary>Shows or hides the SoundCloud web page in the center panel.</summary>
+    async Task SetBrowsingAsync(bool on, string? url = null)
     {
-        if (on == browsing) return;
         browsing = on;
-        BrowseBtn.Content = on ? "Back to list" : "Browse SoundCloud";
-        if (expanded) SetExpanded(false);
-
-        double target = on ? BrowseWidth() : 350;
-        Anim(LeftPanel, FrameworkElement.WidthProperty, target, 480, () =>
-        {
-            LeftPanel.BeginAnimation(FrameworkElement.WidthProperty, null);
-            LeftPanel.Width = browsing ? BrowseWidth() : 350;
-        });
-
         BrowseView.Visibility = on ? Visibility.Visible : Visibility.Collapsed;
-        TopArea.Visibility = List.Visibility = on ? Visibility.Collapsed : Visibility.Visible;
-
+        PageHost.Visibility = on ? Visibility.Collapsed : Visibility.Visible;
         if (on)
         {
-            try { await EnsureScAsync(); }
+            Motion.Enter(BrowseView, 0, 10);
+            try
+            {
+                await EnsureScAsync();
+                if (url != null) sc?.CoreWebView2?.Navigate(url);
+            }
             catch (Exception ex)
             {
-                Status.Text = "Couldn't open SoundCloud: " + ex.Message + " (Microsoft Edge WebView2 Runtime is needed.)";
+                Toast("Couldn't open SoundCloud: " + ex.Message + " (Microsoft Edge WebView2 Runtime is needed.)", "");
             }
         }
         else if (!cfg.KeepScLoaded) DisposeSc();
@@ -74,7 +65,7 @@ public partial class MainWindow
         core.Settings.IsGeneralAutofillEnabled = false;
         core.Settings.IsPasswordAutosaveEnabled = false;
 
-        // ordinary SoundCloud links stay inside the panel; sign-in popups (Google, Apple, Facebook) open as their own window
+        // ordinary SoundCloud links stay inside the page; sign-in popups (Google, Apple, Facebook) open as their own window
         core.NewWindowRequested += (_, e) =>
         {
             if (Uri.TryCreate(e.Uri, UriKind.Absolute, out var u) && u.Host.EndsWith("soundcloud.com") && !u.Host.StartsWith("secure."))
@@ -107,7 +98,7 @@ public partial class MainWindow
     void WebAirspace()
     {
         if (sc == null) return;
-        sc.Visibility = browsing && !settingsOpen && !importOpen ? Visibility.Visible : Visibility.Hidden;
+        sc.Visibility = browsing && !settingsOpen && !importOpen && !modalOpen ? Visibility.Visible : Visibility.Hidden;
     }
 
     // Pause SoundCloud's own player and read which song was started.
@@ -140,17 +131,10 @@ public partial class MainWindow
         try
         {
             var tracks = await Importer.FromLinkAsync(url);
-            if (tracks.Count == 0) { Status.Text = "Nothing playable on this page. Open a song, playlist or profile."; return; }
-            if (tracks.Count == 1)
-            {
-                var cur = (List.ItemsSource as IEnumerable<Track>)?.ToList() ?? new List<Track>();
-                cur.RemoveAll(x => x.Id == tracks[0].Id);
-                cur.Insert(0, tracks[0]);
-                List.ItemsSource = cur;
-            }
-            else List.ItemsSource = tracks;
-            List.SelectedIndex = 0; // starts playback
-            Status.Text = tracks.Count > 1 ? $"Loaded {tracks.Count} songs from this page" : "";
+            if (tracks.Count == 0) { Toast("Nothing playable on this page. Open a song, playlist or profile.", ""); return; }
+            if (tracks.Count == 1) PlayNow(tracks[0]);
+            else PlayContext(tracks, 0, Pretty(url));
+            Status.Text = "";
         }
         catch (Exception ex) { Status.Text = ex.Message; }
     }
@@ -167,6 +151,48 @@ public partial class MainWindow
     void ScReload_Click(object s, RoutedEventArgs e) => sc?.CoreWebView2?.Reload();
     void ScHome_Click(object s, RoutedEventArgs e) => sc?.CoreWebView2?.Navigate(ScHome);
 
+    // ---- SoundCloud sign-in ----
+    async Task StartScSignInAsync()
+    {
+        Navigate("web");
+        await SetBrowsingAsync(true, "https://soundcloud.com/signin");
+        Toast("Sign in on the SoundCloud page. LiquidCloud picks it up automatically.", "");
+        signInPoll.Tick -= SignInPollTick;
+        signInPoll.Tick += SignInPollTick;
+        signInPoll.Start();
+    }
+
+    async void SignInPollTick(object? s, EventArgs e)
+    {
+        if (!browsing || ScApi.Account.SignedIn) { signInPoll.Stop(); return; }
+        await TryGrabTokenAsync();
+    }
+
+    /// <summary>Takes SoundCloud's login token from the page's cookies once you've signed in.</summary>
+    async Task TryGrabTokenAsync()
+    {
+        var core = sc?.CoreWebView2;
+        if (core == null) return;
+        string? token;
+        try
+        {
+            var cookies = await core.CookieManager.GetCookiesAsync("https://soundcloud.com");
+            token = cookies.FirstOrDefault(c => c.Name == "oauth_token")?.Value;
+        }
+        catch { return; }
+        if (string.IsNullOrEmpty(token) || token == ScApi.Account.Token) return;
+
+        bool wasSignedIn = ScApi.Account.SignedIn;
+        ScApi.Account.Save(token);
+        try { await ScApi.Account.LoadMeAsync(); } catch { }
+        if (!wasSignedIn)
+        {
+            signInPoll.Stop();
+            Toast($"Signed in to SoundCloud as {ScApi.Account.UserName}", "");
+            Navigate("library", "likes");
+        }
+    }
+
     void SignOutSc()
     {
         if (sc?.CoreWebView2 != null)
@@ -178,8 +204,7 @@ public partial class MainWindow
         {
             try { if (Directory.Exists(ScData)) Directory.Delete(ScData, true); } catch { }
         }
-        scAcc?.SignOut();
-        UpdateScChips();
-        Status.Text = "Signed out of SoundCloud.";
+        ScApi.Account.SignOut();
+        Toast("Signed out of SoundCloud", "");
     }
 }

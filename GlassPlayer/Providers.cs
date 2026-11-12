@@ -277,8 +277,9 @@ class SoundCloud : IProvider
         {
             var cid = await ClientIdAsync(attempt > 0); // second try with a fresh client id
             var info = t.Preview;
-            if (string.IsNullOrEmpty(info) || !info.Contains('|'))
-                info = (await LookupAsync(t, cid))?.Preview; // e.g. songs imported from a link
+            // songs imported from a link, or saved a while ago (their stream permission may have expired): look up fresh info
+            if (attempt > 0 || string.IsNullOrEmpty(info) || !info.Contains('|'))
+                info = (await LookupAsync(t, cid))?.Preview;
             if (!string.IsNullOrEmpty(info) && info.Contains('|'))
             {
                 var parts = info.Split('|');
@@ -292,7 +293,7 @@ class SoundCloud : IProvider
         return null;
     }
 
-    async Task<Track?> LookupAsync(Track t, string cid)
+    public async Task<Track?> LookupAsync(Track t, string cid)
     {
         string url = long.TryParse(t.Id, out _)
             ? $"https://api-v2.soundcloud.com/tracks/{t.Id}?client_id={cid}"

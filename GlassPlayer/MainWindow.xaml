@@ -3,98 +3,116 @@
         xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
         xmlns:wv2="clr-namespace:Microsoft.Web.WebView2.Wpf;assembly=Microsoft.Web.WebView2.Wpf"
         xmlns:local="clr-namespace:GlassPlayer"
-        Title="LiquidCloud" Icon="LiquidCloud.ico" Width="1120" Height="760" MinWidth="920" MinHeight="620"
-        WindowStyle="None" Background="Transparent" Foreground="White"
-        FontFamily="Segoe UI Variable Display, Segoe UI" TextOptions.TextFormattingMode="Ideal">
+        Title="LiquidCloud" Icon="LiquidCloud.ico" Width="1360" Height="840" MinWidth="1040" MinHeight="660"
+        WindowStyle="None" Background="Transparent" Foreground="{DynamicResource TextBrush}"
+        FontFamily="Segoe UI Variable Text, Segoe UI" FontSize="14" TextOptions.TextFormattingMode="Ideal" UseLayoutRounding="True">
     <WindowChrome.WindowChrome>
-        <WindowChrome CaptionHeight="48" GlassFrameThickness="-1" ResizeBorderThickness="6" CornerRadius="0" UseAeroCaptionButtons="False"/>
+        <WindowChrome x:Name="Chrome" CaptionHeight="52" GlassFrameThickness="-1" ResizeBorderThickness="6" CornerRadius="0" UseAeroCaptionButtons="False"/>
     </WindowChrome.WindowChrome>
 
-    <Window.Triggers>
-        <EventTrigger RoutedEvent="FrameworkElement.Loaded">
-            <BeginStoryboard>
-                <Storyboard>
-                    <DoubleAnimation Storyboard.TargetName="Root" Storyboard.TargetProperty="Opacity" From="0" To="1" Duration="0:0:0.7">
-                        <DoubleAnimation.EasingFunction><CubicEase EasingMode="EaseOut"/></DoubleAnimation.EasingFunction>
-                    </DoubleAnimation>
-                    <DoubleAnimation Storyboard.TargetName="RootScale" Storyboard.TargetProperty="ScaleX" To="1" Duration="0:0:0.8">
-                        <DoubleAnimation.EasingFunction><CubicEase EasingMode="EaseOut"/></DoubleAnimation.EasingFunction>
-                    </DoubleAnimation>
-                    <DoubleAnimation Storyboard.TargetName="RootScale" Storyboard.TargetProperty="ScaleY" To="1" Duration="0:0:0.8">
-                        <DoubleAnimation.EasingFunction><CubicEase EasingMode="EaseOut"/></DoubleAnimation.EasingFunction>
-                    </DoubleAnimation>
-                </Storyboard>
-            </BeginStoryboard>
-        </EventTrigger>
-    </Window.Triggers>
-
     <Window.Resources>
-        <!-- theme values; replaced at runtime by ApplyLook() -->
-        <SolidColorBrush x:Key="AccentBrush" Color="#5E5CE6"/>
-        <SolidColorBrush x:Key="AccentSoftBrush" Color="#595E5CE6"/>
-        <SolidColorBrush x:Key="OnAccentBrush" Color="White"/>
-        <SolidColorBrush x:Key="SheetBrush" Color="#E81E1E28"/>
-        <SolidColorBrush x:Key="Blob1Brush" Color="#405E5CE6"/>
-        <SolidColorBrush x:Key="Blob2Brush" Color="#40FF375F"/>
+        <!-- ===== design tokens (replaced at runtime by ApplyLook from the active theme) ===== -->
+        <SolidColorBrush x:Key="AccentBrush" Color="#5AB4FF"/>
+        <SolidColorBrush x:Key="AccentSoftBrush" Color="#405AB4FF"/>
+        <SolidColorBrush x:Key="OnAccentBrush" Color="#0B1530"/>
+        <SolidColorBrush x:Key="TextBrush" Color="White"/>
+        <SolidColorBrush x:Key="TextDimBrush" Color="#A6FFFFFF"/>
+        <SolidColorBrush x:Key="TextFaintBrush" Color="#61FFFFFF"/>
+        <SolidColorBrush x:Key="HoverBrush" Color="#14FFFFFF"/>
+        <SolidColorBrush x:Key="PressBrush" Color="#24FFFFFF"/>
+        <SolidColorBrush x:Key="FieldBrush" Color="#12FFFFFF"/>
+        <SolidColorBrush x:Key="LineBrush" Color="#1FFFFFFF"/>
+        <SolidColorBrush x:Key="SheetBrush" Color="#EA0B1530"/>
+        <SolidColorBrush x:Key="MenuBrush" Color="#F00B1530"/>
+        <SolidColorBrush x:Key="Blob1Brush" Color="#402E6BFF"/>
+        <SolidColorBrush x:Key="Blob2Brush" Color="#4038D1FF"/>
+        <SolidColorBrush x:Key="BgBaseBrush" Color="#050A18"/>
+        <SolidColorBrush x:Key="SkeletonBrush" Color="#1AFFFFFF"/>
         <LinearGradientBrush x:Key="GlassFill" StartPoint="0,0" EndPoint="1,1">
-            <GradientStop Color="#2CFFFFFF" Offset="0"/>
-            <GradientStop Color="#0AFFFFFF" Offset="1"/>
+            <GradientStop Color="#22CFE6FF" Offset="0"/>
+            <GradientStop Color="#08FFFFFF" Offset="1"/>
+        </LinearGradientBrush>
+        <LinearGradientBrush x:Key="GlassFillRaised" StartPoint="0,0" EndPoint="1,1">
+            <GradientStop Color="#30CFE6FF" Offset="0"/>
+            <GradientStop Color="#10FFFFFF" Offset="1"/>
         </LinearGradientBrush>
         <LinearGradientBrush x:Key="GlassEdge" StartPoint="0,0" EndPoint="1,1">
-            <GradientStop Color="#8CFFFFFF" Offset="0"/>
-            <GradientStop Color="#14FFFFFF" Offset=".5"/>
-            <GradientStop Color="#4DFFFFFF" Offset="1"/>
+            <GradientStop Color="#80FFFFFF" Offset="0"/>
+            <GradientStop Color="#10FFFFFF" Offset=".45"/>
+            <GradientStop Color="#40FFFFFF" Offset="1"/>
         </LinearGradientBrush>
-        <CornerRadius x:Key="GlassRadius">28</CornerRadius>
+        <LinearGradientBrush x:Key="GlassSheen" StartPoint="0,0" EndPoint="0,1">
+            <GradientStop Color="#1AFFFFFF" Offset="0"/>
+            <GradientStop Color="#00FFFFFF" Offset=".35"/>
+        </LinearGradientBrush>
+        <DropShadowEffect x:Key="GlassShadow" BlurRadius="40" ShadowDepth="12" Direction="270" Opacity=".32"/>
+        <DropShadowEffect x:Key="SoftShadow" BlurRadius="24" ShadowDepth="6" Direction="270" Opacity=".28"/>
+        <CornerRadius x:Key="GlassRadius">24</CornerRadius>
+        <CornerRadius x:Key="CardRadius">16</CornerRadius>
+        <CornerRadius x:Key="ControlRadius">12</CornerRadius>
         <local:ArtConverter x:Key="Art"/>
+        <FontFamily x:Key="Icons">Segoe Fluent Icons, Segoe MDL2 Assets</FontFamily>
 
+        <!-- ===== glass surfaces: level 1 panels, level 2 raised (cards, popups) ===== -->
         <Style x:Key="Glass" TargetType="Border">
             <Setter Property="CornerRadius" Value="{DynamicResource GlassRadius}"/>
             <Setter Property="Background" Value="{DynamicResource GlassFill}"/>
-            <Setter Property="BorderBrush" Value="{StaticResource GlassEdge}"/>
+            <Setter Property="BorderBrush" Value="{DynamicResource GlassEdge}"/>
             <Setter Property="BorderThickness" Value="1"/>
-            <Setter Property="Effect">
-                <Setter.Value>
-                    <DropShadowEffect BlurRadius="40" ShadowDepth="10" Direction="270" Opacity=".28"/>
-                </Setter.Value>
-            </Setter>
+            <Setter Property="Effect" Value="{DynamicResource GlassShadow}"/>
+        </Style>
+        <Style x:Key="GlassRaised" TargetType="Border" BasedOn="{StaticResource Glass}">
+            <Setter Property="Background" Value="{DynamicResource GlassFillRaised}"/>
+            <Setter Property="CornerRadius" Value="{DynamicResource CardRadius}"/>
+            <Setter Property="Effect" Value="{DynamicResource SoftShadow}"/>
         </Style>
 
+        <!-- ===== buttons ===== -->
         <Style x:Key="Round" TargetType="Button">
-            <Setter Property="Foreground" Value="White"/>
-            <Setter Property="FontFamily" Value="Segoe Fluent Icons, Segoe MDL2 Assets"/>
+            <Setter Property="Foreground" Value="{DynamicResource TextBrush}"/>
+            <Setter Property="FontFamily" Value="{StaticResource Icons}"/>
             <Setter Property="FocusVisualStyle" Value="{x:Null}"/>
+            <Setter Property="Cursor" Value="Hand"/>
             <Setter Property="Template">
                 <Setter.Value>
                     <ControlTemplate TargetType="Button">
                         <Border x:Name="b" CornerRadius="999" Background="Transparent" RenderTransformOrigin=".5,.5">
-                            <Border.RenderTransform>
-                                <ScaleTransform x:Name="sc"/>
-                            </Border.RenderTransform>
+                            <Border.RenderTransform><ScaleTransform x:Name="sc"/></Border.RenderTransform>
                             <ContentPresenter HorizontalAlignment="Center" VerticalAlignment="Center"/>
                         </Border>
                         <ControlTemplate.Triggers>
                             <Trigger Property="IsMouseOver" Value="True">
-                                <Setter TargetName="b" Property="Background" Value="#26FFFFFF"/>
+                                <Setter TargetName="b" Property="Background" Value="{DynamicResource HoverBrush}"/>
                                 <Trigger.EnterActions>
                                     <BeginStoryboard>
                                         <Storyboard>
-                                            <DoubleAnimation Storyboard.TargetName="sc" Storyboard.TargetProperty="ScaleX" To="1.1" Duration="0:0:0.16"/>
-                                            <DoubleAnimation Storyboard.TargetName="sc" Storyboard.TargetProperty="ScaleY" To="1.1" Duration="0:0:0.16"/>
+                                            <DoubleAnimation Storyboard.TargetName="sc" Storyboard.TargetProperty="ScaleX" To="1.08" Duration="0:0:0.16"/>
+                                            <DoubleAnimation Storyboard.TargetName="sc" Storyboard.TargetProperty="ScaleY" To="1.08" Duration="0:0:0.16"/>
                                         </Storyboard>
                                     </BeginStoryboard>
                                 </Trigger.EnterActions>
                                 <Trigger.ExitActions>
                                     <BeginStoryboard>
                                         <Storyboard>
-                                            <DoubleAnimation Storyboard.TargetName="sc" Storyboard.TargetProperty="ScaleX" To="1" Duration="0:0:0.2"/>
-                                            <DoubleAnimation Storyboard.TargetName="sc" Storyboard.TargetProperty="ScaleY" To="1" Duration="0:0:0.2"/>
+                                            <DoubleAnimation Storyboard.TargetName="sc" Storyboard.TargetProperty="ScaleX" To="1" Duration="0:0:0.26"/>
+                                            <DoubleAnimation Storyboard.TargetName="sc" Storyboard.TargetProperty="ScaleY" To="1" Duration="0:0:0.26"/>
                                         </Storyboard>
                                     </BeginStoryboard>
                                 </Trigger.ExitActions>
                             </Trigger>
                             <Trigger Property="IsPressed" Value="True">
-                                <Setter TargetName="b" Property="Background" Value="#3DFFFFFF"/>
+                                <Setter TargetName="b" Property="Background" Value="{DynamicResource PressBrush}"/>
+                                <Trigger.EnterActions>
+                                    <BeginStoryboard>
+                                        <Storyboard>
+                                            <DoubleAnimation Storyboard.TargetName="sc" Storyboard.TargetProperty="ScaleX" To=".92" Duration="0:0:0.09"/>
+                                            <DoubleAnimation Storyboard.TargetName="sc" Storyboard.TargetProperty="ScaleY" To=".92" Duration="0:0:0.09"/>
+                                        </Storyboard>
+                                    </BeginStoryboard>
+                                </Trigger.EnterActions>
+                            </Trigger>
+                            <Trigger Property="IsEnabled" Value="False">
+                                <Setter Property="Opacity" Value=".35"/>
                             </Trigger>
                         </ControlTemplate.Triggers>
                     </ControlTemplate>
@@ -110,27 +128,82 @@
                 </Setter.Value>
             </Setter>
         </Style>
+        <Style x:Key="Action" TargetType="Button">
+            <Setter Property="Foreground" Value="{DynamicResource TextBrush}"/>
+            <Setter Property="FocusVisualStyle" Value="{x:Null}"/>
+            <Setter Property="Cursor" Value="Hand"/>
+            <Setter Property="Template">
+                <Setter.Value>
+                    <ControlTemplate TargetType="Button">
+                        <Border x:Name="b" CornerRadius="{DynamicResource ControlRadius}" Padding="16,8" Background="{DynamicResource PressBrush}" BorderBrush="{DynamicResource LineBrush}" BorderThickness="1">
+                            <ContentPresenter HorizontalAlignment="Center" VerticalAlignment="Center"/>
+                        </Border>
+                        <ControlTemplate.Triggers>
+                            <Trigger Property="IsMouseOver" Value="True">
+                                <Setter TargetName="b" Property="BorderBrush" Value="{DynamicResource AccentSoftBrush}"/>
+                                <Setter TargetName="b" Property="Background" Value="{DynamicResource AccentSoftBrush}"/>
+                            </Trigger>
+                            <Trigger Property="IsEnabled" Value="False">
+                                <Setter Property="Opacity" Value=".4"/>
+                            </Trigger>
+                        </ControlTemplate.Triggers>
+                    </ControlTemplate>
+                </Setter.Value>
+            </Setter>
+        </Style>
+        <Style x:Key="AccentAction" TargetType="Button" BasedOn="{StaticResource Action}">
+            <Setter Property="Foreground" Value="{DynamicResource OnAccentBrush}"/>
+            <Setter Property="FontWeight" Value="SemiBold"/>
+            <Setter Property="Template">
+                <Setter.Value>
+                    <ControlTemplate TargetType="Button">
+                        <Border x:Name="b" CornerRadius="{DynamicResource ControlRadius}" Padding="18,8" Background="{DynamicResource AccentBrush}">
+                            <ContentPresenter HorizontalAlignment="Center" VerticalAlignment="Center"/>
+                        </Border>
+                        <ControlTemplate.Triggers>
+                            <Trigger Property="IsMouseOver" Value="True">
+                                <Setter TargetName="b" Property="Opacity" Value=".88"/>
+                            </Trigger>
+                            <Trigger Property="IsEnabled" Value="False">
+                                <Setter Property="Opacity" Value=".4"/>
+                            </Trigger>
+                        </ControlTemplate.Triggers>
+                    </ControlTemplate>
+                </Setter.Value>
+            </Setter>
+        </Style>
+
+        <!-- segmented tabs / chips -->
         <Style x:Key="Pill" TargetType="RadioButton">
-            <Setter Property="Foreground" Value="White"/>
+            <Setter Property="Foreground" Value="{DynamicResource TextBrush}"/>
+            <Setter Property="FocusVisualStyle" Value="{x:Null}"/>
+            <Setter Property="Cursor" Value="Hand"/>
             <Setter Property="Template">
                 <Setter.Value>
                     <ControlTemplate TargetType="RadioButton">
-                        <Border x:Name="b" CornerRadius="14" Padding="16,6" Background="#00FFFFFF">
-                            <ContentPresenter HorizontalAlignment="Center"/>
-                        </Border>
+                        <Grid>
+                            <Border x:Name="on" CornerRadius="{DynamicResource ControlRadius}" Background="{DynamicResource PressBrush}" Opacity="0"/>
+                            <Border x:Name="b" CornerRadius="{DynamicResource ControlRadius}" Padding="14,6" Background="Transparent">
+                                <ContentPresenter x:Name="c" HorizontalAlignment="Center" Opacity=".7"/>
+                            </Border>
+                        </Grid>
                         <ControlTemplate.Triggers>
+                            <Trigger Property="IsMouseOver" Value="True">
+                                <Setter TargetName="c" Property="Opacity" Value="1"/>
+                            </Trigger>
                             <Trigger Property="IsChecked" Value="True">
+                                <Setter TargetName="c" Property="Opacity" Value="1"/>
                                 <Trigger.EnterActions>
                                     <BeginStoryboard>
                                         <Storyboard>
-                                            <ColorAnimation Storyboard.TargetName="b" Storyboard.TargetProperty="Background.Color" To="#47FFFFFF" Duration="0:0:0.25"/>
+                                            <DoubleAnimation Storyboard.TargetName="on" Storyboard.TargetProperty="Opacity" To="1" Duration="0:0:0.26"/>
                                         </Storyboard>
                                     </BeginStoryboard>
                                 </Trigger.EnterActions>
                                 <Trigger.ExitActions>
                                     <BeginStoryboard>
                                         <Storyboard>
-                                            <ColorAnimation Storyboard.TargetName="b" Storyboard.TargetProperty="Background.Color" To="#00FFFFFF" Duration="0:0:0.25"/>
+                                            <DoubleAnimation Storyboard.TargetName="on" Storyboard.TargetProperty="Opacity" To="0" Duration="0:0:0.26"/>
                                         </Storyboard>
                                     </BeginStoryboard>
                                 </Trigger.ExitActions>
@@ -143,19 +216,85 @@
                 </Setter.Value>
             </Setter>
         </Style>
+
+        <!-- sidebar navigation item -->
+        <Style x:Key="Nav" TargetType="RadioButton">
+            <Setter Property="Foreground" Value="{DynamicResource TextBrush}"/>
+            <Setter Property="FocusVisualStyle" Value="{x:Null}"/>
+            <Setter Property="Cursor" Value="Hand"/>
+            <Setter Property="Margin" Value="0,1"/>
+            <Setter Property="Template">
+                <Setter.Value>
+                    <ControlTemplate TargetType="RadioButton">
+                        <Grid Background="Transparent">
+                            <Border x:Name="hover" CornerRadius="{DynamicResource ControlRadius}" Background="{DynamicResource HoverBrush}" Opacity="0"/>
+                            <Border x:Name="on" CornerRadius="{DynamicResource ControlRadius}" Background="{DynamicResource PressBrush}" Opacity="0"/>
+                            <Border x:Name="bar" Width="3" Height="16" CornerRadius="2" Background="{DynamicResource AccentBrush}" HorizontalAlignment="Left" Margin="2,0,0,0" Opacity="0"/>
+                            <Grid Margin="12,9">
+                                <Grid.ColumnDefinitions>
+                                    <ColumnDefinition Width="28"/>
+                                    <ColumnDefinition/>
+                                </Grid.ColumnDefinitions>
+                                <TextBlock x:Name="ic" Text="{TemplateBinding Tag}" FontFamily="{StaticResource Icons}" FontSize="15" VerticalAlignment="Center" Opacity=".7"/>
+                                <ContentPresenter x:Name="c" Grid.Column="1" VerticalAlignment="Center" Opacity=".78"/>
+                            </Grid>
+                        </Grid>
+                        <ControlTemplate.Triggers>
+                            <Trigger Property="IsMouseOver" Value="True">
+                                <Trigger.EnterActions>
+                                    <BeginStoryboard>
+                                        <Storyboard><DoubleAnimation Storyboard.TargetName="hover" Storyboard.TargetProperty="Opacity" To="1" Duration="0:0:0.16"/></Storyboard>
+                                    </BeginStoryboard>
+                                </Trigger.EnterActions>
+                                <Trigger.ExitActions>
+                                    <BeginStoryboard>
+                                        <Storyboard><DoubleAnimation Storyboard.TargetName="hover" Storyboard.TargetProperty="Opacity" To="0" Duration="0:0:0.26"/></Storyboard>
+                                    </BeginStoryboard>
+                                </Trigger.ExitActions>
+                            </Trigger>
+                            <Trigger Property="IsChecked" Value="True">
+                                <Setter TargetName="c" Property="Opacity" Value="1"/>
+                                <Setter TargetName="ic" Property="Opacity" Value="1"/>
+                                <Setter TargetName="ic" Property="Foreground" Value="{DynamicResource AccentBrush}"/>
+                                <Setter Property="FontWeight" Value="SemiBold"/>
+                                <Trigger.EnterActions>
+                                    <BeginStoryboard>
+                                        <Storyboard>
+                                            <DoubleAnimation Storyboard.TargetName="on" Storyboard.TargetProperty="Opacity" To="1" Duration="0:0:0.26"/>
+                                            <DoubleAnimation Storyboard.TargetName="bar" Storyboard.TargetProperty="Opacity" To="1" Duration="0:0:0.26"/>
+                                        </Storyboard>
+                                    </BeginStoryboard>
+                                </Trigger.EnterActions>
+                                <Trigger.ExitActions>
+                                    <BeginStoryboard>
+                                        <Storyboard>
+                                            <DoubleAnimation Storyboard.TargetName="on" Storyboard.TargetProperty="Opacity" To="0" Duration="0:0:0.26"/>
+                                            <DoubleAnimation Storyboard.TargetName="bar" Storyboard.TargetProperty="Opacity" To="0" Duration="0:0:0.26"/>
+                                        </Storyboard>
+                                    </BeginStoryboard>
+                                </Trigger.ExitActions>
+                            </Trigger>
+                        </ControlTemplate.Triggers>
+                    </ControlTemplate>
+                </Setter.Value>
+            </Setter>
+        </Style>
+
         <Style x:Key="Search" TargetType="TextBox">
-            <Setter Property="Foreground" Value="White"/>
-            <Setter Property="CaretBrush" Value="White"/>
+            <Setter Property="Foreground" Value="{DynamicResource TextBrush}"/>
+            <Setter Property="CaretBrush" Value="{DynamicResource TextBrush}"/>
+            <Setter Property="SelectionBrush" Value="{DynamicResource AccentBrush}"/>
+            <Setter Property="FocusVisualStyle" Value="{x:Null}"/>
             <Setter Property="Template">
                 <Setter.Value>
                     <ControlTemplate TargetType="TextBox">
-                        <Border CornerRadius="16" Background="#1AFFFFFF" BorderBrush="#26FFFFFF" BorderThickness="1" Padding="12,9">
+                        <Border x:Name="b" CornerRadius="{DynamicResource ControlRadius}" Background="{DynamicResource FieldBrush}" BorderBrush="{DynamicResource LineBrush}" BorderThickness="1" Padding="12,8">
                             <Grid>
                                 <Grid.ColumnDefinitions>
                                     <ColumnDefinition Width="Auto"/>
                                     <ColumnDefinition/>
                                 </Grid.ColumnDefinitions>
-                                <TextBlock Text="&#xE721;" FontFamily="Segoe Fluent Icons, Segoe MDL2 Assets" Opacity=".6" Margin="0,2,10,0"/>
+                                <TextBlock x:Name="icon" Text="&#xE721;" FontFamily="{StaticResource Icons}" Opacity=".55" Margin="0,2,10,0"/>
                                 <TextBlock x:Name="ph" Grid.Column="1" Text="{TemplateBinding Tag}" Opacity=".45" Visibility="Collapsed" IsHitTestVisible="False"/>
                                 <ScrollViewer x:Name="PART_ContentHost" Grid.Column="1"/>
                             </Grid>
@@ -164,24 +303,53 @@
                             <Trigger Property="Text" Value="">
                                 <Setter TargetName="ph" Property="Visibility" Value="Visible"/>
                             </Trigger>
+                            <Trigger Property="IsKeyboardFocused" Value="True">
+                                <Setter TargetName="b" Property="BorderBrush" Value="{DynamicResource AccentBrush}"/>
+                                <Setter TargetName="icon" Property="Foreground" Value="{DynamicResource AccentBrush}"/>
+                            </Trigger>
                         </ControlTemplate.Triggers>
                     </ControlTemplate>
                 </Setter.Value>
             </Setter>
         </Style>
+        <!-- plain text field (no search icon) -->
+        <Style x:Key="Field" TargetType="TextBox" BasedOn="{StaticResource Search}">
+            <Setter Property="Template">
+                <Setter.Value>
+                    <ControlTemplate TargetType="TextBox">
+                        <Border x:Name="b" CornerRadius="{DynamicResource ControlRadius}" Background="{DynamicResource FieldBrush}" BorderBrush="{DynamicResource LineBrush}" BorderThickness="1" Padding="12,8">
+                            <Grid>
+                                <TextBlock x:Name="ph" Text="{TemplateBinding Tag}" Opacity=".45" Visibility="Collapsed" IsHitTestVisible="False"/>
+                                <ScrollViewer x:Name="PART_ContentHost"/>
+                            </Grid>
+                        </Border>
+                        <ControlTemplate.Triggers>
+                            <Trigger Property="Text" Value="">
+                                <Setter TargetName="ph" Property="Visibility" Value="Visible"/>
+                            </Trigger>
+                            <Trigger Property="IsKeyboardFocused" Value="True">
+                                <Setter TargetName="b" Property="BorderBrush" Value="{DynamicResource AccentBrush}"/>
+                            </Trigger>
+                        </ControlTemplate.Triggers>
+                    </ControlTemplate>
+                </Setter.Value>
+            </Setter>
+        </Style>
+
         <Style TargetType="ListBoxItem">
+            <Setter Property="FocusVisualStyle" Value="{x:Null}"/>
             <Setter Property="Template">
                 <Setter.Value>
                     <ControlTemplate TargetType="ListBoxItem">
-                        <Border x:Name="b" CornerRadius="16" Padding="8" Background="Transparent">
+                        <Border x:Name="b" CornerRadius="{DynamicResource ControlRadius}" Padding="8,6" Background="Transparent">
                             <ContentPresenter/>
                         </Border>
                         <ControlTemplate.Triggers>
                             <Trigger Property="IsMouseOver" Value="True">
-                                <Setter TargetName="b" Property="Background" Value="#17FFFFFF"/>
+                                <Setter TargetName="b" Property="Background" Value="{DynamicResource HoverBrush}"/>
                             </Trigger>
                             <Trigger Property="IsSelected" Value="True">
-                                <Setter TargetName="b" Property="Background" Value="#2EFFFFFF"/>
+                                <Setter TargetName="b" Property="Background" Value="{DynamicResource AccentSoftBrush}"/>
                             </Trigger>
                         </ControlTemplate.Triggers>
                     </ControlTemplate>
@@ -198,37 +366,19 @@
             </Setter>
         </Style>
         <Style x:Key="Section" TargetType="TextBlock">
-            <Setter Property="FontSize" Value="13"/>
+            <Setter Property="FontSize" Value="12"/>
             <Setter Property="FontWeight" Value="SemiBold"/>
-            <Setter Property="Opacity" Value=".55"/>
-            <Setter Property="Margin" Value="0,18,0,4"/>
-        </Style>
-        <Style x:Key="Action" TargetType="Button">
-            <Setter Property="Foreground" Value="White"/>
-            <Setter Property="Template">
-                <Setter.Value>
-                    <ControlTemplate TargetType="Button">
-                        <Border x:Name="b" CornerRadius="14" Padding="16,7" Background="#2EFFFFFF">
-                            <ContentPresenter HorizontalAlignment="Center"/>
-                        </Border>
-                        <ControlTemplate.Triggers>
-                            <Trigger Property="IsMouseOver" Value="True">
-                                <Setter TargetName="b" Property="Background" Value="#47FFFFFF"/>
-                            </Trigger>
-                            <Trigger Property="IsEnabled" Value="False">
-                                <Setter Property="Opacity" Value=".4"/>
-                            </Trigger>
-                        </ControlTemplate.Triggers>
-                    </ControlTemplate>
-                </Setter.Value>
-            </Setter>
+            <Setter Property="Foreground" Value="{DynamicResource TextFaintBrush}"/>
+            <Setter Property="Margin" Value="0,20,0,6"/>
         </Style>
         <Style x:Key="Seek" TargetType="Slider">
+            <Setter Property="Cursor" Value="Hand"/>
+            <Setter Property="FocusVisualStyle" Value="{x:Null}"/>
             <Setter Property="Template">
                 <Setter.Value>
                     <ControlTemplate TargetType="Slider">
                         <Grid Height="20" Background="Transparent">
-                            <Border Height="5" CornerRadius="3" Background="#38FFFFFF"/>
+                            <Border Height="5" CornerRadius="3" Background="{DynamicResource LineBrush}"/>
                             <Track x:Name="PART_Track">
                                 <Track.DecreaseRepeatButton>
                                     <RepeatButton Command="Slider.DecreaseLarge" Style="{StaticResource Rail}" Background="{DynamicResource AccentBrush}"/>
@@ -237,11 +387,32 @@
                                     <Thumb>
                                         <Thumb.Template>
                                             <ControlTemplate TargetType="Thumb">
-                                                <Ellipse Width="14" Height="14" Fill="White">
+                                                <Ellipse x:Name="k" Width="14" Height="14" Fill="White" RenderTransformOrigin=".5,.5">
+                                                    <Ellipse.RenderTransform><ScaleTransform x:Name="ks" ScaleX=".75" ScaleY=".75"/></Ellipse.RenderTransform>
                                                     <Ellipse.Effect>
                                                         <DropShadowEffect BlurRadius="8" ShadowDepth="1" Opacity=".4"/>
                                                     </Ellipse.Effect>
                                                 </Ellipse>
+                                                <ControlTemplate.Triggers>
+                                                    <Trigger Property="IsMouseOver" Value="True">
+                                                        <Trigger.EnterActions>
+                                                            <BeginStoryboard>
+                                                                <Storyboard>
+                                                                    <DoubleAnimation Storyboard.TargetName="ks" Storyboard.TargetProperty="ScaleX" To="1.1" Duration="0:0:0.16"/>
+                                                                    <DoubleAnimation Storyboard.TargetName="ks" Storyboard.TargetProperty="ScaleY" To="1.1" Duration="0:0:0.16"/>
+                                                                </Storyboard>
+                                                            </BeginStoryboard>
+                                                        </Trigger.EnterActions>
+                                                        <Trigger.ExitActions>
+                                                            <BeginStoryboard>
+                                                                <Storyboard>
+                                                                    <DoubleAnimation Storyboard.TargetName="ks" Storyboard.TargetProperty="ScaleX" To=".75" Duration="0:0:0.26"/>
+                                                                    <DoubleAnimation Storyboard.TargetName="ks" Storyboard.TargetProperty="ScaleY" To=".75" Duration="0:0:0.26"/>
+                                                                </Storyboard>
+                                                            </BeginStoryboard>
+                                                        </Trigger.ExitActions>
+                                                    </Trigger>
+                                                </ControlTemplate.Triggers>
                                             </ControlTemplate>
                                         </Thumb.Template>
                                     </Thumb>
@@ -255,21 +426,18 @@
                 </Setter.Value>
             </Setter>
         </Style>
-
         <Style x:Key="Switch" TargetType="ToggleButton">
+            <Setter Property="Cursor" Value="Hand"/>
+            <Setter Property="FocusVisualStyle" Value="{x:Null}"/>
             <Setter Property="Template">
                 <Setter.Value>
                     <ControlTemplate TargetType="ToggleButton">
-                        <Grid Width="48" Height="29" Background="Transparent">
-                            <Border CornerRadius="15" Background="#3DFFFFFF"/>
-                            <Border x:Name="on" CornerRadius="15" Background="{DynamicResource AccentBrush}" Opacity="0"/>
-                            <Ellipse Width="23" Height="23" Fill="White" HorizontalAlignment="Left" Margin="3,0,0,0">
-                                <Ellipse.RenderTransform>
-                                    <TranslateTransform x:Name="knob"/>
-                                </Ellipse.RenderTransform>
-                                <Ellipse.Effect>
-                                    <DropShadowEffect BlurRadius="6" ShadowDepth="1" Opacity=".35"/>
-                                </Ellipse.Effect>
+                        <Grid Width="46" Height="28" Background="Transparent">
+                            <Border CornerRadius="14" Background="{DynamicResource PressBrush}" BorderBrush="{DynamicResource LineBrush}" BorderThickness="1"/>
+                            <Border x:Name="on" CornerRadius="14" Background="{DynamicResource AccentBrush}" Opacity="0"/>
+                            <Ellipse Width="22" Height="22" Fill="White" HorizontalAlignment="Left" Margin="3,0,0,0">
+                                <Ellipse.RenderTransform><TranslateTransform x:Name="knob"/></Ellipse.RenderTransform>
+                                <Ellipse.Effect><DropShadowEffect BlurRadius="6" ShadowDepth="1" Opacity=".35"/></Ellipse.Effect>
                             </Ellipse>
                         </Grid>
                         <ControlTemplate.Triggers>
@@ -277,20 +445,20 @@
                                 <Trigger.EnterActions>
                                     <BeginStoryboard>
                                         <Storyboard>
-                                            <DoubleAnimation Storyboard.TargetName="knob" Storyboard.TargetProperty="X" To="19" Duration="0:0:0.25">
-                                                <DoubleAnimation.EasingFunction><CubicEase EasingMode="EaseOut"/></DoubleAnimation.EasingFunction>
+                                            <DoubleAnimation Storyboard.TargetName="knob" Storyboard.TargetProperty="X" To="18" Duration="0:0:0.26">
+                                                <DoubleAnimation.EasingFunction><BackEase EasingMode="EaseOut" Amplitude=".35"/></DoubleAnimation.EasingFunction>
                                             </DoubleAnimation>
-                                            <DoubleAnimation Storyboard.TargetName="on" Storyboard.TargetProperty="Opacity" To="1" Duration="0:0:0.25"/>
+                                            <DoubleAnimation Storyboard.TargetName="on" Storyboard.TargetProperty="Opacity" To="1" Duration="0:0:0.26"/>
                                         </Storyboard>
                                     </BeginStoryboard>
                                 </Trigger.EnterActions>
                                 <Trigger.ExitActions>
                                     <BeginStoryboard>
                                         <Storyboard>
-                                            <DoubleAnimation Storyboard.TargetName="knob" Storyboard.TargetProperty="X" To="0" Duration="0:0:0.25">
-                                                <DoubleAnimation.EasingFunction><CubicEase EasingMode="EaseOut"/></DoubleAnimation.EasingFunction>
+                                            <DoubleAnimation Storyboard.TargetName="knob" Storyboard.TargetProperty="X" To="0" Duration="0:0:0.26">
+                                                <DoubleAnimation.EasingFunction><BackEase EasingMode="EaseOut" Amplitude=".35"/></DoubleAnimation.EasingFunction>
                                             </DoubleAnimation>
-                                            <DoubleAnimation Storyboard.TargetName="on" Storyboard.TargetProperty="Opacity" To="0" Duration="0:0:0.25"/>
+                                            <DoubleAnimation Storyboard.TargetName="on" Storyboard.TargetProperty="Opacity" To="0" Duration="0:0:0.26"/>
                                         </Storyboard>
                                     </BeginStoryboard>
                                 </Trigger.ExitActions>
@@ -300,15 +468,138 @@
                 </Setter.Value>
             </Setter>
         </Style>
+
+        <!-- search suggestion row -->
+        <Style x:Key="SuggestRow" TargetType="Button">
+            <Setter Property="Foreground" Value="{DynamicResource TextBrush}"/>
+            <Setter Property="FocusVisualStyle" Value="{x:Null}"/>
+            <Setter Property="Cursor" Value="Hand"/>
+            <Setter Property="HorizontalContentAlignment" Value="Stretch"/>
+            <Setter Property="Template">
+                <Setter.Value>
+                    <ControlTemplate TargetType="Button">
+                        <Grid>
+                            <Border x:Name="hl" CornerRadius="{DynamicResource ControlRadius}" Background="{DynamicResource AccentSoftBrush}" Opacity="0"/>
+                            <Grid Margin="10,8">
+                                <Grid.ColumnDefinitions>
+                                    <ColumnDefinition Width="26"/>
+                                    <ColumnDefinition/>
+                                </Grid.ColumnDefinitions>
+                                <TextBlock Text="{TemplateBinding Tag}" FontFamily="{StaticResource Icons}" FontSize="12" Opacity=".6" VerticalAlignment="Center"/>
+                                <ContentPresenter Grid.Column="1" VerticalAlignment="Center"/>
+                            </Grid>
+                        </Grid>
+                        <ControlTemplate.Triggers>
+                            <Trigger Property="IsMouseOver" Value="True">
+                                <Setter TargetName="hl" Property="Opacity" Value="1"/>
+                            </Trigger>
+                            <Trigger Property="IsKeyboardFocused" Value="True">
+                                <Setter TargetName="hl" Property="Opacity" Value="1"/>
+                            </Trigger>
+                        </ControlTemplate.Triggers>
+                    </ControlTemplate>
+                </Setter.Value>
+            </Setter>
+        </Style>
+
+        <!-- ===== glass context menus ===== -->
+        <Style TargetType="ContextMenu">
+            <Setter Property="HasDropShadow" Value="False"/>
+            <Setter Property="Foreground" Value="{DynamicResource TextBrush}"/>
+            <Setter Property="FontSize" Value="13"/>
+            <Setter Property="Template">
+                <Setter.Value>
+                    <ControlTemplate TargetType="ContextMenu">
+                        <Border Background="{DynamicResource MenuBrush}" BorderBrush="{DynamicResource GlassEdge}" BorderThickness="1" CornerRadius="{DynamicResource CardRadius}" Padding="6" Margin="10" MinWidth="220" Effect="{DynamicResource SoftShadow}">
+                            <StackPanel IsItemsHost="True" KeyboardNavigation.DirectionalNavigation="Cycle"/>
+                        </Border>
+                    </ControlTemplate>
+                </Setter.Value>
+            </Setter>
+        </Style>
+        <Style TargetType="Separator">
+            <Setter Property="Template">
+                <Setter.Value>
+                    <ControlTemplate TargetType="Separator">
+                        <Border Height="1" Margin="10,5" Background="{DynamicResource LineBrush}"/>
+                    </ControlTemplate>
+                </Setter.Value>
+            </Setter>
+        </Style>
+        <Style TargetType="MenuItem">
+            <Setter Property="Foreground" Value="{DynamicResource TextBrush}"/>
+            <Setter Property="Cursor" Value="Hand"/>
+            <Setter Property="Template">
+                <Setter.Value>
+                    <ControlTemplate TargetType="MenuItem">
+                        <Grid>
+                            <Border x:Name="hl" CornerRadius="{DynamicResource ControlRadius}" Background="{DynamicResource AccentSoftBrush}" Opacity="0"/>
+                            <Grid Margin="10,8">
+                                <Grid.ColumnDefinitions>
+                                    <ColumnDefinition Width="26"/>
+                                    <ColumnDefinition/>
+                                    <ColumnDefinition Width="Auto"/>
+                                </Grid.ColumnDefinitions>
+                                <ContentPresenter ContentSource="Icon" VerticalAlignment="Center" TextBlock.FontFamily="{StaticResource Icons}" TextBlock.FontSize="13" Opacity=".75"/>
+                                <ContentPresenter Grid.Column="1" ContentSource="Header" VerticalAlignment="Center" RecognizesAccessKey="False"/>
+                                <TextBlock x:Name="arrow" Grid.Column="2" Text="&#xE76C;" FontFamily="{StaticResource Icons}" FontSize="10" Opacity=".6" VerticalAlignment="Center" Margin="12,0,0,0" Visibility="Collapsed"/>
+                            </Grid>
+                            <Popup x:Name="PART_Popup" Placement="Right" HorizontalOffset="-4" VerticalOffset="-10" AllowsTransparency="True" Focusable="False"
+                                   IsOpen="{Binding IsSubmenuOpen, RelativeSource={RelativeSource TemplatedParent}}" PopupAnimation="Fade">
+                                <Border Background="{DynamicResource MenuBrush}" BorderBrush="{DynamicResource GlassEdge}" BorderThickness="1" CornerRadius="{DynamicResource CardRadius}" Padding="6" Margin="10" MinWidth="200" Effect="{DynamicResource SoftShadow}">
+                                    <ScrollViewer VerticalScrollBarVisibility="Auto" MaxHeight="420">
+                                        <StackPanel IsItemsHost="True" KeyboardNavigation.DirectionalNavigation="Cycle"/>
+                                    </ScrollViewer>
+                                </Border>
+                            </Popup>
+                        </Grid>
+                        <ControlTemplate.Triggers>
+                            <Trigger Property="Role" Value="SubmenuHeader">
+                                <Setter TargetName="arrow" Property="Visibility" Value="Visible"/>
+                            </Trigger>
+                            <Trigger Property="IsHighlighted" Value="True">
+                                <Trigger.EnterActions>
+                                    <BeginStoryboard>
+                                        <Storyboard><DoubleAnimation Storyboard.TargetName="hl" Storyboard.TargetProperty="Opacity" To="1" Duration="0:0:0.12"/></Storyboard>
+                                    </BeginStoryboard>
+                                </Trigger.EnterActions>
+                                <Trigger.ExitActions>
+                                    <BeginStoryboard>
+                                        <Storyboard><DoubleAnimation Storyboard.TargetName="hl" Storyboard.TargetProperty="Opacity" To="0" Duration="0:0:0.2"/></Storyboard>
+                                    </BeginStoryboard>
+                                </Trigger.ExitActions>
+                            </Trigger>
+                            <Trigger Property="IsEnabled" Value="False">
+                                <Setter Property="Opacity" Value=".4"/>
+                            </Trigger>
+                        </ControlTemplate.Triggers>
+                    </ControlTemplate>
+                </Setter.Value>
+            </Setter>
+        </Style>
+        <Style TargetType="ToolTip">
+            <Setter Property="Foreground" Value="{DynamicResource TextBrush}"/>
+            <Setter Property="HasDropShadow" Value="False"/>
+            <Setter Property="Template">
+                <Setter.Value>
+                    <ControlTemplate TargetType="ToolTip">
+                        <Border Background="{DynamicResource MenuBrush}" BorderBrush="{DynamicResource LineBrush}" BorderThickness="1" CornerRadius="10" Padding="10,6" Margin="6">
+                            <ContentPresenter TextBlock.FontSize="12"/>
+                        </Border>
+                    </ControlTemplate>
+                </Setter.Value>
+            </Setter>
+        </Style>
     </Window.Resources>
 
-    <Grid>
+    <Grid x:Name="WindowRoot">
         <!-- ===== background layers ===== -->
+        <Border x:Name="BgBase" Background="{DynamicResource BgBaseBrush}" IsHitTestVisible="False"/>
         <Grid x:Name="Ambient" IsHitTestVisible="False">
-            <Ellipse Width="780" Height="780" HorizontalAlignment="Left" VerticalAlignment="Top" Margin="-320,-360,0,0" Fill="{DynamicResource Blob1Brush}">
+            <Ellipse Width="820" Height="820" HorizontalAlignment="Left" VerticalAlignment="Top" Margin="-320,-380,0,0" Fill="{DynamicResource Blob1Brush}">
                 <Ellipse.RenderTransform><TranslateTransform x:Name="Blob1T"/></Ellipse.RenderTransform>
             </Ellipse>
-            <Ellipse Width="740" Height="740" HorizontalAlignment="Right" VerticalAlignment="Bottom" Margin="0,0,-300,-340" Fill="{DynamicResource Blob2Brush}">
+            <Ellipse Width="760" Height="760" HorizontalAlignment="Right" VerticalAlignment="Bottom" Margin="0,0,-300,-340" Fill="{DynamicResource Blob2Brush}">
                 <Ellipse.RenderTransform><TranslateTransform x:Name="Blob2T"/></Ellipse.RenderTransform>
             </Ellipse>
         </Grid>
@@ -316,107 +607,106 @@
             <Image.Effect><BlurEffect x:Name="BgBlurFx" Radius="0" KernelType="Gaussian"/></Image.Effect>
         </Image>
         <Image x:Name="Glow" Stretch="UniformToFill" Opacity="0" IsHitTestVisible="False">
-            <Image.Effect><BlurEffect Radius="110"/></Image.Effect>
+            <Image.Effect><BlurEffect Radius="120"/></Image.Effect>
         </Image>
         <Border x:Name="BgDim" Background="Black" Opacity="0" IsHitTestVisible="False"/>
         <local:ParticleLayer x:Name="Particles"/>
 
-        <!-- ===== main UI ===== -->
-        <Grid x:Name="Root" Opacity="0" RenderTransformOrigin=".5,.5">
+        <!-- ===== app ===== -->
+        <Grid x:Name="Root" Opacity="0">
             <Grid.RowDefinitions>
-                <RowDefinition Height="48"/>
+                <RowDefinition Height="52"/>
                 <RowDefinition/>
             </Grid.RowDefinitions>
-            <Grid.RenderTransform>
-                <ScaleTransform x:Name="RootScale" ScaleX=".95" ScaleY=".95"/>
-            </Grid.RenderTransform>
 
-            <StackPanel Orientation="Horizontal" Margin="20,0,0,0" VerticalAlignment="Center" HorizontalAlignment="Left" WindowChrome.IsHitTestVisibleInChrome="True">
-                <Button Style="{StaticResource Light}" Background="#FF5F57" Click="Close_Click"/>
-                <Button Style="{StaticResource Light}" Background="#FEBC2E" Click="Min_Click"/>
-                <Button Style="{StaticResource Light}" Background="#28C840" Click="Max_Click"/>
-            </StackPanel>
-            <StackPanel Orientation="Horizontal" HorizontalAlignment="Right" VerticalAlignment="Center" Margin="0,0,16,0" WindowChrome.IsHitTestVisibleInChrome="True">
-                <Button x:Name="BrowseBtn" Style="{StaticResource Action}" Content="Browse SoundCloud" Margin="0,0,10,0" Click="Browse_Click"/>
-                <Button Style="{StaticResource Round}" Width="34" Height="34" FontSize="15" Content="&#xE713;" Click="Settings_Click"/>
-            </StackPanel>
-            <Border CornerRadius="18" Background="#14FFFFFF" BorderBrush="#1FFFFFFF" BorderThickness="1" Padding="3" HorizontalAlignment="Center" VerticalAlignment="Center" WindowChrome.IsHitTestVisibleInChrome="True">
-                <StackPanel Orientation="Horizontal">
-                    <RadioButton x:Name="SoundCloudBtn" Style="{StaticResource Pill}" Content="SoundCloud" Tag="SoundCloud" Checked="Provider_Checked"/>
-                    <RadioButton x:Name="YouTubeBtn" Style="{StaticResource Pill}" Content="YouTube Music" Tag="YouTube Music" Checked="Provider_Checked"/>
-                    <RadioButton x:Name="SpotifyBtn" Style="{StaticResource Pill}" Content="Spotify" Tag="Spotify" Checked="Provider_Checked"/>
+            <!-- title bar -->
+            <Grid x:Name="TitleBar">
+                <StackPanel Orientation="Horizontal" Margin="20,0,0,0" VerticalAlignment="Center" HorizontalAlignment="Left" WindowChrome.IsHitTestVisibleInChrome="True">
+                    <Button Style="{StaticResource Light}" Background="#FF5F57" ToolTip="Close" Click="Close_Click"/>
+                    <Button Style="{StaticResource Light}" Background="#FEBC2E" ToolTip="Minimize" Click="Min_Click"/>
+                    <Button Style="{StaticResource Light}" Background="#28C840" ToolTip="Maximize" Click="Max_Click"/>
+                    <Button x:Name="BackBtn" Style="{StaticResource Round}" Width="32" Height="32" FontSize="12" Content="&#xE72B;" Margin="14,0,0,0" ToolTip="Back (Alt+Left)" Click="Back_Click"/>
                 </StackPanel>
-            </Border>
+                <Grid HorizontalAlignment="Center" VerticalAlignment="Center" Width="460" WindowChrome.IsHitTestVisibleInChrome="True">
+                    <TextBox x:Name="SearchBox" Style="{StaticResource Search}" Tag="Search SoundCloud: songs, artists, albums, playlists  (Ctrl+K)"
+                             KeyDown="Search_KeyDown" TextChanged="Search_TextChanged" GotKeyboardFocus="Search_Focus" LostKeyboardFocus="Search_LostFocus"/>
+                    <Popup x:Name="SuggestPopup" PlacementTarget="{Binding ElementName=SearchBox}" Placement="Bottom" VerticalOffset="6" AllowsTransparency="True" StaysOpen="True" PopupAnimation="Fade">
+                        <Border Background="{DynamicResource MenuBrush}" BorderBrush="{DynamicResource GlassEdge}" BorderThickness="1" CornerRadius="{DynamicResource CardRadius}" Padding="6" Margin="8" Width="444" Effect="{DynamicResource SoftShadow}">
+                            <StackPanel x:Name="SuggestHost"/>
+                        </Border>
+                    </Popup>
+                </Grid>
+                <StackPanel Orientation="Horizontal" HorizontalAlignment="Right" VerticalAlignment="Center" Margin="0,0,16,0" WindowChrome.IsHitTestVisibleInChrome="True">
+                    <Button Style="{StaticResource Round}" Width="34" Height="34" FontSize="14" Content="&#xE8A7;" ToolTip="Mini player (Ctrl+M)" Click="Mini_Click"/>
+                    <Button x:Name="FullBtn" Style="{StaticResource Round}" Width="34" Height="34" FontSize="14" Content="&#xE740;" ToolTip="Full-window player (F11)" Click="Full_Click"/>
+                    <Button Style="{StaticResource Round}" Width="34" Height="34" FontSize="15" Content="&#xE713;" ToolTip="Settings" Click="Settings_Click"/>
+                </StackPanel>
+            </Grid>
 
-            <Grid x:Name="ContentGrid" Grid.Row="1" Margin="16,0,16,16">
+            <Grid x:Name="Body" Grid.Row="1" Margin="14,0,14,14">
                 <Grid.ColumnDefinitions>
-                    <ColumnDefinition Width="Auto"/>
-                    <ColumnDefinition Width="16"/>
-                    <ColumnDefinition MinWidth="360"/>
+                    <ColumnDefinition x:Name="SideCol" Width="236"/>
+                    <ColumnDefinition x:Name="GapCol1" Width="12"/>
+                    <ColumnDefinition x:Name="CenterCol" MinWidth="0"/>
+                    <ColumnDefinition x:Name="GapCol2" Width="12"/>
+                    <ColumnDefinition x:Name="NowCol" Width="380"/>
                 </Grid.ColumnDefinitions>
 
-                <!-- left: search list / SoundCloud browser -->
-                <Border x:Name="LeftPanel" Style="{StaticResource Glass}" Padding="16" Width="350">
+                <!-- sidebar -->
+                <Border x:Name="Sidebar" Style="{StaticResource Glass}" Padding="10,16">
                     <Grid>
                         <Grid.RowDefinitions>
+                            <RowDefinition Height="Auto"/>
+                            <RowDefinition Height="Auto"/>
                             <RowDefinition Height="Auto"/>
                             <RowDefinition/>
                             <RowDefinition Height="Auto"/>
                         </Grid.RowDefinitions>
-                        <StackPanel x:Name="TopArea">
-                        <Grid x:Name="SearchRow" Margin="0,0,0,8">
-                            <Grid.ColumnDefinitions>
-                                <ColumnDefinition/>
-                                <ColumnDefinition Width="Auto"/>
-                            </Grid.ColumnDefinitions>
-                            <TextBox x:Name="SearchBox" Style="{StaticResource Search}" Tag="Songs, artists" KeyDown="Search_KeyDown"/>
-                            <Button Grid.Column="1" Style="{StaticResource Action}" Content="Import" Margin="8,0,0,0" Click="Import_Click"/>
-                        </Grid>
-                        <!-- your SoundCloud: shown while the SoundCloud tab is selected -->
-                        <Grid x:Name="ScChips" Margin="0,0,0,8">
-                            <Border x:Name="ScTabs" CornerRadius="18" Background="#14FFFFFF" Padding="3" HorizontalAlignment="Left">
-                                <StackPanel Orientation="Horizontal">
-                                    <RadioButton Style="{StaticResource Pill}" GroupName="sc" Content="♥ Likes" Tag="Likes" Click="ScTab_Click"/>
-                                    <RadioButton Style="{StaticResource Pill}" GroupName="sc" Content="Feed" Tag="Feed" Click="ScTab_Click"/>
-                                    <RadioButton Style="{StaticResource Pill}" GroupName="sc" Content="Playlists" Tag="Playlists" Click="ScTab_Click"/>
-                                </StackPanel>
-                            </Border>
-                            <Button x:Name="ScSignIn" Style="{StaticResource Action}" Content="Sign in to SoundCloud" HorizontalAlignment="Left" Click="ScSignIn_Click"/>
-                        </Grid>
+                        <StackPanel Orientation="Horizontal" Margin="8,0,0,14">
+                            <Image Source="icon.png" Width="30" Height="30" RenderOptions.BitmapScalingMode="HighQuality"/>
+                            <TextBlock Text="LiquidCloud" FontSize="18" FontWeight="SemiBold" VerticalAlignment="Center" Margin="10,0,0,0"/>
                         </StackPanel>
-                        <ListBox x:Name="List" Grid.Row="1" Background="Transparent" BorderThickness="0" Foreground="White"
-                                 ScrollViewer.HorizontalScrollBarVisibility="Disabled" ScrollViewer.VerticalScrollBarVisibility="Hidden"
-                                 ScrollViewer.CanContentScroll="True" VirtualizingPanel.IsVirtualizing="True" VirtualizingPanel.VirtualizationMode="Recycling" VirtualizingPanel.ScrollUnit="Pixel"
-                                 PreviewMouseWheel="List_PreviewMouseWheel" SelectionChanged="List_SelectionChanged">
-                            <ListBox.ItemTemplate>
-                                <DataTemplate>
-                                    <Grid>
-                                        <Grid.ColumnDefinitions>
-                                            <ColumnDefinition Width="46"/>
-                                            <ColumnDefinition/>
-                                            <ColumnDefinition Width="Auto"/>
-                                        </Grid.ColumnDefinitions>
-                                        <Border Width="46" Height="46" CornerRadius="11" Background="{DynamicResource AccentSoftBrush}">
-                                            <Grid>
-                                                <TextBlock Text="&#xE8D6;" FontFamily="Segoe Fluent Icons, Segoe MDL2 Assets" FontSize="16" Opacity=".7" HorizontalAlignment="Center" VerticalAlignment="Center"/>
-                                                <Border CornerRadius="11">
-                                                    <Border.Background>
-                                                        <ImageBrush ImageSource="{Binding Art, Converter={StaticResource Art}}" Stretch="UniformToFill"/>
-                                                    </Border.Background>
-                                                </Border>
-                                            </Grid>
-                                        </Border>
-                                        <StackPanel Grid.Column="1" Margin="12,0,0,0" VerticalAlignment="Center">
-                                            <TextBlock Text="{Binding Title}" FontSize="14" FontWeight="SemiBold" TextTrimming="CharacterEllipsis"/>
-                                            <TextBlock Text="{Binding Artist}" FontSize="12" Opacity=".6" TextTrimming="CharacterEllipsis"/>
-                                        </StackPanel>
-                                        <TextBlock Grid.Column="2" Text="{Binding DurationText}" FontSize="12" Opacity=".5" VerticalAlignment="Center" Margin="10,0,2,0"/>
-                                    </Grid>
-                                </DataTemplate>
-                            </ListBox.ItemTemplate>
-                        </ListBox>
+                        <StackPanel x:Name="NavHost" Grid.Row="1">
+                            <RadioButton x:Name="NavHome" Style="{StaticResource Nav}" GroupName="nav" Tag="&#xE80F;" Content="Home" Click="Nav_Click" CommandParameter="home"/>
+                            <RadioButton x:Name="NavDiscover" Style="{StaticResource Nav}" GroupName="nav" Tag="&#xE721;" Content="Discover" Click="Nav_Click" CommandParameter="discover"/>
+                            <RadioButton x:Name="NavLibrary" Style="{StaticResource Nav}" GroupName="nav" Tag="&#xE8F1;" Content="Library" Click="Nav_Click" CommandParameter="library"/>
+                            <RadioButton x:Name="NavWeb" Style="{StaticResource Nav}" GroupName="nav" Tag="&#xE774;" Content="SoundCloud web" Click="Nav_Click" CommandParameter="web"/>
+                            <RadioButton x:Name="NavThemes" Style="{StaticResource Nav}" GroupName="nav" Tag="&#xE790;" Content="Themes" Click="Nav_Click" CommandParameter="themes"/>
+                        </StackPanel>
+                        <Grid Grid.Row="2" Margin="12,18,4,6">
+                            <TextBlock Text="PLAYLISTS" FontSize="11" FontWeight="SemiBold" Foreground="{DynamicResource TextFaintBrush}" VerticalAlignment="Center"/>
+                            <Button Style="{StaticResource Round}" Width="26" Height="26" FontSize="11" Content="&#xE710;" HorizontalAlignment="Right" ToolTip="New playlist" Click="NewPlaylist_Click"/>
+                        </Grid>
+                        <ScrollViewer x:Name="SidebarScroll" Grid.Row="3" VerticalScrollBarVisibility="Hidden">
+                            <StackPanel x:Name="SidebarPlaylists"/>
+                        </ScrollViewer>
+                        <Border x:Name="AccountBox" Grid.Row="4" CornerRadius="{DynamicResource CardRadius}" Background="{DynamicResource HoverBrush}" Padding="10" Margin="0,10,0,0" Cursor="Hand" MouseLeftButtonUp="AccountBox_Click">
+                            <Grid>
+                                <Grid.ColumnDefinitions>
+                                    <ColumnDefinition Width="34"/>
+                                    <ColumnDefinition/>
+                                </Grid.ColumnDefinitions>
+                                <Grid Width="34" Height="34">
+                                    <Ellipse Fill="{DynamicResource AccentSoftBrush}"/>
+                                    <TextBlock x:Name="AccountInitial" Text="&#xE77B;" FontFamily="{StaticResource Icons}" HorizontalAlignment="Center" VerticalAlignment="Center"/>
+                                    <Ellipse>
+                                        <Ellipse.Fill><ImageBrush x:Name="AccountAvatar" Stretch="UniformToFill"/></Ellipse.Fill>
+                                    </Ellipse>
+                                </Grid>
+                                <StackPanel Grid.Column="1" Margin="10,0,0,0" VerticalAlignment="Center">
+                                    <TextBlock x:Name="AccountName" Text="Sign in to SoundCloud" FontSize="13" FontWeight="SemiBold" TextTrimming="CharacterEllipsis"/>
+                                    <TextBlock x:Name="AccountHint" Text="Likes, feed and playlists" FontSize="11" Foreground="{DynamicResource TextDimBrush}" TextTrimming="CharacterEllipsis"/>
+                                </StackPanel>
+                            </Grid>
+                        </Border>
+                    </Grid>
+                </Border>
 
-                        <Grid x:Name="BrowseView" Grid.Row="0" Grid.RowSpan="2" Visibility="Collapsed">
+                <!-- pages -->
+                <Border x:Name="CenterPanel" Grid.Column="2" Style="{StaticResource Glass}" ClipToBounds="True">
+                    <Grid>
+                        <Grid x:Name="PageHost" ClipToBounds="True"/>
+                        <Grid x:Name="BrowseView" Visibility="Collapsed" Margin="16">
                             <Grid.RowDefinitions>
                                 <RowDefinition Height="Auto"/>
                                 <RowDefinition/>
@@ -433,34 +723,42 @@
                                     <Button Style="{StaticResource Round}" Width="32" Height="32" FontSize="13" Content="&#xE72C;" ToolTip="Reload" Click="ScReload_Click"/>
                                     <Button Style="{StaticResource Round}" Width="32" Height="32" FontSize="13" Content="&#xE80F;" ToolTip="Home" Click="ScHome_Click"/>
                                 </StackPanel>
-                                <TextBlock x:Name="ScUrl" Grid.Column="1" Opacity=".55" FontSize="12" VerticalAlignment="Center" Margin="10,0" TextTrimming="CharacterEllipsis"/>
-                                <Button Grid.Column="2" Style="{StaticResource Action}" Content="▶  Play this page here" Click="ScPlayPage_Click"/>
+                                <TextBlock x:Name="ScUrl" Grid.Column="1" Foreground="{DynamicResource TextDimBrush}" FontSize="12" VerticalAlignment="Center" Margin="10,0" TextTrimming="CharacterEllipsis"/>
+                                <Button Grid.Column="2" Style="{StaticResource Action}" Content="▶  Play this page in LiquidCloud" Click="ScPlayPage_Click"/>
                             </Grid>
-                            <Border x:Name="WebHost" Grid.Row="1" CornerRadius="16" Background="#14000000"/>
+                            <Border x:Name="WebHost" Grid.Row="1" CornerRadius="{DynamicResource CardRadius}" Background="#14000000"/>
                         </Grid>
-
-                        <TextBlock x:Name="Status" Grid.Row="2" Text="Search for a song or artist." Opacity=".6" TextWrapping="Wrap" Margin="4,8,4,0"/>
                     </Grid>
                 </Border>
 
-                <!-- right: now playing -->
-                <Border Grid.Column="2" Style="{StaticResource Glass}" Padding="32,24">
+                <!-- player -->
+                <Border x:Name="NowPanel" Grid.Column="4" Style="{StaticResource Glass}" Padding="26,18,26,20">
                     <Grid>
                         <Grid.RowDefinitions>
+                            <RowDefinition Height="Auto"/>
                             <RowDefinition/>
                             <RowDefinition Height="Auto"/>
                         </Grid.RowDefinitions>
 
-                        <Grid x:Name="MainArea" ClipToBounds="False">
-                            <StackPanel x:Name="NormalView" VerticalAlignment="Center" MaxWidth="460">
-                                <Border x:Name="ArtSpacer" Width="280" Height="280" Margin="0,0,0,22"/>
-                                <TextBlock x:Name="TitleText" Text="Nothing playing" FontSize="26" FontWeight="SemiBold" TextAlignment="Center" TextTrimming="CharacterEllipsis"/>
-                                <TextBlock x:Name="ArtistText" Text="Pick a track from the list" FontSize="16" Opacity=".6" TextAlignment="Center" TextTrimming="CharacterEllipsis" Margin="0,2,0,14"/>
-                                <StackPanel x:Name="LyricPreview">
-                                    <TextBlock x:Name="LyrPrev" FontSize="13" Opacity=".35" TextAlignment="Center" TextTrimming="CharacterEllipsis"/>
-                                    <TextBlock x:Name="LyrCur" FontSize="16" FontWeight="SemiBold" TextAlignment="Center" TextTrimming="CharacterEllipsis" Margin="0,3"/>
-                                    <TextBlock x:Name="LyrNext" FontSize="13" Opacity=".35" TextAlignment="Center" TextTrimming="CharacterEllipsis"/>
-                                    <Button Style="{StaticResource Action}" Content="Lyrics  ⤢" HorizontalAlignment="Center" Margin="0,10,0,0" Click="ExpandLyrics_Click"/>
+                        <Border CornerRadius="{DynamicResource ControlRadius}" Background="{DynamicResource FieldBrush}" Padding="3" HorizontalAlignment="Center">
+                            <StackPanel Orientation="Horizontal">
+                                <RadioButton x:Name="TabNow" Style="{StaticResource Pill}" GroupName="ptab" Content="Playing" IsChecked="True" Click="PlayerTab_Click" CommandParameter="now"/>
+                                <RadioButton x:Name="TabLyrics" Style="{StaticResource Pill}" GroupName="ptab" Content="Lyrics" Click="PlayerTab_Click" CommandParameter="lyrics"/>
+                                <RadioButton x:Name="TabQueue" Style="{StaticResource Pill}" GroupName="ptab" Content="Up next" Click="PlayerTab_Click" CommandParameter="queue"/>
+                            </StackPanel>
+                        </Border>
+
+                        <Grid x:Name="MainArea" Grid.Row="1" Margin="0,14,0,0">
+                            <StackPanel x:Name="NormalView" VerticalAlignment="Center">
+                                <Border x:Name="ArtSpacer" Width="280" Height="280" Margin="0,0,0,20"/>
+                                <TextBlock x:Name="TitleText" Text="Nothing playing" FontSize="24" FontWeight="SemiBold" TextAlignment="Center" TextTrimming="CharacterEllipsis" FontFamily="Segoe UI Variable Display, Segoe UI"/>
+                                <TextBlock x:Name="ArtistText" Text="Find something in Discover" FontSize="15" Foreground="{DynamicResource TextDimBrush}" TextAlignment="Center" TextTrimming="CharacterEllipsis" Margin="0,3,0,0" Cursor="Hand" MouseLeftButtonUp="Artist_Click"/>
+                                <TextBlock x:Name="MetaText" FontSize="12" Foreground="{DynamicResource TextFaintBrush}" TextAlignment="Center" TextTrimming="CharacterEllipsis" Margin="0,4,0,0"/>
+                                <local:LevelBars x:Name="Bars" Height="26" Margin="40,12,40,4"/>
+                                <StackPanel x:Name="LyricPreview" Margin="0,4,0,0" Cursor="Hand" MouseLeftButtonUp="LyricPreview_Click">
+                                    <TextBlock x:Name="LyrPrev" FontSize="12" Foreground="{DynamicResource TextFaintBrush}" TextAlignment="Center" TextTrimming="CharacterEllipsis"/>
+                                    <TextBlock x:Name="LyrCur" FontSize="15" FontWeight="SemiBold" TextAlignment="Center" TextTrimming="CharacterEllipsis" Margin="0,2"/>
+                                    <TextBlock x:Name="LyrNext" FontSize="12" Foreground="{DynamicResource TextFaintBrush}" TextAlignment="Center" TextTrimming="CharacterEllipsis"/>
                                 </StackPanel>
                             </StackPanel>
 
@@ -470,12 +768,12 @@
                                     <RowDefinition Height="76"/>
                                     <RowDefinition/>
                                 </Grid.RowDefinitions>
-                                <StackPanel Margin="92,0,52,0" VerticalAlignment="Center">
-                                    <TextBlock x:Name="ExpTitle" FontSize="20" FontWeight="SemiBold" TextTrimming="CharacterEllipsis"/>
-                                    <TextBlock x:Name="ExpArtist" FontSize="14" Opacity=".6" TextTrimming="CharacterEllipsis"/>
+                                <StackPanel Margin="90,0,44,0" VerticalAlignment="Center">
+                                    <TextBlock x:Name="ExpTitle" FontSize="18" FontWeight="SemiBold" TextTrimming="CharacterEllipsis"/>
+                                    <TextBlock x:Name="ExpArtist" FontSize="13" Foreground="{DynamicResource TextDimBrush}" TextTrimming="CharacterEllipsis"/>
                                 </StackPanel>
-                                <Button Style="{StaticResource Round}" Width="36" Height="36" FontSize="13" Content="&#xE73F;" ToolTip="Back to cover" HorizontalAlignment="Right" VerticalAlignment="Center" Click="ExpandLyrics_Click"/>
-                                <ScrollViewer x:Name="LyricsScroll" Grid.Row="1" Margin="0,14,0,0" VerticalScrollBarVisibility="Hidden">
+                                <Button Style="{StaticResource Round}" Width="34" Height="34" FontSize="12" Content="&#xE73F;" ToolTip="Back to cover" HorizontalAlignment="Right" VerticalAlignment="Center" Click="CollapsePlayer_Click"/>
+                                <ScrollViewer x:Name="LyricsScroll" Grid.Row="1" Margin="0,12,0,0" VerticalScrollBarVisibility="Hidden">
                                     <ScrollViewer.OpacityMask>
                                         <LinearGradientBrush StartPoint="0,0" EndPoint="0,1">
                                             <GradientStop Color="Transparent" Offset="0"/>
@@ -486,99 +784,183 @@
                                     </ScrollViewer.OpacityMask>
                                     <StackPanel x:Name="LyricsStack" Margin="4,40,4,200"/>
                                 </ScrollViewer>
+                                <Grid x:Name="QueueView" Grid.Row="1" Margin="0,12,0,0" Visibility="Collapsed">
+                                    <Grid.RowDefinitions>
+                                        <RowDefinition Height="Auto"/>
+                                        <RowDefinition/>
+                                    </Grid.RowDefinitions>
+                                    <Grid Margin="4,0,0,8">
+                                        <StackPanel>
+                                            <TextBlock Text="Playing from" FontSize="11" Foreground="{DynamicResource TextFaintBrush}"/>
+                                            <TextBlock x:Name="QueueName" FontSize="13" FontWeight="SemiBold" TextTrimming="CharacterEllipsis" Margin="0,0,90,0"/>
+                                        </StackPanel>
+                                        <Button Style="{StaticResource Action}" Content="Clear" HorizontalAlignment="Right" VerticalAlignment="Center" ToolTip="Remove everything after the current song" Click="ClearQueue_Click"/>
+                                    </Grid>
+                                    <ListBox x:Name="List" Grid.Row="1" Background="Transparent" BorderThickness="0" Foreground="{DynamicResource TextBrush}" AllowDrop="True"
+                                             ScrollViewer.HorizontalScrollBarVisibility="Disabled" ScrollViewer.VerticalScrollBarVisibility="Hidden"
+                                             ScrollViewer.CanContentScroll="True" VirtualizingPanel.IsVirtualizing="True" VirtualizingPanel.VirtualizationMode="Recycling" VirtualizingPanel.ScrollUnit="Pixel"
+                                             PreviewMouseWheel="List_PreviewMouseWheel" SelectionChanged="List_SelectionChanged"
+                                             PreviewMouseLeftButtonDown="Queue_MouseDown" PreviewMouseMove="Queue_MouseMove" Drop="Queue_Drop" MouseRightButtonUp="Queue_RightClick">
+                                        <ListBox.ItemTemplate>
+                                            <DataTemplate>
+                                                <Grid>
+                                                    <Grid.ColumnDefinitions>
+                                                        <ColumnDefinition Width="40"/>
+                                                        <ColumnDefinition/>
+                                                        <ColumnDefinition Width="Auto"/>
+                                                    </Grid.ColumnDefinitions>
+                                                    <Border Width="40" Height="40" CornerRadius="9" Background="{DynamicResource AccentSoftBrush}">
+                                                        <Border CornerRadius="9">
+                                                            <Border.Background>
+                                                                <ImageBrush ImageSource="{Binding Art, Converter={StaticResource Art}}" Stretch="UniformToFill"/>
+                                                            </Border.Background>
+                                                        </Border>
+                                                    </Border>
+                                                    <StackPanel Grid.Column="1" Margin="10,0,0,0" VerticalAlignment="Center">
+                                                        <TextBlock Text="{Binding Title}" FontSize="13" FontWeight="SemiBold" TextTrimming="CharacterEllipsis"/>
+                                                        <TextBlock Text="{Binding Artist}" FontSize="12" Foreground="{DynamicResource TextDimBrush}" TextTrimming="CharacterEllipsis"/>
+                                                    </StackPanel>
+                                                    <TextBlock Grid.Column="2" Text="{Binding DurationText}" FontSize="11" Foreground="{DynamicResource TextFaintBrush}" VerticalAlignment="Center" Margin="8,0,2,0"/>
+                                                </Grid>
+                                            </DataTemplate>
+                                        </ListBox.ItemTemplate>
+                                    </ListBox>
+                                </Grid>
                             </Grid>
 
                             <Canvas x:Name="ArtLayer" IsHitTestVisible="False">
-                                <Border x:Name="ArtBox" Width="280" Height="280" CornerRadius="30" RenderTransformOrigin=".5,.5" Background="{DynamicResource AccentSoftBrush}">
+                                <Border x:Name="ArtBox" Width="280" Height="280" CornerRadius="28" RenderTransformOrigin=".5,.5" Background="{DynamicResource AccentSoftBrush}">
                                     <Border.Effect>
-                                        <DropShadowEffect BlurRadius="50" ShadowDepth="14" Direction="270" Opacity=".4"/>
+                                        <DropShadowEffect BlurRadius="50" ShadowDepth="14" Direction="270" Opacity=".45"/>
                                     </Border.Effect>
                                     <Border.RenderTransform>
-                                        <ScaleTransform x:Name="ArtScale" ScaleX=".88" ScaleY=".88"/>
+                                        <ScaleTransform x:Name="ArtScale" ScaleX=".9" ScaleY=".9"/>
                                     </Border.RenderTransform>
                                     <Grid>
-                                        <TextBlock x:Name="ArtPlaceholder" Text="&#xE8D6;" FontFamily="Segoe Fluent Icons, Segoe MDL2 Assets" FontSize="64" Opacity=".6" HorizontalAlignment="Center" VerticalAlignment="Center"/>
+                                        <Image Source="icon.png" Width="96" Height="96" Opacity=".55" x:Name="ArtPlaceholder" RenderOptions.BitmapScalingMode="HighQuality"/>
                                         <Border CornerRadius="{Binding CornerRadius, ElementName=ArtBox}">
                                             <Border.Background>
                                                 <ImageBrush x:Name="ArtBrush" Stretch="UniformToFill"/>
                                             </Border.Background>
                                         </Border>
+                                        <Border CornerRadius="{Binding CornerRadius, ElementName=ArtBox}" Background="{DynamicResource GlassSheen}" BorderBrush="#33FFFFFF" BorderThickness="1"/>
                                     </Grid>
                                 </Border>
                             </Canvas>
                         </Grid>
 
-                        <StackPanel Grid.Row="1" MaxWidth="460" Margin="0,16,0,0">
+                        <StackPanel Grid.Row="2" Margin="0,14,0,0">
+                            <TextBlock x:Name="Status" FontSize="12" Foreground="{DynamicResource TextDimBrush}" TextAlignment="Center" TextWrapping="Wrap" Margin="0,0,0,6"/>
                             <Slider x:Name="Seek" Style="{StaticResource Seek}" IsMoveToPointEnabled="True" Minimum="0" Maximum="1" ValueChanged="Seek_ValueChanged"/>
-                            <Grid Margin="0,2,0,10">
-                                <TextBlock x:Name="Cur" Text="0:00" FontSize="12" Opacity=".6"/>
-                                <TextBlock x:Name="Dur" Text="0:00" FontSize="12" Opacity=".6" HorizontalAlignment="Right"/>
+                            <Grid Margin="0,2,0,8">
+                                <TextBlock x:Name="Cur" Text="0:00" FontSize="11" Foreground="{DynamicResource TextDimBrush}"/>
+                                <TextBlock x:Name="Dur" Text="0:00" FontSize="11" Foreground="{DynamicResource TextDimBrush}" HorizontalAlignment="Right"/>
                             </Grid>
-                            <StackPanel Orientation="Horizontal" HorizontalAlignment="Center">
-                                <Button Style="{StaticResource Round}" Width="52" Height="52" FontSize="20" Content="&#xE892;" Click="Prev_Click"/>
-                                <Grid Margin="16,0" Width="68" Height="68">
-                                    <Ellipse x:Name="PlayRing" Stroke="{DynamicResource AccentBrush}" StrokeThickness="2" Opacity="0" RenderTransformOrigin=".5,.5">
-                                        <Ellipse.RenderTransform><ScaleTransform x:Name="PlayRingScale"/></Ellipse.RenderTransform>
-                                    </Ellipse>
-                                    <Border CornerRadius="34" Background="{DynamicResource AccentBrush}">
-                                        <Border.Effect><DropShadowEffect BlurRadius="24" ShadowDepth="4" Direction="270" Opacity=".35"/></Border.Effect>
-                                        <Button x:Name="PlayBtn" Style="{StaticResource Round}" Foreground="{DynamicResource OnAccentBrush}" FontSize="26" Content="&#xE768;" Click="PlayPause_Click"/>
-                                    </Border>
-                                </Grid>
-                                <Button Style="{StaticResource Round}" Width="52" Height="52" FontSize="20" Content="&#xE893;" Click="Next_Click"/>
-                            </StackPanel>
-                            <StackPanel Orientation="Horizontal" HorizontalAlignment="Center" Margin="0,18,0,0">
-                                <TextBlock Text="&#xE767;" FontFamily="Segoe Fluent Icons, Segoe MDL2 Assets" Opacity=".6" VerticalAlignment="Center" Margin="0,0,12,0"/>
-                                <Slider x:Name="Volume" Style="{StaticResource Seek}" IsMoveToPointEnabled="True" Width="140" Minimum="0" Maximum="1" Value=".8" ValueChanged="Volume_ValueChanged"/>
-                            </StackPanel>
+                            <Grid>
+                                <StackPanel Orientation="Horizontal" HorizontalAlignment="Center">
+                                    <Button x:Name="ShuffleBtn" Style="{StaticResource Round}" Width="40" Height="40" FontSize="15" Content="&#xE8B1;" ToolTip="Shuffle (S)" Click="Shuffle_Click" Opacity=".55"/>
+                                    <Button Style="{StaticResource Round}" Width="48" Height="48" FontSize="19" Content="&#xE892;" ToolTip="Previous (Ctrl+Left)" Click="Prev_Click" Margin="6,0,0,0"/>
+                                    <Grid Margin="12,0" Width="64" Height="64">
+                                        <Ellipse x:Name="PlayRing" Stroke="{DynamicResource AccentBrush}" StrokeThickness="2" Opacity="0" RenderTransformOrigin=".5,.5">
+                                            <Ellipse.RenderTransform><ScaleTransform x:Name="PlayRingScale"/></Ellipse.RenderTransform>
+                                        </Ellipse>
+                                        <Border CornerRadius="32" Background="{DynamicResource AccentBrush}" Effect="{DynamicResource SoftShadow}">
+                                            <Button x:Name="PlayBtn" Style="{StaticResource Round}" Foreground="{DynamicResource OnAccentBrush}" FontSize="24" Content="&#xE768;" ToolTip="Play / pause (Space)" Click="PlayPause_Click"/>
+                                        </Border>
+                                    </Grid>
+                                    <Button Style="{StaticResource Round}" Width="48" Height="48" FontSize="19" Content="&#xE893;" ToolTip="Next (Ctrl+Right)" Click="Next_Click" Margin="0,0,6,0"/>
+                                    <Grid>
+                                        <Button x:Name="RepeatBtn" Style="{StaticResource Round}" Width="40" Height="40" FontSize="15" Content="&#xE8EE;" ToolTip="Repeat: off (R)" Click="Repeat_Click" Opacity=".55"/>
+                                        <TextBlock x:Name="RepeatOneBadge" Text="1" FontSize="9" FontWeight="Bold" Foreground="{DynamicResource AccentBrush}" HorizontalAlignment="Right" VerticalAlignment="Top" Margin="0,4,6,0" Visibility="Collapsed" IsHitTestVisible="False"/>
+                                    </Grid>
+                                </StackPanel>
+                            </Grid>
+                            <Grid Margin="0,12,0,0">
+                                <Grid.ColumnDefinitions>
+                                    <ColumnDefinition Width="Auto"/>
+                                    <ColumnDefinition Width="Auto"/>
+                                    <ColumnDefinition/>
+                                    <ColumnDefinition Width="Auto"/>
+                                </Grid.ColumnDefinitions>
+                                <Button x:Name="LikeBtn" Style="{StaticResource Round}" Width="36" Height="36" FontSize="15" Content="&#xE006;" ToolTip="Add to favorites (L)" Click="Like_Click"/>
+                                <Button x:Name="MuteBtn" Grid.Column="1" Style="{StaticResource Round}" Width="36" Height="36" FontSize="15" Content="&#xE767;" ToolTip="Mute (M)" Click="Mute_Click" Margin="4,0,8,0"/>
+                                <Slider x:Name="Volume" Grid.Column="2" Style="{StaticResource Seek}" IsMoveToPointEnabled="True" Minimum="0" Maximum="1" Value=".8" VerticalAlignment="Center" ValueChanged="Volume_ValueChanged"/>
+                                <Button Grid.Column="3" Style="{StaticResource Round}" Width="36" Height="36" FontSize="15" Content="&#xE710;" ToolTip="Add to playlist" Click="AddCurrentToPlaylist_Click" Margin="8,0,0,0"/>
+                            </Grid>
                         </StackPanel>
                     </Grid>
                 </Border>
             </Grid>
+
+            <!-- mini player -->
+            <Grid x:Name="MiniBar" Grid.RowSpan="2" Visibility="Collapsed" Margin="10">
+                <Border Style="{StaticResource Glass}"/>
+                <Grid Margin="12,10">
+                    <Grid.ColumnDefinitions>
+                        <ColumnDefinition Width="64"/>
+                        <ColumnDefinition/>
+                        <ColumnDefinition Width="Auto"/>
+                    </Grid.ColumnDefinitions>
+                    <Border Width="64" Height="64" CornerRadius="14" Background="{DynamicResource AccentSoftBrush}">
+                        <Border CornerRadius="14">
+                            <Border.Background><ImageBrush x:Name="MiniArt" Stretch="UniformToFill"/></Border.Background>
+                        </Border>
+                    </Border>
+                    <StackPanel Grid.Column="1" Margin="12,0" VerticalAlignment="Center">
+                        <TextBlock x:Name="MiniTitle" FontSize="14" FontWeight="SemiBold" TextTrimming="CharacterEllipsis"/>
+                        <TextBlock x:Name="MiniArtist" FontSize="12" Foreground="{DynamicResource TextDimBrush}" TextTrimming="CharacterEllipsis"/>
+                        <ProgressBar x:Name="MiniProgress" Height="3" Margin="0,8,0,0" Maximum="1" Background="{DynamicResource LineBrush}" Foreground="{DynamicResource AccentBrush}" BorderThickness="0"/>
+                    </StackPanel>
+                    <StackPanel Grid.Column="2" Orientation="Horizontal" VerticalAlignment="Center" WindowChrome.IsHitTestVisibleInChrome="True">
+                        <Button Style="{StaticResource Round}" Width="34" Height="34" FontSize="14" Content="&#xE892;" Click="Prev_Click"/>
+                        <Button x:Name="MiniPlay" Style="{StaticResource Round}" Width="40" Height="40" FontSize="18" Content="&#xE768;" Click="PlayPause_Click"/>
+                        <Button Style="{StaticResource Round}" Width="34" Height="34" FontSize="14" Content="&#xE893;" Click="Next_Click"/>
+                        <Button Style="{StaticResource Round}" Width="34" Height="34" FontSize="13" Content="&#xE740;" ToolTip="Back to the full window" Click="Mini_Click" Margin="4,0,0,0"/>
+                    </StackPanel>
+                </Grid>
+            </Grid>
         </Grid>
 
-        <!-- ===== settings ===== -->
-        <Grid x:Name="Overlay" Margin="0,48,0,0" Visibility="Collapsed">
-            <Border x:Name="Dim" Background="#59000000" Opacity="0" MouseLeftButtonDown="Dim_Click"/>
-            <Border x:Name="Sheet" Style="{StaticResource Glass}" Background="{DynamicResource SheetBrush}" Margin="16,0,16,16" Padding="32,26" Opacity="0" RenderTransformOrigin=".5,.5">
+        <!-- ===== settings sheet ===== -->
+        <Grid x:Name="Overlay" Margin="0,52,0,0" Visibility="Collapsed">
+            <Border x:Name="Dim" Background="#66000000" Opacity="0" MouseLeftButtonDown="Dim_Click"/>
+            <Border x:Name="Sheet" Style="{StaticResource Glass}" Background="{DynamicResource SheetBrush}" Margin="14,0,14,14" Padding="34,26" Opacity="0" RenderTransformOrigin=".5,.5" MaxWidth="820">
                 <Border.RenderTransform>
-                    <ScaleTransform x:Name="SheetScale" ScaleX=".94" ScaleY=".94"/>
+                    <ScaleTransform x:Name="SheetScale" ScaleX=".96" ScaleY=".96"/>
                 </Border.RenderTransform>
-                <ScrollViewer VerticalScrollBarVisibility="Hidden">
-                    <StackPanel MaxWidth="620">
+                <ScrollViewer x:Name="SettingsScroll" VerticalScrollBarVisibility="Hidden">
+                    <StackPanel MaxWidth="640">
                         <Grid>
-                            <TextBlock Text="Settings" FontSize="24" FontWeight="SemiBold"/>
+                            <TextBlock Text="Settings" FontSize="26" FontWeight="SemiBold" FontFamily="Segoe UI Variable Display, Segoe UI"/>
                             <Button Style="{StaticResource Round}" Width="32" Height="32" FontSize="12" Content="&#xE711;" HorizontalAlignment="Right" Click="CloseSettings_Click"/>
                         </Grid>
 
-                        <TextBlock Style="{StaticResource Section}" Text="Accounts"/>
-                        <Border CornerRadius="18" Background="#14FFFFFF" Padding="14" Margin="0,4,0,8">
+                        <TextBlock Style="{StaticResource Section}" Text="ACCOUNTS"/>
+                        <Border CornerRadius="{DynamicResource CardRadius}" Background="{DynamicResource HoverBrush}" Padding="14" Margin="0,4,0,8">
                             <Grid>
                                 <Grid.ColumnDefinitions>
                                     <ColumnDefinition Width="Auto"/>
                                     <ColumnDefinition/>
                                     <ColumnDefinition Width="Auto"/>
                                 </Grid.ColumnDefinitions>
-                                <Grid Width="48" Height="48">
-                                    <Border CornerRadius="24" Background="#26FFFFFF"/>
-                                    <Border CornerRadius="24">
-                                        <Border.Background>
-                                            <ImageBrush x:Name="AvatarBrush" Stretch="UniformToFill"/>
-                                        </Border.Background>
+                                <Grid Width="46" Height="46">
+                                    <Border CornerRadius="23" Background="{DynamicResource PressBrush}"/>
+                                    <Border CornerRadius="23">
+                                        <Border.Background><ImageBrush x:Name="AvatarBrush" Stretch="UniformToFill"/></Border.Background>
                                     </Border>
-                                    <TextBlock x:Name="AvatarInitial" Text="S" FontSize="20" FontWeight="SemiBold" HorizontalAlignment="Center" VerticalAlignment="Center"/>
+                                    <TextBlock x:Name="AvatarInitial" Text="S" FontSize="19" FontWeight="SemiBold" HorizontalAlignment="Center" VerticalAlignment="Center"/>
                                 </Grid>
                                 <StackPanel Grid.Column="1" Margin="14,0" VerticalAlignment="Center">
                                     <TextBlock x:Name="SpotifyName" Text="Spotify" FontSize="15" FontWeight="SemiBold" TextTrimming="CharacterEllipsis"/>
-                                    <TextBlock x:Name="SpotifyDetail" Text="" FontSize="12" Opacity=".6" TextWrapping="Wrap"/>
+                                    <TextBlock x:Name="SpotifyDetail" FontSize="12" Foreground="{DynamicResource TextDimBrush}" TextWrapping="Wrap"/>
                                 </StackPanel>
                                 <Button x:Name="SpotifyAction" Grid.Column="2" Style="{StaticResource Action}" Content="Connect" VerticalAlignment="Center" Click="SpotifyAction_Click"/>
                             </Grid>
                         </Border>
-                        <Border CornerRadius="18" Background="#14FFFFFF" Padding="14">
+                        <Border CornerRadius="{DynamicResource CardRadius}" Background="{DynamicResource HoverBrush}" Padding="14">
                             <StackPanel>
-                                <TextBlock Text="YouTube Music and SoundCloud" FontSize="15" FontWeight="SemiBold"/>
-                                <TextBlock x:Name="SoundCloudDetail" FontSize="12" Opacity=".6" TextWrapping="Wrap"/>
+                                <TextBlock Text="SoundCloud and YouTube Music" FontSize="15" FontWeight="SemiBold"/>
+                                <TextBlock x:Name="SoundCloudDetail" FontSize="12" Foreground="{DynamicResource TextDimBrush}" TextWrapping="Wrap"/>
                             </StackPanel>
                         </Border>
 
@@ -588,25 +970,94 @@
             </Border>
         </Grid>
 
-        <!-- ===== import ===== -->
-        <Grid x:Name="ImportOverlay" Margin="0,48,0,0" Visibility="Collapsed">
-            <Border Background="#59000000" MouseLeftButtonDown="ImportDim_Click"/>
-            <Border x:Name="ImportCard" Style="{StaticResource Glass}" Background="{DynamicResource SheetBrush}" Width="520" VerticalAlignment="Center" HorizontalAlignment="Center" Padding="28,24" Opacity="0" RenderTransformOrigin=".5,.5">
+        <!-- ===== import (links and files) ===== -->
+        <Grid x:Name="ImportOverlay" Margin="0,52,0,0" Visibility="Collapsed">
+            <Border Background="#66000000" MouseLeftButtonDown="ImportDim_Click"/>
+            <Border x:Name="ImportCard" Style="{StaticResource Glass}" Background="{DynamicResource SheetBrush}" Width="540" VerticalAlignment="Center" HorizontalAlignment="Center" Padding="28,24" Opacity="0" RenderTransformOrigin=".5,.5">
                 <Border.RenderTransform>
                     <ScaleTransform x:Name="ImportScale" ScaleX=".94" ScaleY=".94"/>
                 </Border.RenderTransform>
                 <StackPanel>
-                    <TextBlock Text="Import" FontSize="24" FontWeight="SemiBold"/>
-                    <TextBlock Text="Paste a playlist or song link from YouTube, YouTube Music, SoundCloud or Spotify, or pick audio files or a folder from this PC. You can also drop files onto the window." FontSize="13" Opacity=".6" TextWrapping="Wrap" Margin="0,6,0,14"/>
+                    <TextBlock Text="Add music" FontSize="24" FontWeight="SemiBold"/>
+                    <TextBlock Text="Paste a song or playlist link from SoundCloud, YouTube or Spotify, or pick audio files or a folder from this PC. You can also drop files onto the window." FontSize="13" Foreground="{DynamicResource TextDimBrush}" TextWrapping="Wrap" Margin="0,6,0,14"/>
                     <TextBox x:Name="ImportBox" Style="{StaticResource Search}" Tag="Paste a link" KeyDown="Import_KeyDown"/>
                     <Grid Margin="0,14,0,0">
                         <StackPanel Orientation="Horizontal">
                             <Button Style="{StaticResource Action}" Content="Choose files…" Click="ImportFiles_Click"/>
                             <Button Style="{StaticResource Action}" Content="Choose folder…" Margin="8,0,0,0" Click="ImportFolder_Click"/>
                         </StackPanel>
-                        <Button x:Name="ImportGo" Style="{StaticResource Action}" Content="Import link" HorizontalAlignment="Right" Click="ImportGo_Click"/>
+                        <Button x:Name="ImportGo" Style="{StaticResource AccentAction}" Content="Import link" HorizontalAlignment="Right" Click="ImportGo_Click"/>
                     </Grid>
-                    <TextBlock x:Name="ImportStatus" FontSize="12" Opacity=".75" TextWrapping="Wrap" Margin="0,12,0,0"/>
+                    <TextBlock x:Name="ImportStatus" FontSize="12" Foreground="{DynamicResource TextDimBrush}" TextWrapping="Wrap" Margin="0,12,0,0"/>
+                </StackPanel>
+            </Border>
+        </Grid>
+
+        <!-- ===== modal dialogs ===== -->
+        <Grid x:Name="ModalOverlay" Visibility="Collapsed">
+            <Border x:Name="ModalDim" Background="#73000000" Opacity="0" MouseLeftButtonDown="ModalDim_Click"/>
+            <Border x:Name="ModalCard" Style="{StaticResource Glass}" Background="{DynamicResource SheetBrush}" Width="460" VerticalAlignment="Center" HorizontalAlignment="Center" Padding="26,22">
+                <StackPanel>
+                    <TextBlock x:Name="ModalTitle" FontSize="20" FontWeight="SemiBold" TextWrapping="Wrap"/>
+                    <ContentControl x:Name="ModalBody" Margin="0,12,0,0"/>
+                    <StackPanel x:Name="ModalButtons" Orientation="Horizontal" HorizontalAlignment="Right" Margin="0,20,0,0"/>
+                </StackPanel>
+            </Border>
+        </Grid>
+
+        <!-- ===== toasts ===== -->
+        <StackPanel x:Name="ToastHost" VerticalAlignment="Bottom" HorizontalAlignment="Center" Margin="0,0,0,28" IsHitTestVisible="False"/>
+
+        <!-- ===== welcome intro ===== -->
+        <Grid x:Name="Welcome" Visibility="Collapsed" Background="#03060F" MouseLeftButtonDown="Welcome_Click" Cursor="Hand">
+            <Grid x:Name="WelcomeLights" IsHitTestVisible="False">
+                <Ellipse Width="900" Height="900" HorizontalAlignment="Left" VerticalAlignment="Top" Margin="-260,-420,0,0">
+                    <Ellipse.Fill>
+                        <RadialGradientBrush>
+                            <GradientStop Color="#802E6BFF" Offset="0"/>
+                            <GradientStop Color="#002E6BFF" Offset="1"/>
+                        </RadialGradientBrush>
+                    </Ellipse.Fill>
+                    <Ellipse.RenderTransform><TranslateTransform x:Name="WLight1"/></Ellipse.RenderTransform>
+                </Ellipse>
+                <Ellipse Width="800" Height="800" HorizontalAlignment="Right" VerticalAlignment="Bottom" Margin="0,0,-260,-380">
+                    <Ellipse.Fill>
+                        <RadialGradientBrush>
+                            <GradientStop Color="#7038D1FF" Offset="0"/>
+                            <GradientStop Color="#0038D1FF" Offset="1"/>
+                        </RadialGradientBrush>
+                    </Ellipse.Fill>
+                    <Ellipse.RenderTransform><TranslateTransform x:Name="WLight2"/></Ellipse.RenderTransform>
+                </Ellipse>
+                <Ellipse Width="420" Height="420" HorizontalAlignment="Center" VerticalAlignment="Center" Margin="320,-260,0,0">
+                    <Ellipse.Fill>
+                        <RadialGradientBrush>
+                            <GradientStop Color="#40E6F7FF" Offset="0"/>
+                            <GradientStop Color="#00E6F7FF" Offset="1"/>
+                        </RadialGradientBrush>
+                    </Ellipse.Fill>
+                    <Ellipse.RenderTransform><TranslateTransform x:Name="WLight3"/></Ellipse.RenderTransform>
+                </Ellipse>
+            </Grid>
+            <Border x:Name="WelcomeGlass" Width="560" Padding="44,40" HorizontalAlignment="Center" VerticalAlignment="Center" CornerRadius="34" BorderThickness="1" Opacity="0">
+                <Border.Background>
+                    <LinearGradientBrush StartPoint="0,0" EndPoint="1,1">
+                        <GradientStop Color="#26CFE6FF" Offset="0"/>
+                        <GradientStop Color="#08FFFFFF" Offset="1"/>
+                    </LinearGradientBrush>
+                </Border.Background>
+                <Border.BorderBrush>
+                    <LinearGradientBrush StartPoint="0,0" EndPoint="1,1">
+                        <GradientStop Color="#99FFFFFF" Offset="0"/>
+                        <GradientStop Color="#10FFFFFF" Offset=".5"/>
+                        <GradientStop Color="#4DFFFFFF" Offset="1"/>
+                    </LinearGradientBrush>
+                </Border.BorderBrush>
+                <StackPanel>
+                    <Image Source="icon.png" Width="74" Height="74" HorizontalAlignment="Left" RenderOptions.BitmapScalingMode="HighQuality" x:Name="WelcomeIcon" Opacity="0"/>
+                    <TextBlock x:Name="WelcomeBrand" Text="LiquidCloud." FontSize="46" FontWeight="SemiBold" FontFamily="Segoe UI Variable Display, Segoe UI" Foreground="White" Margin="0,18,0,0" Opacity="0"/>
+                    <TextBlock x:Name="WelcomeHi" FontSize="26" Foreground="White" Margin="0,22,0,0" Opacity="0"/>
+                    <TextBlock x:Name="WelcomeLine" FontSize="19" Foreground="#B3E6F2FF" Margin="0,6,0,0" Opacity="0"/>
                 </StackPanel>
             </Border>
         </Grid>

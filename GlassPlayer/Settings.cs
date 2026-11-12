@@ -15,20 +15,22 @@ class AppSettings
     public double Volume { get; set; } = 0.8;
 
     // look
-    public string Theme { get; set; } = "LiquidCloud";
-    public bool AutoAccent { get; set; } = true;      // take button colors from the background image
+    public string Theme { get; set; } = ThemeStore.DefaultId; // id of the active theme
+    public bool AutoAccent { get; set; } = false;     // take button colors from the background image
     public string? Background { get; set; }           // png / jpg / jpeg / gif copied into the app folder
     public double BgDim { get; set; } = 0.25;
     public double BgBlur { get; set; } = 0;
-    public double GlassOpacity { get; set; } = 0.17;
-    public double Radius { get; set; } = 28;
     public bool AmbientGlow { get; set; } = true;
     public double AnimSpeed { get; set; } = 1.0;
+    public bool ReduceMotion { get; set; } = false;
+    public bool ShowWelcome { get; set; } = true;
+    public bool LikeOnSoundCloud { get; set; } = true;  // favorites of SoundCloud songs also like them on SoundCloud
+    public string? LastUserName { get; set; }          // shown on the welcome screen
 
     // particles
     public bool ParticlesOn { get; set; } = true;
     public string ParticleShape { get; set; } = "Dots";
-    public int ParticleCount { get; set; } = 60;
+    public int ParticleCount { get; set; } = 40;
     public double ParticleSize { get; set; } = 2.5;
     public double ParticleSpeed { get; set; } = 1.0;
     public bool ParticleAccent { get; set; } = false;

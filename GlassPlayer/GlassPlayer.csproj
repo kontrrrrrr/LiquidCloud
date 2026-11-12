@@ -24,6 +24,7 @@
     <PackageReference Include="XamlAnimatedGif" Version="2.*" />
     <PackageReference Include="DiscordRichPresence" Version="1.*" />
     <Resource Include="LiquidCloud.ico" />
+    <Resource Include="icon.png" />
     <None Update="config.json" CopyToOutputDirectory="PreserveNewest" CopyToPublishDirectory="PreserveNewest" />
   </ItemGroup>
 </Project>

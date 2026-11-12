@@ -5,26 +5,28 @@ using System.Windows;
 using System.Windows.Controls;
 using System.Windows.Input;
 using System.Windows.Media;
-using System.Windows.Media.Animation;
 using System.Windows.Threading;
 
 namespace GlassPlayer;
 
-/// <summary>Lyrics under the cover, and the full-panel lyrics view where the cover flies into the corner.</summary>
+/// <summary>The player panel: cover layout, the Playing / Lyrics / Up next tabs (cover glides into the corner), and lyrics.</summary>
 public partial class MainWindow
 {
     List<LyricLine> lyrics = new();
     bool lyrSynced, expanded, artAnimating;
+    string playerTab = "now";
     int lyrIndex = -1;
     double artSize = 280;
-    const double MiniArt = 76;
+    const double MiniArtSize = 72;
 
     void InitLyricsLayout()
     {
         MainArea.SizeChanged += (_, _) =>
         {
-            artSize = Math.Clamp(MainArea.ActualHeight - 240, 140, 320);
+            double max = fullPlayer ? 520 : 320;
+            artSize = Math.Clamp(Math.Min(MainArea.ActualHeight - 210, MainArea.ActualWidth - 20), 120, max);
             ArtSpacer.Width = ArtSpacer.Height = artSize;
+            Bars.Width = Math.Min(artSize, 300);
             QueuePositionArt();
         };
         NormalView.SizeChanged += (_, _) => QueuePositionArt();
@@ -37,7 +39,7 @@ public partial class MainWindow
     void PositionArt()
     {
         if (artAnimating) return;
-        if (expanded) { PlaceArt(0, 0, MiniArt); return; }
+        if (expanded) { PlaceArt(0, 0, MiniArtSize); return; }
         if (!IsLoaded) return;
         var p = ArtSpacer.TranslatePoint(new Point(0, 0), ArtLayer);
         PlaceArt(p.X, p.Y, artSize);
@@ -48,14 +50,56 @@ public partial class MainWindow
         Canvas.SetLeft(ArtBox, x);
         Canvas.SetTop(ArtBox, y);
         ArtBox.Width = ArtBox.Height = size;
-        ArtBox.CornerRadius = new CornerRadius(size > 120 ? 30 : 16);
+        ArtBox.CornerRadius = new CornerRadius(size > 120 ? 28 : 16);
     }
 
-    void ExpandLyrics_Click(object s, RoutedEventArgs e) => SetExpanded(!expanded);
+    void PlayerTab_Click(object s, RoutedEventArgs e)
+    {
+        if (s is RadioButton { CommandParameter: string tab }) SetPlayerTab(tab);
+    }
+
+    void CollapsePlayer_Click(object s, RoutedEventArgs e) => SetPlayerTab("now");
+    void LyricPreview_Click(object s, MouseButtonEventArgs e) => SetPlayerTab("lyrics");
+
+    /// <summary>"now" shows the big cover; "lyrics" and "queue" move the cover into the corner and fill the panel.</summary>
+    void SetPlayerTab(string tab)
+    {
+        bool wasExpanded = expanded;
+        playerTab = tab;
+        (tab switch { "lyrics" => TabLyrics, "queue" => TabQueue, _ => TabNow }).IsChecked = true;
+
+        if (tab != "now")
+        {
+            bool showQueue = tab == "queue";
+            if (wasExpanded)
+            {
+                // switching between lyrics and queue: cross-fade the content only
+                var incoming = showQueue ? (UIElement)QueueView : LyricsScroll;
+                LyricsScroll.Visibility = showQueue ? Visibility.Collapsed : Visibility.Visible;
+                QueueView.Visibility = showQueue ? Visibility.Visible : Visibility.Collapsed;
+                Motion.Enter(incoming, 0, 10, Motion.Base);
+            }
+            else
+            {
+                LyricsScroll.Visibility = showQueue ? Visibility.Collapsed : Visibility.Visible;
+                QueueView.Visibility = showQueue ? Visibility.Visible : Visibility.Collapsed;
+            }
+            if (showQueue && List.SelectedItem != null) Dispatcher.InvokeAsync(() => List.ScrollIntoView(List.SelectedItem), DispatcherPriority.Loaded);
+            if (!wasExpanded) SetExpanded(true);
+            else if (!showQueue) Dispatcher.InvokeAsync(() => ScrollToLine(lyrIndex, true), DispatcherPriority.Loaded);
+        }
+        else if (wasExpanded) SetExpanded(false);
+    }
 
     void SetExpanded(bool on)
     {
-        if (expanded == on || artAnimating) return;
+        if (expanded == on) return;
+        if (artAnimating)
+        {
+            // finish the running morph immediately before starting the next one
+            foreach (var p in new[] { Canvas.LeftProperty, Canvas.TopProperty, WidthProperty, HeightProperty }) ArtBox.BeginAnimation(p, null);
+            artAnimating = false;
+        }
         expanded = on;
 
         double fx = Canvas.GetLeft(ArtBox), fy = Canvas.GetTop(ArtBox), fs = ArtBox.Width;
@@ -63,37 +107,32 @@ public partial class MainWindow
         if (double.IsNaN(fy)) fy = 0;
         if (double.IsNaN(fs)) fs = artSize;
         Point to = on ? new Point(0, 0) : ArtSpacer.TranslatePoint(new Point(0, 0), ArtLayer);
-        double ts = on ? MiniArt : artSize;
+        double ts = on ? MiniArtSize : artSize;
 
         artAnimating = true;
-        ArtBox.CornerRadius = new CornerRadius(on ? 16 : 30);
-        var dur = TimeSpan.FromMilliseconds(560 * AnimFactor);
-        var ease = new CubicEase { EasingMode = EasingMode.EaseInOut };
-        DoubleAnimation A(double a, double b) => new(a, b, dur) { EasingFunction = ease };
-
-        var last = A(fs, ts);
-        last.Completed += (_, _) =>
+        ArtBox.CornerRadius = new CornerRadius(on ? 16 : 28);
+        int ms = Motion.Morph;
+        Motion.FromTo(ArtBox, Canvas.LeftProperty, fx, to.X, ms, Motion.InOut);
+        Motion.FromTo(ArtBox, Canvas.TopProperty, fy, to.Y, ms, Motion.InOut);
+        Motion.FromTo(ArtBox, WidthProperty, fs, ts, ms, Motion.InOut);
+        Motion.FromTo(ArtBox, HeightProperty, fs, ts, ms, Motion.InOut, () =>
         {
             foreach (var p in new[] { Canvas.LeftProperty, Canvas.TopProperty, WidthProperty, HeightProperty })
                 ArtBox.BeginAnimation(p, null);
             artAnimating = false;
             PositionArt();
-        };
-        ArtBox.BeginAnimation(Canvas.LeftProperty, A(fx, to.X));
-        ArtBox.BeginAnimation(Canvas.TopProperty, A(fy, to.Y));
-        ArtBox.BeginAnimation(WidthProperty, A(fs, ts));
-        ArtBox.BeginAnimation(HeightProperty, last);
+        });
 
         NormalView.IsHitTestVisible = !on;
         ExpandedView.IsHitTestVisible = on;
-        Anim(NormalView, OpacityProperty, on ? 0 : 1, on ? 260 : 520);
-        Anim(ExpandedView, OpacityProperty, on ? 1 : 0, on ? 600 : 260);
-        Anim(ExpandedT, TranslateTransform.YProperty, on ? 0 : 24, 600);
+        Motion.To(NormalView, OpacityProperty, on ? 0 : 1, on ? Motion.Fast + 60 : Motion.Slow);
+        Motion.To(ExpandedView, OpacityProperty, on ? 1 : 0, on ? Motion.Slow + 120 : Motion.Fast + 60);
+        Motion.To(ExpandedT, TranslateTransform.YProperty, on ? 0 : 24, Motion.Slow + 120, Motion.Emphasized);
 
-        if (on) Dispatcher.InvokeAsync(() => ScrollToLine(lyrIndex, true), DispatcherPriority.Loaded);
+        if (on && playerTab == "lyrics") Dispatcher.InvokeAsync(() => ScrollToLine(lyrIndex, true), DispatcherPriority.Loaded);
     }
 
-    // ---- content ----
+    // ---- lyrics content ----
     void ShowNoLyrics(string msg)
     {
         lyrics = new();
@@ -118,7 +157,7 @@ public partial class MainWindow
         for (int i = 0; i < lines.Count; i++)
             LyricsStack.Children.Add(MakeLine(lines[i].Text, i, synced ? .35 : .9));
         UpdatePreview();
-        Fade(LyricsStack, 0, 1, 500);
+        Motion.FromTo(LyricsStack, OpacityProperty, 0, 1, Motion.Slow);
         LyricsScroll.ScrollToTop();
     }
 
@@ -163,30 +202,29 @@ public partial class MainWindow
         lyrIndex = i;
         if (i >= 0 && i < LyricsStack.Children.Count) Highlight((TextBlock)LyricsStack.Children[i], true);
         UpdatePreview();
-        if (expanded) ScrollToLine(i, false);
+        if (expanded && playerTab == "lyrics") ScrollToLine(i, false);
     }
 
     static void Highlight(TextBlock tb, bool on)
     {
-        Anim(tb, OpacityProperty, on ? 1 : .35, 300);
+        Motion.To(tb, OpacityProperty, on ? 1 : .35, Motion.Base);
         var st = (ScaleTransform)tb.RenderTransform;
-        Anim(st, ScaleTransform.ScaleXProperty, on ? 1.05 : 1, 300);
-        Anim(st, ScaleTransform.ScaleYProperty, on ? 1.05 : 1, 300);
+        Motion.To(st, ScaleTransform.ScaleXProperty, on ? 1.05 : 1, Motion.Base);
+        Motion.To(st, ScaleTransform.ScaleYProperty, on ? 1.05 : 1, Motion.Base);
     }
 
     void UpdatePreview()
     {
         string L(int k) => k >= 0 && k < lyrics.Count ? lyrics[k].Text : "";
+        LyrCur.BeginAnimation(OpacityProperty, null);
         if (lyrics.Count == 0)
         {
-            LyrPrev.Text = "";
-            LyrCur.Text = LyricsStack.Children.Count > 0 && LyricsStack.Children[0] is TextBlock t0 && t0.Text.StartsWith("Loading") ? "" : "No lyrics";
-            LyrNext.Text = "";
-            LyrCur.BeginAnimation(OpacityProperty, null);
-            LyrCur.Opacity = .5;
+            LyrPrev.Text = LyrNext.Text = "";
+            LyrCur.Text = "";
+            LyricPreview.Visibility = Visibility.Collapsed;
             return;
         }
-        LyrCur.BeginAnimation(OpacityProperty, null);
+        LyricPreview.Visibility = Visibility.Visible;
         LyrCur.Opacity = 1;
         if (!lyrSynced)
         {
@@ -199,10 +237,10 @@ public partial class MainWindow
         LyrPrev.Text = L(lyrIndex - 1);
         LyrCur.Text = lyrIndex < 0 ? "♪" : L(lyrIndex);
         LyrNext.Text = L(lyrIndex + 1);
-        Fade(LyrCur, .3, 1, 300);
+        Motion.FromTo(LyrCur, OpacityProperty, .3, 1, Motion.Base);
     }
 
-    // ---- smooth auto-scroll in the big lyrics view ----
+    // ---- smooth auto-scroll in the lyrics view ----
     double lyrTarget;
     bool lyrScrolling;
 
@@ -212,7 +250,7 @@ public partial class MainWindow
         if (i >= 0 && i < LyricsStack.Children.Count && LyricsStack.Children[i] is FrameworkElement el)
             y = el.TranslatePoint(new Point(0, 0), LyricsStack).Y + LyricsStack.Margin.Top + el.ActualHeight / 2 - LyricsScroll.ViewportHeight * 0.4;
         y = Math.Clamp(y, 0, Math.Max(0, LyricsScroll.ScrollableHeight));
-        if (instant) { LyricsScroll.ScrollToVerticalOffset(y); return; }
+        if (instant || Motion.Reduced) { LyricsScroll.ScrollToVerticalOffset(y); return; }
         lyrTarget = y;
         if (!lyrScrolling) { lyrScrolling = true; CompositionTarget.Rendering += LyrScrollStep; }
     }

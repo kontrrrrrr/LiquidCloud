@@ -8,13 +8,14 @@ using System.Windows.Controls.Primitives;
 using System.Windows.Input;
 using System.Windows.Media;
 using System.Windows.Media.Animation;
+using System.Windows.Media.Effects;
 using System.Windows.Media.Imaging;
 using System.Windows.Threading;
 using XamlAnimatedGif;
 
 namespace GlassPlayer;
 
-/// <summary>Themes, custom backgrounds, particles, the settings menu and pausing effects in the background.</summary>
+/// <summary>The glass design system at runtime: applies a theme to every surface, plus backgrounds, particles and the settings sheet.</summary>
 public partial class MainWindow
 {
     Color? bgAccent;
@@ -22,73 +23,119 @@ public partial class MainWindow
     readonly List<AnimationClock> blobClocks = new();
     readonly DispatcherTimer saveTimer = new() { Interval = TimeSpan.FromMilliseconds(600) };
     bool lastLive = true;
+    ThemeDef? previewTheme; // the theme editor shows changes live before you save
+    string? activeThemeId;  // the theme in use right now (cfg.Theme is the default one used at startup)
 
-    ThemeDef CurrentTheme => Themes.All.FirstOrDefault(t => t.Name == cfg.Theme) ?? Themes.All[0];
+    ThemeDef CurrentTheme => previewTheme ?? ThemeStore.Find(activeThemeId ?? cfg.Theme);
 
     void InitLook()
     {
         saveTimer.Tick += (_, _) => { saveTimer.Stop(); cfg.Save(); };
         ConfigureParticles();
         ApplyBackground();
-        BuildSettings();
-        ContentGrid.SizeChanged += (_, _) => { if (browsing && !LeftPanel.HasAnimatedProperties) LeftPanel.Width = BrowseWidth(); };
     }
 
     void SaveSoon() { saveTimer.Stop(); saveTimer.Start(); }
 
     static SolidColorBrush Solid(Color c) { var b = new SolidColorBrush(c); b.Freeze(); return b; }
+    static Color A(Color c, double alpha) => Themes.WithAlpha(c, alpha);
 
-    static Brush Blob(Color c)
+    static Brush Blob(Color c, double strength)
     {
         var b = new RadialGradientBrush(new GradientStopCollection
         {
-            new GradientStop(Color.FromArgb(0xA0, c.R, c.G, c.B), 0),
-            new GradientStop(Color.FromArgb(0x00, c.R, c.G, c.B), 1)
+            new GradientStop(A(c, .65 * strength + .1), 0),
+            new GradientStop(A(c, 0), 1)
         });
         b.Freeze();
         return b;
     }
 
-    /// <summary>Pushes the current theme / background colors into every button, slider and panel.</summary>
+    static LinearGradientBrush Linear(Color a, Color b, double angle = 135)
+    {
+        double r = angle * Math.PI / 180;
+        var start = new Point(.5 - Math.Cos(r) / 2, .5 - Math.Sin(r) / 2);
+        var end = new Point(.5 + Math.Cos(r) / 2, .5 + Math.Sin(r) / 2);
+        var g = new LinearGradientBrush(a, b, 0) { StartPoint = start, EndPoint = end };
+        g.Freeze();
+        return g;
+    }
+
+    /// <summary>Turns the active theme into the design tokens every control uses (colors, glass layers, radii, shadows).</summary>
     void ApplyLook()
     {
         var th = CurrentTheme;
         bool fromBg = cfg.AutoAccent && bgAccent != null;
-        var accent = fromBg ? bgAccent!.Value : th.Accent;
+        var accent = fromBg ? bgAccent!.Value : th.AccentC;
+        var text = th.TextC;
+        bool lightUi = Themes.Luminance(th.BackgroundC) > .55; // light themes use dark overlays instead of white ones
+        var ink = lightUi ? Color.FromRgb(10, 20, 40) : Colors.White;
+        var glass = th.GlassC;
+        double op = Math.Clamp(th.GlassOpacity, 0, 1);
 
         Resources["AccentBrush"] = Solid(accent);
-        Resources["AccentSoftBrush"] = Solid(Color.FromArgb(0x59, accent.R, accent.G, accent.B));
-        Resources["OnAccentBrush"] = Solid(Themes.Luminance(accent) > .62 ? Color.FromRgb(18, 18, 22) : Colors.White);
-        Resources["Blob1Brush"] = Blob(fromBg ? accent : th.Blob1);
-        Resources["Blob2Brush"] = Blob(fromBg ? Themes.Shift(accent, 40) : th.Blob2);
+        Resources["AccentSoftBrush"] = Solid(A(accent, .26));
+        Resources["OnAccentBrush"] = Solid(Themes.Luminance(accent) > .58 ? Color.FromRgb(10, 18, 34) : Colors.White);
+        Resources["TextBrush"] = Solid(text);
+        Resources["TextDimBrush"] = Solid(A(text, .66));
+        Resources["TextFaintBrush"] = Solid(A(text, .40));
+        Resources["HoverBrush"] = Solid(A(ink, lightUi ? .06 : .07));
+        Resources["PressBrush"] = Solid(A(ink, lightUi ? .10 : .13));
+        Resources["FieldBrush"] = Solid(A(ink, lightUi ? .05 : .06));
+        Resources["LineBrush"] = Solid(A(ink, lightUi ? .14 : .13));
+        Resources["SkeletonBrush"] = skeletonBrush;
+        skeletonBrush.Color = A(ink, .09);
 
-        byte a1 = (byte)Math.Clamp(cfg.GlassOpacity * 255, 0, 255);
-        byte a2 = (byte)Math.Clamp(cfg.GlassOpacity * 0.35 * 255, 0, 255);
-        // the glass picks up a hint of the accent so panels match the wallpaper
-        Color tint1 = Mix(Colors.White, accent, fromBg ? .18 : .06);
-        var fill = new LinearGradientBrush(Color.FromArgb(a1, tint1.R, tint1.G, tint1.B), Color.FromArgb(a2, 255, 255, 255), new Point(0, 0), new Point(1, 1));
-        fill.Freeze();
-        Resources["GlassFill"] = fill;
-        Resources["GlassRadius"] = new CornerRadius(cfg.Radius);
+        var bgc = th.BackgroundC;
+        Resources["SheetBrush"] = Solid(A(Themes.Mix(bgc, glass, .06), .94));
+        Resources["MenuBrush"] = Solid(A(Themes.Mix(bgc, glass, .10), .97));
+        Resources["BgBaseBrush"] = Linear(th.Gradient1C, th.Gradient2C, th.GradientAngle);
+        Resources["Blob1Brush"] = Blob(fromBg ? accent : th.PrimaryC, th.Glow);
+        Resources["Blob2Brush"] = Blob(fromBg ? Themes.Shift(accent, 40) : th.SecondaryC, th.Glow);
 
-        var tint = fromBg ? Mix(th.Tint, Color.FromRgb((byte)(accent.R / 6), (byte)(accent.G / 6), (byte)(accent.B / 6)), .6) : th.Tint;
-        Resources["SheetBrush"] = Solid(Color.FromArgb(0xEA, tint.R, tint.G, tint.B));
+        // glass: level 1 (panels) and level 2 (cards, popups), each with a light top-left edge and a soft sheen
+        var tint = fromBg ? Themes.Mix(glass, accent, .25) : glass;
+        Resources["GlassFill"] = Linear(A(tint, op), A(tint, op * .3));
+        Resources["GlassFillRaised"] = Linear(A(tint, Math.Min(1, op * 1.6 + .03)), A(tint, op * .55));
+        double edge = .25 + .5 * th.Glow;
+        var edgeBrush = new LinearGradientBrush(new GradientStopCollection
+        {
+            new GradientStop(A(lightUi ? Colors.White : Themes.Mix(Colors.White, accent, .15), edge), 0),
+            new GradientStop(A(Colors.White, .05), .45),
+            new GradientStop(A(Colors.White, edge * .5), 1)
+        }, new Point(0, 0), new Point(1, 1));
+        edgeBrush.Freeze();
+        Resources["GlassEdge"] = edgeBrush;
 
+        double r = Math.Clamp(th.Radius, 0, 48);
+        Resources["GlassRadius"] = new CornerRadius(r);
+        Resources["CardRadius"] = new CornerRadius(Math.Max(4, r * .66));
+        Resources["ControlRadius"] = new CornerRadius(Math.Max(4, r * .5));
+
+        var shadow = new DropShadowEffect { BlurRadius = 44, ShadowDepth = 12, Direction = 270, Opacity = Math.Clamp(th.Shadow, 0, 1) };
+        shadow.Freeze();
+        Resources["GlassShadow"] = shadow;
+        var soft = new DropShadowEffect { BlurRadius = 26, ShadowDepth = 6, Direction = 270, Opacity = Math.Clamp(th.Shadow * .85, 0, 1) };
+        soft.Freeze();
+        Resources["SoftShadow"] = soft;
+
+        // "blur" softens everything behind the glass (wallpaper and light blobs)
         bool hasBg = BgImage.Visibility == Visibility.Visible;
-        // bright wallpapers get darkened automatically so white text and buttons stay readable
+        BgBlurFx.Radius = Math.Max(cfg.BgBlur, th.Blur);
+        Ambient.Effect = th.Blur > 0.5 ? new BlurEffect { Radius = th.Blur * 2, KernelType = KernelType.Gaussian } : null;
         double autoDim = hasBg ? Math.Clamp((bgLum - .45) * 1.2, 0, .5) : 0;
         BgDim.Opacity = hasBg ? Math.Max(cfg.BgDim, autoDim) : 0;
-        BgBlurFx.Radius = cfg.BgBlur;
-        Ambient.Visibility = hasBg ? Visibility.Collapsed : Visibility.Visible;
 
-        Particles.SetColor(cfg.ParticleAccent ? accent : Colors.White);
-        AnimFactor = 1 / Math.Clamp(cfg.AnimSpeed, .3, 3);
+        Particles.SetColor(cfg.ParticleAccent ? accent : (lightUi ? A(ink, .6) : Colors.White));
+        Bars.SetBrush(Solid(A(accent, .85)));
         if (!cfg.AmbientGlow) Glow.Source = null;
-        else if (Glow.Source == null && ArtBrush.ImageSource != null) { Glow.Source = ArtBrush.ImageSource; Glow.Opacity = .6; }
+        else if (Glow.Source == null && ArtBrush.ImageSource != null) { Glow.Source = ArtBrush.ImageSource; Glow.Opacity = th.Glow; }
+        else Glow.Opacity = Glow.Source != null ? th.Glow : 0;
+
+        if (IsLoaded) { UpdateModeButtons(); UpdateLikeButton(); }
     }
 
-    static Color Mix(Color a, Color b, double t) => Color.FromRgb(
-        (byte)(a.R + (b.R - a.R) * t), (byte)(a.G + (b.G - a.G) * t), (byte)(a.B + (b.B - a.B) * t));
+    readonly SolidColorBrush skeletonBrush = new(Color.FromArgb(0x18, 255, 255, 255));
 
     // ---- background image / gif ----
     void ApplyBackground()
@@ -109,9 +156,8 @@ public partial class MainWindow
             var uri = new Uri(path);
             if (Path.GetExtension(path).Equals(".gif", StringComparison.OrdinalIgnoreCase))
             {
-                // XamlAnimatedGif decodes frames as it plays instead of holding the whole gif in memory
                 AnimationBehavior.SetRepeatBehavior(BgImage, RepeatBehavior.Forever);
-                AnimationBehavior.SetSourceUri(BgImage, uri);
+                AnimationBehavior.SetSourceUri(BgImage, uri); // decodes frames as it plays instead of holding the whole gif in memory
             }
             else
             {
@@ -130,7 +176,7 @@ public partial class MainWindow
         catch (Exception ex)
         {
             BgImage.Visibility = Visibility.Collapsed;
-            Status.Text = "Couldn't load the background: " + ex.Message;
+            Toast("Couldn't load the background: " + ex.Message, "");
         }
         ApplyLook();
     }
@@ -166,7 +212,6 @@ public partial class MainWindow
         if (dlg.ShowDialog() != true) return;
         try
         {
-            // keep our own copy so the background survives if the original file is moved
             Directory.CreateDirectory(AppSettings.Dir);
             var dest = Path.Combine(AppSettings.Dir, $"background-{DateTime.Now.Ticks}{Path.GetExtension(dlg.FileName).ToLowerInvariant()}");
             File.Copy(dlg.FileName, dest, true);
@@ -177,7 +222,7 @@ public partial class MainWindow
             cfg.Save();
             BuildSettings();
         }
-        catch (Exception ex) { Status.Text = "Couldn't use that image: " + ex.Message; }
+        catch (Exception ex) { Toast("Couldn't use that image: " + ex.Message, ""); }
     }
 
     void RemoveBackground()
@@ -198,10 +243,10 @@ public partial class MainWindow
         t.Start();
     }
 
-    // ---- moving color blobs ----
+    // ---- slow moving light blobs ----
     void StartBlobs()
     {
-        if (blobClocks.Count > 0) return;
+        if (blobClocks.Count > 0 || Motion.Reduced) return;
         void Run(TranslateTransform target, DependencyProperty prop, double to, double seconds)
         {
             var a = new DoubleAnimation(to, TimeSpan.FromSeconds(seconds))
@@ -214,10 +259,10 @@ public partial class MainWindow
             target.ApplyAnimationClock(prop, clock);
             blobClocks.Add(clock);
         }
-        Run(Blob1T, TranslateTransform.XProperty, 110, 9);
-        Run(Blob1T, TranslateTransform.YProperty, 80, 12);
-        Run(Blob2T, TranslateTransform.XProperty, -120, 11);
-        Run(Blob2T, TranslateTransform.YProperty, -70, 8);
+        Run(Blob1T, TranslateTransform.XProperty, 120, 13);
+        Run(Blob1T, TranslateTransform.YProperty, 90, 17);
+        Run(Blob2T, TranslateTransform.XProperty, -130, 15);
+        Run(Blob2T, TranslateTransform.YProperty, -80, 11);
         if (!lastLive) foreach (var c in blobClocks) c.Controller?.Pause();
     }
 
@@ -230,15 +275,16 @@ public partial class MainWindow
     }
 
     /// <summary>
-    /// Effects only run while Glass is on screen and (by default) focused. When you work in other
-    /// windows, particles, gif and blobs stop, and when minimized, memory is handed back to Windows.
+    /// Effects only run while LiquidCloud is on screen and (by default) focused. When you work in other windows,
+    /// particles, gif, light blobs and level bars stop; when minimized, memory is handed back to Windows.
     /// </summary>
     void ApplyActivity()
     {
         bool visible = WindowState != WindowState.Minimized;
         bool live = visible && (IsActive || !cfg.PauseWhenInactive);
 
-        Particles.Running = live && cfg.ParticlesOn;
+        Particles.Running = live && cfg.ParticlesOn && !Motion.Reduced;
+        Bars.Running = playing && visible;
 
         if (live != lastLive)
         {
@@ -253,56 +299,39 @@ public partial class MainWindow
                 ? Microsoft.Web.WebView2.Core.CoreWebView2MemoryUsageTargetLevel.Normal
                 : Microsoft.Web.WebView2.Core.CoreWebView2MemoryUsageTargetLevel.Low;
 
-        if (!visible) TrimMemory();
+        if (!visible) { SaveSession(); TrimMemory(); }
     }
 
     // =====================================================================
-    // Settings menu (built in code so it's easy to add more options)
+    // Settings sheet (built in code so options are easy to add)
     // =====================================================================
     Style S(string key) => (Style)FindResource(key);
+    Panel settingsTarget = null!;
 
     void BuildSettings()
     {
+        settingsTarget = SettingsHost;
         var h = SettingsHost;
         h.Children.Clear();
 
-        Section("Theme");
-        var wrap = new WrapPanel { Margin = new Thickness(0, 6, 0, 0) };
-        foreach (var th in Themes.All)
-        {
-            bool sel = th.Name == cfg.Theme;
-            var grad = new LinearGradientBrush(th.Blob1, th.Blob2, 45); grad.Freeze();
-            var sw = new Border
-            {
-                Width = 58, Height = 58, CornerRadius = new CornerRadius(18), Background = grad, Cursor = Cursors.Hand,
-                BorderBrush = sel ? Brushes.White : new SolidColorBrush(Color.FromArgb(0x30, 255, 255, 255)),
-                BorderThickness = new Thickness(sel ? 2.5 : 1),
-                RenderTransformOrigin = new Point(.5, .5), RenderTransform = new ScaleTransform(1, 1)
-            };
-            sw.MouseEnter += (_, _) => { Anim((ScaleTransform)sw.RenderTransform, ScaleTransform.ScaleXProperty, 1.08, 180); Anim((ScaleTransform)sw.RenderTransform, ScaleTransform.ScaleYProperty, 1.08, 180); };
-            sw.MouseLeave += (_, _) => { Anim((ScaleTransform)sw.RenderTransform, ScaleTransform.ScaleXProperty, 1, 220); Anim((ScaleTransform)sw.RenderTransform, ScaleTransform.ScaleYProperty, 1, 220); };
-            var name = th.Name;
-            sw.MouseLeftButtonUp += (_, _) => { cfg.Theme = name; ApplyLook(); BuildSettings(); SaveSoon(); };
-            var cell = new StackPanel { Margin = new Thickness(0, 0, 12, 10) };
-            cell.Children.Add(sw);
-            cell.Children.Add(new TextBlock { Text = name, FontSize = 11, Opacity = sel ? 1 : .6, HorizontalAlignment = HorizontalAlignment.Center, Margin = new Thickness(0, 4, 0, 0) });
-            wrap.Children.Add(cell);
-        }
-        h.Children.Add(wrap);
-        Toggle("Match colors to the background", "Buttons, sliders and panels take their color from your wallpaper", cfg.AutoAccent, v => { cfg.AutoAccent = v; ApplyLook(); });
+        Section("APPEARANCE");
+        var th = CurrentTheme;
+        var row = new Grid { Margin = new Thickness(0, 6, 0, 0) };
+        row.Children.Add(new TextBlock { Text = $"Theme: {th.Name}", FontSize = 14, VerticalAlignment = VerticalAlignment.Center });
+        var open = new Button { Style = S("AccentAction"), Content = "Open theme studio", HorizontalAlignment = HorizontalAlignment.Right };
+        open.Click += (_, _) => { ToggleSettings(false); Navigate("themes"); };
+        row.Children.Add(open);
+        h.Children.Add(row);
+        Toggle("Match accent to the background picture", "Buttons and sliders take their color from your wallpaper", cfg.AutoAccent, v => { cfg.AutoAccent = v; ApplyLook(); });
 
-        Section("Background");
+        Section("BACKGROUND PICTURE");
         Buttons(("Choose image or GIF…", ChooseBackground), ("Remove", RemoveBackground));
         Note(cfg.Background != null ? "Using: " + Path.GetFileName(cfg.Background) : "PNG, JPG, JPEG or animated GIF.");
         SliderRow("Darken", 0, .85, cfg.BgDim, v => $"{v:P0}", v => { cfg.BgDim = v; ApplyLook(); });
         SliderRow("Blur", 0, 40, cfg.BgBlur, v => $"{v:0}", v => { cfg.BgBlur = v; ApplyLook(); });
+        Toggle("Ambient glow", "Blur the cover art into the background", cfg.AmbientGlow, v => { cfg.AmbientGlow = v; ApplyLook(); });
 
-        Section("Glass panels");
-        SliderRow("Panel opacity", .03, .5, cfg.GlassOpacity, v => $"{v:P0}", v => { cfg.GlassOpacity = v; ApplyLook(); });
-        SliderRow("Corner roundness", 6, 40, cfg.Radius, v => $"{v:0}", v => { cfg.Radius = v; ApplyLook(); });
-        Toggle("Ambient glow", "Blur the cover art into the background", cfg.AmbientGlow, v => { cfg.AmbientGlow = v; ApplyLook(); if (v) Anim(Glow, OpacityProperty, .6, 600); });
-
-        Section("Particles");
+        Section("PARTICLES");
         Toggle("Show particles", "", cfg.ParticlesOn, v => { cfg.ParticlesOn = v; ConfigureParticles(); });
         Choice("Style", new[] { "Dots", "Snow", "Stars", "Bubbles" }, cfg.ParticleShape, v => { cfg.ParticleShape = v; ConfigureParticles(); });
         SliderRow("Amount", 5, 300, cfg.ParticleCount, v => $"{v:0}", v => { cfg.ParticleCount = (int)v; ConfigureParticles(); });
@@ -310,98 +339,106 @@ public partial class MainWindow
         SliderRow("Speed", .2, 3, cfg.ParticleSpeed, v => $"{v:0.0}×", v => { cfg.ParticleSpeed = v; ConfigureParticles(); });
         Toggle("Use accent color", "Otherwise particles are white", cfg.ParticleAccent, v => { cfg.ParticleAccent = v; ApplyLook(); });
 
-        Section("Lyrics");
+        Section("MOTION");
+        SliderRow("Animation speed", .5, 2, cfg.AnimSpeed, v => $"{v:0.0}×", v => { cfg.AnimSpeed = v; Motion.Speed = 1 / Math.Clamp(v, .3, 3); });
+        Toggle("Reduce motion", "Turns off movement-heavy animations (also follows Windows' animation setting)", cfg.ReduceMotion, v => { cfg.ReduceMotion = v; Motion.UserReduced = v; ApplyActivity(); });
+        Toggle("Welcome screen at start", "\"Hi, …\" intro when LiquidCloud opens", cfg.ShowWelcome, v => cfg.ShowWelcome = v);
+
+        Section("PLAYBACK");
+        Toggle("Autoplay next track", "Move on to the next song when one ends", cfg.Autoplay, v => cfg.Autoplay = v);
+        Toggle("Keep playing similar songs", "When the queue ends, continue with songs SoundCloud / YouTube suggests", cfg.AutoRadio, v => cfg.AutoRadio = v);
+        Toggle("Remember volume", "Start at the level you left it on", cfg.RememberVolume, v => cfg.RememberVolume = v);
+        Toggle("Open Spotify when needed", "Start the Spotify app if it isn't running", cfg.LaunchSpotify, v => { cfg.LaunchSpotify = v; Spotify.AutoLaunch = v; });
+
+        Section("LYRICS");
         Note("Lyrics are read from the song file itself (its tags), or from a .lrc file with the same name next to it. Timed .lrc lyrics follow the music.");
         SliderRow("Text size", 14, 36, cfg.LyricsSize, v => $"{v:0}", v => { cfg.LyricsSize = v; ApplyLyricsSize(); });
 
-        Section("Animations");
-        SliderRow("Animation speed", .5, 2, cfg.AnimSpeed, v => $"{v:0.0}×", v => { cfg.AnimSpeed = v; ApplyLook(); });
+        Section("SOUNDCLOUD");
+        Toggle("Like on SoundCloud too", "Adding a SoundCloud song to favorites also likes it on your SoundCloud account", cfg.LikeOnSoundCloud, v => cfg.LikeOnSoundCloud = v);
+        Toggle("Play in LiquidCloud when I press play on SoundCloud web", "Songs you start in the SoundCloud web page play here instead", cfg.CatchScPlay, v => cfg.CatchScPlay = v);
+        Toggle("Keep SoundCloud web loaded", "Opens faster, but uses more memory while you're not on that page", cfg.KeepScLoaded, v => { cfg.KeepScLoaded = v; if (!v && !browsing) DisposeSc(); });
+        Buttons(("Sign out of SoundCloud", SignOutSc));
 
-        Section("Playback");
-        Toggle("Autoplay next track", "Move on to the next result when a song ends", cfg.Autoplay, v => cfg.Autoplay = v);
-        Toggle("Open Spotify when needed", "Start the Spotify app if it isn't running", cfg.LaunchSpotify, v => { cfg.LaunchSpotify = v; Spotify.AutoLaunch = v; });
-        Toggle("Remember volume", "Start at the level you left it on", cfg.RememberVolume, v => cfg.RememberVolume = v);
-        Toggle("Keep playing similar songs", "When the list ends, continue with songs SoundCloud / YouTube suggests", cfg.AutoRadio, v => cfg.AutoRadio = v);
-
-        Section("Discord");
+        Section("DISCORD");
         Toggle("Show what I'm listening to", "Song, artist, cover, progress and session time in your Discord status", cfg.DiscordOn, SetDiscord);
         Note(Config.Get("DISCORD_CLIENT_ID") == null
             ? "Add DISCORD_CLIENT_ID to config.json first (see README), then restart LiquidCloud."
-            : "Discord desktop app must be running. Your status shows \"Listening to LiquidCloud\".");
+            : "Discord desktop app must be running. Your status shows \"LiquidCloud\".");
 
-        Section("SoundCloud");
-        Toggle("Play in LiquidCloud when I press play on SoundCloud", "Songs you start in the SoundCloud browser play in LiquidCloud instead", cfg.CatchScPlay, v => cfg.CatchScPlay = v);
-        Toggle("Keep SoundCloud loaded", "Opens faster, but uses more memory while you're not browsing", cfg.KeepScLoaded, v => { cfg.KeepScLoaded = v; if (!v && !browsing) DisposeSc(); });
-        Buttons(("Sign out of SoundCloud", SignOutSc));
+        Section("LIBRARY");
+        Buttons(("Add music from links or files…", () => { ToggleSettings(false); ToggleImport(true); }),
+                ("Clear listening history", () => { Library.ClearHistory(); Toast("History cleared", ""); }),
+                ("Clear search history", () => { Library.ClearSearches(); Toast("Search history cleared", ""); }));
 
-        Section("Performance");
-        Toggle("Pause effects when LiquidCloud isn't focused", "Particles, GIF and glow stop while you use other windows. Music keeps playing", cfg.PauseWhenInactive, v => { cfg.PauseWhenInactive = v; ApplyActivity(); });
+        Section("PERFORMANCE");
+        Toggle("Pause effects when LiquidCloud isn't focused", "Particles, GIF, light and level bars stop while you use other windows. Music keeps playing", cfg.PauseWhenInactive, v => { cfg.PauseWhenInactive = v; ApplyActivity(); });
         Note("When LiquidCloud is minimized it gives its memory back to Windows.");
+
+        Section("KEYBOARD");
+        Note("Space play/pause · Ctrl+→ / Ctrl+← next / previous · Shift+→ / Shift+← seek 10 s · Ctrl+↑ / Ctrl+↓ volume · M mute · S shuffle · R repeat · L favorite · Q up next · Ctrl+K search · Ctrl+M mini player · F11 full player · Alt+← back. Media keys work even when LiquidCloud is in the background.");
     }
 
-    void Section(string title) => SettingsHost.Children.Add(new TextBlock { Text = title, Style = S("Section") });
+    void Section(string title) => settingsTarget.Children.Add(new TextBlock { Text = title, Style = S("Section") });
 
-    void Note(string text) => SettingsHost.Children.Add(new TextBlock { Text = text, FontSize = 12, Opacity = .55, TextWrapping = TextWrapping.Wrap, Margin = new Thickness(0, 6, 0, 0) });
+    void Note(string text) => settingsTarget.Children.Add(new TextBlock { Text = text, FontSize = 12, Foreground = (Brush)FindResource("TextDimBrush"), TextWrapping = TextWrapping.Wrap, Margin = new Thickness(0, 6, 0, 0) });
 
     void Toggle(string title, string desc, bool value, Action<bool> set)
     {
         var g = new Grid { Margin = new Thickness(0, 12, 0, 0) };
         var sp = new StackPanel { VerticalAlignment = VerticalAlignment.Center, Margin = new Thickness(0, 0, 64, 0) };
         sp.Children.Add(new TextBlock { Text = title, FontSize = 14 });
-        if (desc.Length > 0) sp.Children.Add(new TextBlock { Text = desc, FontSize = 12, Opacity = .55, TextWrapping = TextWrapping.Wrap });
+        if (desc.Length > 0) sp.Children.Add(new TextBlock { Text = desc, FontSize = 12, Foreground = (Brush)FindResource("TextDimBrush"), TextWrapping = TextWrapping.Wrap });
         var tb = new ToggleButton { Style = S("Switch"), IsChecked = value, HorizontalAlignment = HorizontalAlignment.Right, VerticalAlignment = VerticalAlignment.Center };
         tb.Click += (_, _) => { set(tb.IsChecked == true); SaveSoon(); };
         g.Children.Add(sp);
         g.Children.Add(tb);
-        SettingsHost.Children.Add(g);
+        settingsTarget.Children.Add(g);
     }
 
-    void SliderRow(string title, double min, double max, double value, Func<double, string> fmt, Action<double> set)
+    Slider SliderRow(string title, double min, double max, double value, Func<double, string> fmt, Action<double> set)
     {
         var sp = new StackPanel { Margin = new Thickness(0, 12, 0, 0) };
         var head = new Grid();
-        var val = new TextBlock { Text = fmt(value), FontSize = 12, Opacity = .6, HorizontalAlignment = HorizontalAlignment.Right };
+        var val = new TextBlock { Text = fmt(value), FontSize = 12, Foreground = (Brush)FindResource("TextDimBrush"), HorizontalAlignment = HorizontalAlignment.Right };
         head.Children.Add(new TextBlock { Text = title, FontSize = 14 });
         head.Children.Add(val);
         var sl = new Slider { Style = S("Seek"), Minimum = min, Maximum = max, Value = Math.Clamp(value, min, max), IsMoveToPointEnabled = true, Margin = new Thickness(0, 4, 0, 0) };
         sl.ValueChanged += (_, e) => { val.Text = fmt(e.NewValue); set(e.NewValue); SaveSoon(); };
         sp.Children.Add(head);
         sp.Children.Add(sl);
-        SettingsHost.Children.Add(sp);
+        settingsTarget.Children.Add(sp);
+        return sl;
     }
 
     void Choice(string title, string[] options, string value, Action<string> set)
     {
         var g = new Grid { Margin = new Thickness(0, 12, 0, 0) };
         g.Children.Add(new TextBlock { Text = title, FontSize = 14, VerticalAlignment = VerticalAlignment.Center });
-        var box = new Border
-        {
-            CornerRadius = new CornerRadius(18), Background = new SolidColorBrush(Color.FromArgb(0x14, 255, 255, 255)), Padding = new Thickness(3),
-            HorizontalAlignment = HorizontalAlignment.Right
-        };
-        var row = new StackPanel { Orientation = Orientation.Horizontal };
+        var box = new Border { CornerRadius = (CornerRadius)FindResource("ControlRadius"), Background = (Brush)FindResource("FieldBrush"), Padding = new Thickness(3), HorizontalAlignment = HorizontalAlignment.Right };
+        var rowPanel = new StackPanel { Orientation = Orientation.Horizontal };
         var group = "g" + Guid.NewGuid().ToString("N");
         foreach (var o in options)
         {
             var rb = new RadioButton { Style = S("Pill"), Content = o, GroupName = group, IsChecked = o == value };
             var opt = o;
             rb.Checked += (_, _) => { set(opt); SaveSoon(); };
-            row.Children.Add(rb);
+            rowPanel.Children.Add(rb);
         }
-        box.Child = row;
+        box.Child = rowPanel;
         g.Children.Add(box);
-        SettingsHost.Children.Add(g);
+        settingsTarget.Children.Add(g);
     }
 
     void Buttons(params (string Text, Action Click)[] items)
     {
-        var row = new WrapPanel { Margin = new Thickness(0, 10, 0, 0) };
+        var rowPanel = new WrapPanel { Margin = new Thickness(0, 10, 0, 0) };
         foreach (var (text, click) in items)
         {
-            var b = new Button { Style = S("Action"), Content = text, Margin = new Thickness(0, 0, 8, 0) };
-            b.Click += (_, _) => { click(); };
-            row.Children.Add(b);
+            var b = new Button { Style = S("Action"), Content = text, Margin = new Thickness(0, 0, 8, 8) };
+            b.Click += (_, _) => click();
+            rowPanel.Children.Add(b);
         }
-        SettingsHost.Children.Add(row);
+        settingsTarget.Children.Add(rowPanel);
     }
 }
