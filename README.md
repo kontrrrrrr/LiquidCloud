@@ -52,7 +52,7 @@ Artist Pro plan). It's meant for personal use and may break if SoundCloud change
    (this name is what Discord shows: "Listening to LiquidCloud").
 2. Copy the **Application ID** and paste it into `config.json` next to `LiquidCloud.exe`:
    `"DISCORD_CLIENT_ID": "1234567890"`.
-3. Optional: under **Rich Presence → Art Assets** upload `GlassPlayer/icon.png` with the name `logo`
+3. Optional: under **Rich Presence → Art Assets** upload `src/LiquidCloud/icon.png` with the name `logo`
    (shown as the small icon and for local songs without a cover).
 4. Restart LiquidCloud with the Discord desktop app running.
 
@@ -68,3 +68,11 @@ and put its Client ID in `config.json` next to `LiquidCloud.exe`.
 
 GNU General Public License v3.0, same as the original. See [LICENSE](LICENSE).
 This is a modified version; changes are listed above.
+
+## For developers
+
+- Code: `src/LiquidCloud` (app), `tests/LiquidCloud.Tests` (xUnit: queue, player, themes, image cache, localization — no network, no window).
+- `dotnet test tests/LiquidCloud.Tests` runs the tests; `LiquidCloud.exe --smoke --offline` runs the built-in UI self-check (CI does both and saves screenshots).
+- Switches: `--offline` (never touches the network), `--no-welcome`, audio file paths to play them. `LIQUIDCLOUD_DATA` moves all saved data to another folder.
+- Logs: `%LocalAppData%\LiquidCloud\logs` (Settings → Diagnostics → Open log folder). Tokens and client ids are masked.
+- Interface text: `src/LiquidCloud/Strings/ru.xaml` (Russian, default) and `en.xaml`. In code, `Loc.T("English text")`.
