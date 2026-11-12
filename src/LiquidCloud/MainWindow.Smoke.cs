@@ -56,6 +56,17 @@ public partial class MainWindow
         }
     }
 
+    static IEnumerable<DependencyObject> Descendants(DependencyObject root)
+    {
+        int n = VisualTreeHelper.GetChildrenCount(root);
+        for (int i = 0; i < n; i++)
+        {
+            var c = VisualTreeHelper.GetChild(root, i);
+            yield return c;
+            foreach (var d in Descendants(c)) yield return d;
+        }
+    }
+
     /// <summary>A short sine-wave WAV, so playback can be tested without shipping audio files.</summary>
     static string MakeWav(string dir, string name, double hz, double seconds)
     {
@@ -135,6 +146,19 @@ public partial class MainWindow
             vm.Volume = 0.3; Check("volume", Math.Abs(player.Volume - 0.3) < .01);
             ToggleMute(); Check("mute", player.Muted && vm.Muted);
             ToggleMute(); Check("unmute", !player.Muted);
+
+            // ---- keyboard: Enter on a focused track row plays it ----
+            var rowEl = Descendants(PageHost).OfType<FrameworkElement>()
+                .FirstOrDefault(e => System.Windows.Automation.AutomationProperties.GetName(e).StartsWith("c-high"));
+            Check("track rows have accessible names", rowEl != null);
+            if (rowEl != null)
+            {
+                Check("track row takes keyboard focus", rowEl.Focus());
+                rowEl.RaiseEvent(new System.Windows.Input.KeyEventArgs(System.Windows.Input.Keyboard.PrimaryDevice, PresentationSource.FromVisual(this)!, 0, System.Windows.Input.Key.Enter)
+                    { RoutedEvent = System.Windows.Input.Keyboard.KeyDownEvent });
+                await Settle(1500);
+                Check("Enter plays the focused row", player.Current?.Title == "c-high", player.Current?.Title);
+            }
 
             // ---- player tabs ----
             SetPlayerTab("lyrics"); await Settle(); Shot("tab-lyrics");
