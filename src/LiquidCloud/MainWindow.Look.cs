@@ -391,7 +391,7 @@ public partial class MainWindow
 
     void Section(string title) => settingsTarget.Children.Add(new TextBlock { Text = Loc.T(title), Style = S("Section") });
 
-    void Note(string text) => settingsTarget.Children.Add(new TextBlock { Text = Loc.T(text), FontSize = 12, Foreground = (Brush)FindResource("TextDimBrush"), TextWrapping = TextWrapping.Wrap, Margin = new Thickness(0, 6, 0, 0) });
+    void Note(string text) => settingsTarget.Children.Add(Dyn(new TextBlock { Text = Loc.T(text), FontSize = 12,  TextWrapping = TextWrapping.Wrap, Margin = new Thickness(0, 6, 0, 0) }, TextBlock.ForegroundProperty, "TextDimBrush"));
 
     void Toggle(string title, string desc, bool value, Action<bool> set)
     {
@@ -399,7 +399,7 @@ public partial class MainWindow
         var g = new Grid { Margin = new Thickness(0, 12, 0, 0) };
         var sp = new StackPanel { VerticalAlignment = VerticalAlignment.Center, Margin = new Thickness(0, 0, 64, 0) };
         sp.Children.Add(new TextBlock { Text = title, FontSize = 14 });
-        if (desc.Length > 0) sp.Children.Add(new TextBlock { Text = desc, FontSize = 12, Foreground = (Brush)FindResource("TextDimBrush"), TextWrapping = TextWrapping.Wrap });
+        if (desc.Length > 0) sp.Children.Add(Dyn(new TextBlock { Text = desc, FontSize = 12,  TextWrapping = TextWrapping.Wrap }, TextBlock.ForegroundProperty, "TextDimBrush"));
         var tb = new ToggleButton { Style = S("Switch"), IsChecked = value, HorizontalAlignment = HorizontalAlignment.Right, VerticalAlignment = VerticalAlignment.Center };
         tb.Click += (_, _) => { set(tb.IsChecked == true); SaveSoon(); };
         g.Children.Add(sp);
@@ -412,7 +412,7 @@ public partial class MainWindow
         title = Loc.T(title);
         var sp = new StackPanel { Margin = new Thickness(0, 12, 0, 0) };
         var head = new Grid();
-        var val = new TextBlock { Text = fmt(value), FontSize = 12, Foreground = (Brush)FindResource("TextDimBrush"), HorizontalAlignment = HorizontalAlignment.Right };
+        var val = Dyn(new TextBlock { Text = fmt(value), FontSize = 12,  HorizontalAlignment = HorizontalAlignment.Right }, TextBlock.ForegroundProperty, "TextDimBrush");
         head.Children.Add(new TextBlock { Text = title, FontSize = 14 });
         head.Children.Add(val);
         var sl = new Slider { Style = S("Seek"), Minimum = min, Maximum = max, Value = Math.Clamp(value, min, max), IsMoveToPointEnabled = true, Margin = new Thickness(0, 4, 0, 0) };

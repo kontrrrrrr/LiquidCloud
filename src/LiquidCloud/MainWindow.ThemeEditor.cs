@@ -155,7 +155,7 @@ public partial class MainWindow
 
         var top = new Grid();
         top.Children.Add(Txt(Loc.T(editingId != null ? "Edit theme" : "New theme"), 22, FontWeights.SemiBold));
-        top.Children.Add(new TextBlock { Text = Loc.T("Live preview"), Foreground = Res("AccentBrush"), FontSize = 12, HorizontalAlignment = HorizontalAlignment.Right, VerticalAlignment = VerticalAlignment.Center });
+        top.Children.Add(Dyn(new TextBlock { Text = Loc.T("Live preview"),  FontSize = 12, HorizontalAlignment = HorizontalAlignment.Right, VerticalAlignment = VerticalAlignment.Center }, TextBlock.ForegroundProperty, "AccentBrush"));
         sp.Children.Add(top);
 
         var nameBox = new TextBox { Style = S("Field"), Tag = "Theme name", Text = d.Name, Margin = new Thickness(0, 14, 0, 0) };

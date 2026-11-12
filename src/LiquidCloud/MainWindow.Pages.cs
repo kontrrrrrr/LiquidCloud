@@ -663,7 +663,8 @@ public partial class MainWindow
         var addAll = ActionButton("Add all to playlist", () => { }, false, "");
         addAll.Click += (_, _) => { var m = new ContextMenu(); FillAddToPlaylist(m.Items, tracks); OpenMenu(m, addAll); };
         sp.Children.Add(addAll);
-        sp.Children.Add(new TextBlock { Text = Loc.Songs(tracks.Count) + (TotalTime(tracks) is { Length: > 0 } tt ? " · " + tt : ""), Foreground = Res("TextDimBrush"), FontSize = 12, VerticalAlignment = VerticalAlignment.Center, Margin = new Thickness(8, 0, 0, 0) });
+        var countText = Loc.Songs(tracks.Count) + (TotalTime(tracks) is { Length: > 0 } tt ? " · " + tt : "");
+        sp.Children.Add(Dyn(new TextBlock { Text = countText, FontSize = 12, VerticalAlignment = VerticalAlignment.Center, Margin = new Thickness(8, 0, 0, 0) }, TextBlock.ForegroundProperty, "TextDimBrush"));
         return sp;
     }
 

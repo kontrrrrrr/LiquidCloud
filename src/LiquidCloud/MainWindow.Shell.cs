@@ -406,8 +406,8 @@ public partial class MainWindow
     {
         text = Loc.T(text);
         var row = new StackPanel { Orientation = Orientation.Horizontal };
-        row.Children.Add(new TextBlock { Text = glyph, FontFamily = (FontFamily)FindResource("Icons"), Foreground = Res("AccentBrush"), FontSize = 14, VerticalAlignment = VerticalAlignment.Center, Margin = new Thickness(0, 0, 10, 0) });
-        row.Children.Add(new TextBlock { Text = text, Foreground = Res("TextBrush"), FontSize = 13, VerticalAlignment = VerticalAlignment.Center, TextWrapping = TextWrapping.Wrap, MaxWidth = 520 });
+        row.Children.Add(Dyn(new TextBlock { Text = glyph, FontFamily = (FontFamily)FindResource("Icons"),  FontSize = 14, VerticalAlignment = VerticalAlignment.Center, Margin = new Thickness(0, 0, 10, 0) }, TextBlock.ForegroundProperty, "AccentBrush"));
+        row.Children.Add(Dyn(new TextBlock { Text = text,  FontSize = 13, VerticalAlignment = VerticalAlignment.Center, TextWrapping = TextWrapping.Wrap, MaxWidth = 520 }, TextBlock.ForegroundProperty, "TextBrush"));
         var pill = new Border
         {
             Background = Res("MenuBrush"), BorderBrush = Res("GlassEdge"), BorderThickness = new Thickness(1),

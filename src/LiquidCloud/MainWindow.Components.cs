@@ -377,16 +377,16 @@ public partial class MainWindow
     void RegisterLive(Track t, TextBlock title)
     {
         liveRows.Add((t, title));
-        if (nowPlaying != null && Library.Key(nowPlaying) == Library.Key(t)) title.Foreground = Res("AccentBrush");
+        if (nowPlaying != null && Library.Key(nowPlaying) == Library.Key(t)) title.SetResourceReference(TextBlock.ForegroundProperty, "AccentBrush");
     }
 
     /// <summary>Marks the playing song in whatever page is open.</summary>
     void HighlightPlaying()
     {
         var key = nowPlaying != null ? Library.Key(nowPlaying) : null;
-        var accent = Res("AccentBrush");
-        var text = Res("TextBrush");
-        foreach (var (t, title) in liveRows) title.Foreground = key != null && Library.Key(t) == key ? accent : text;
+        // resource references (not brush copies), so a theme change recolors these rows too
+        foreach (var (t, title) in liveRows)
+            title.SetResourceReference(TextBlock.ForegroundProperty, key != null && Library.Key(t) == key ? "AccentBrush" : "TextBrush");
     }
 
     FrameworkElement TrackRow(Track t, IList<Track> context, int index, string contextName, RowOrigin? origin, bool showIndex = true)
@@ -452,7 +452,7 @@ public partial class MainWindow
             heart.Foreground = now ? Res("AccentBrush") : Res("TextBrush");
             heart.Opacity = 1;
         }, 32, 13);
-        if (fav) heart.Foreground = Res("AccentBrush");
+        if (fav) heart.SetResourceReference(Control.ForegroundProperty, "AccentBrush");
         heart.Opacity = fav ? 1 : 0;
         var more = RoundButton("", "More", () => { }, 32, 13);
         more.Opacity = 0;
