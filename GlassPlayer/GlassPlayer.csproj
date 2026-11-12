@@ -1,0 +1,29 @@
+<Project Sdk="Microsoft.NET.Sdk">
+  <PropertyGroup>
+    <OutputType>WinExe</OutputType>
+    <TargetFramework>net8.0-windows10.0.19041.0</TargetFramework>
+    <UseWPF>true</UseWPF>
+    <PlatformTarget>x64</PlatformTarget>
+    <Nullable>enable</Nullable>
+    <ImplicitUsings>enable</ImplicitUsings>
+    <RootNamespace>GlassPlayer</RootNamespace>
+    <AssemblyName>LiquidCloud</AssemblyName>
+    <ApplicationIcon>LiquidCloud.ico</ApplicationIcon>
+    <Product>LiquidCloud</Product>
+    <!-- lower memory use: workstation GC without the background GC thread, keeps the heap small -->
+    <ServerGarbageCollection>false</ServerGarbageCollection>
+    <ConcurrentGarbageCollection>false</ConcurrentGarbageCollection>
+    <TieredPGO>true</TieredPGO>
+  </PropertyGroup>
+  <ItemGroup>
+    <PackageReference Include="System.Security.Cryptography.ProtectedData" Version="8.0.0" />
+    <PackageReference Include="Microsoft.Web.WebView2" Version="1.0.*" />
+    <PackageReference Include="LibVLCSharp" Version="3.*" />
+    <PackageReference Include="VideoLAN.LibVLC.Windows" Version="3.*" />
+    <PackageReference Include="TagLibSharp" Version="2.*" />
+    <PackageReference Include="XamlAnimatedGif" Version="2.*" />
+    <PackageReference Include="DiscordRichPresence" Version="1.*" />
+    <Resource Include="LiquidCloud.ico" />
+    <None Update="config.json" CopyToOutputDirectory="PreserveNewest" CopyToPublishDirectory="PreserveNewest" />
+  </ItemGroup>
+</Project>
