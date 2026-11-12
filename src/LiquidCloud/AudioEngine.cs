@@ -1,3 +1,4 @@
+using System.Collections.Generic;
 using System;
 using System.IO;
 using System.Threading.Tasks;
@@ -34,7 +35,7 @@ class AudioEngine : IAudioOutput, IDisposable
             {
                 Core.Initialize();
                 var l = new LibVLC("--no-video", "--quiet", "--no-stats", "--no-osd", "--no-snapshot-preview", "--no-sub-autodetect-file", "--no-media-library");
-                l.Log += (_, e) => { if (e.Level == LogLevel.Error) Log(e.Message); };
+                l.Log += (_, e) => { if (e.Level == LogLevel.Error) VlcError(e.Message); };
                 var p = new LibVLCSharp.Shared.MediaPlayer(l);
                 p.EndReached += (_, _) => ui.InvokeAsync(() => { if (usingVlc) Ended?.Invoke(); });
                 p.EncounteredError += (_, _) => ui.InvokeAsync(() => { if (usingVlc) Fallback("VLC reported an error"); });
@@ -50,6 +51,18 @@ class AudioEngine : IAudioOutput, IDisposable
     }
 
     static void Log(string msg) => LiquidCloud.Log.Info("Audio", msg);
+
+    // VLC repeats the same error many times a second (e.g. no sound device): log each distinct message at most once a minute
+    static readonly Dictionary<string, DateTime> vlcSeen = new();
+    static void VlcError(string msg)
+    {
+        lock (vlcSeen)
+        {
+            if (vlcSeen.TryGetValue(msg, out var last) && DateTime.UtcNow - last < TimeSpan.FromMinutes(1)) return;
+            vlcSeen[msg] = DateTime.UtcNow;
+        }
+        LiquidCloud.Log.Warn("Audio", "VLC: " + msg);
+    }
 
     /// <summary>Releases VLC (native memory and audio device) when the app closes.</summary>
     public void Dispose()

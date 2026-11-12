@@ -28,7 +28,14 @@ jobs:
           if (-not $p.WaitForExit(300000)) { $p.Kill(); Write-Host "Self-check hung"; exit 2 }
           Write-Host "Exit code: $($p.ExitCode)"
           if (Test-Path artifacts\smoke\results.txt) { Get-Content artifacts\smoke\results.txt } else { Write-Host "no results.txt" }
-          Get-ChildItem artifacts\smoke-data -Recurse -Filter *.log | ForEach-Object { Write-Host "---- $($_.FullName)"; Get-Content $_.FullName -Tail 80 }
+          Get-ChildItem artifacts\smoke-data -Recurse -Filter *.log | ForEach-Object { Write-Host "---- $($_.FullName)"; Select-String -Path $_.FullName -Pattern "WARN |ERROR" | ForEach-Object { $_.Line } }
+          # screenshots as text, so they can be inspected from the job log too
+          Get-ChildItem artifacts\smoke -Filter *.png | ForEach-Object {
+            $b = [Convert]::ToBase64String([IO.File]::ReadAllBytes($_.FullName))
+            Write-Host "@@PNG $($_.Name)"
+            for ($i = 0; $i -lt $b.Length; $i += 3000) { Write-Host ("@@" + $b.Substring($i, [Math]::Min(3000, $b.Length - $i))) }
+            Write-Host "@@END"
+          }
           exit $p.ExitCode
 
       - uses: actions/upload-artifact@v4
