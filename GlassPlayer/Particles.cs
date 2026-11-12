@@ -12,7 +12,7 @@ public class ParticleLayer : FrameworkElement
 
     P[] ps = Array.Empty<P>();
     readonly Random rnd = new();
-    readonly DispatcherTimer timer = new(DispatcherPriority.Render) { Interval = TimeSpan.FromMilliseconds(33) };
+    readonly DispatcherTimer timer = new(DispatcherPriority.Render) { Interval = TimeSpan.FromMilliseconds(42) }; // ~24 fps
     DateTime last = DateTime.UtcNow;
     double t;
     string shape = "Dots";

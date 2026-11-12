@@ -33,7 +33,7 @@ class AudioEngine
             try
             {
                 Core.Initialize();
-                var l = new LibVLC("--no-video", "--quiet");
+                var l = new LibVLC("--no-video", "--quiet", "--no-stats", "--no-osd", "--no-snapshot-preview", "--no-sub-autodetect-file", "--no-media-library");
                 l.Log += (_, e) => { if (e.Level == LogLevel.Error) Log(e.Message); };
                 var p = new LibVLCSharp.Shared.MediaPlayer(l);
                 p.EndReached += (_, _) => ui.InvokeAsync(() => { if (usingVlc) Ended?.Invoke(); });

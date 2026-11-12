@@ -251,7 +251,6 @@ public partial class MainWindow
         var card = new StackPanel { Width = CardW, Cursor = Cursors.Hand, Background = Brushes.Transparent };
         var coverGrid = new Grid();
         var cover = Cover(t.Art, CardW, Radius("CardRadius"));
-        cover.Effect = (System.Windows.Media.Effects.Effect)FindResource("SoftShadow");
         coverGrid.Children.Add(cover);
 
         // play button rises in on hover
@@ -259,7 +258,7 @@ public partial class MainWindow
         {
             Width = 44, Height = 44, CornerRadius = new CornerRadius(22), Background = Res("AccentBrush"),
             HorizontalAlignment = HorizontalAlignment.Right, VerticalAlignment = VerticalAlignment.Bottom, Margin = new Thickness(0, 0, 10, 10),
-            Opacity = 0, Child = Glyph("", 16, "OnAccentBrush"), Effect = (System.Windows.Media.Effects.Effect)FindResource("SoftShadow")
+            Opacity = 0, Child = Glyph("", 16, "OnAccentBrush")
         };
         var (_, playMove) = Motion.Transforms(play);
         playMove.Y = 8;
@@ -290,7 +289,6 @@ public partial class MainWindow
         var card = new StackPanel { Width = CardW, Cursor = Cursors.Hand, Background = Brushes.Transparent };
         var coverGrid = new Grid();
         var cover = Cover(art, CardW, Radius("CardRadius"), glyph, fallback, round);
-        cover.Effect = (System.Windows.Media.Effects.Effect)FindResource("SoftShadow");
         coverGrid.Children.Add(cover);
         if (play != null)
         {
@@ -329,8 +327,7 @@ public partial class MainWindow
         bg.Freeze();
         var tile = new Border
         {
-            Width = 200, Height = 104, CornerRadius = Radius("CardRadius"), Background = bg, Cursor = Cursors.Hand, ClipToBounds = true,
-            Effect = (System.Windows.Media.Effects.Effect)FindResource("SoftShadow")
+            Width = 200, Height = 104, CornerRadius = Radius("CardRadius"), Background = bg, Cursor = Cursors.Hand, ClipToBounds = true
         };
         var g = new Grid();
         g.Children.Add(new Border { Background = Res("GlassSheen"), CornerRadius = tile.CornerRadius });
@@ -575,7 +572,9 @@ public partial class MainWindow
     static void Shimmer(UIElement el)
     {
         if (Motion.Reduced) return;
-        el.BeginAnimation(UIElement.OpacityProperty, new DoubleAnimation(.45, 1, TimeSpan.FromSeconds(.9)) { AutoReverse = true, RepeatBehavior = RepeatBehavior.Forever, EasingFunction = Motion.InOut });
+        var a = new DoubleAnimation(.45, 1, TimeSpan.FromSeconds(.9)) { AutoReverse = true, RepeatBehavior = RepeatBehavior.Forever, EasingFunction = Motion.InOut };
+        Timeline.SetDesiredFrameRate(a, 24);
+        el.BeginAnimation(UIElement.OpacityProperty, a);
     }
 
     FrameworkElement EmptyState(string glyph, string title, string text, string? actionText = null, Action? action = null)

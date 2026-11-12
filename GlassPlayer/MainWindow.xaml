@@ -15,6 +15,7 @@
         <!-- ===== background layers ===== -->
         <Border x:Name="BgBase" Background="{DynamicResource BgBaseBrush}" IsHitTestVisible="False"/>
         <Grid x:Name="Ambient" IsHitTestVisible="False">
+            <Grid.CacheMode><BitmapCache RenderAtScale="0.5"/></Grid.CacheMode>
             <Ellipse Width="820" Height="820" HorizontalAlignment="Left" VerticalAlignment="Top" Margin="-320,-380,0,0" Fill="{DynamicResource Blob1Brush}">
                 <Ellipse.RenderTransform><TranslateTransform x:Name="Blob1T"/></Ellipse.RenderTransform>
             </Ellipse>
@@ -26,6 +27,7 @@
             <Image.Effect><BlurEffect x:Name="BgBlurFx" Radius="0" KernelType="Gaussian"/></Image.Effect>
         </Image>
         <Image x:Name="Glow" Stretch="UniformToFill" Opacity="0" IsHitTestVisible="False">
+            <Image.CacheMode><BitmapCache RenderAtScale="0.35"/></Image.CacheMode>
             <Image.Effect><BlurEffect Radius="120"/></Image.Effect>
         </Image>
         <Border x:Name="BgDim" Background="Black" Opacity="0" IsHitTestVisible="False"/>
@@ -70,6 +72,10 @@
                     <ColumnDefinition x:Name="GapCol2" Width="12"/>
                     <ColumnDefinition x:Name="NowCol" Width="380"/>
                 </Grid.ColumnDefinitions>
+
+                <Border x:Name="SideShadow" Style="{StaticResource PanelShadow}"/>
+                <Border x:Name="CenterShadow" Grid.Column="2" Style="{StaticResource PanelShadow}"/>
+                <Border x:Name="NowShadow" Grid.Column="4" Style="{StaticResource PanelShadow}"/>
 
                 <!-- sidebar -->
                 <Border x:Name="Sidebar" Style="{StaticResource Glass}" Padding="10,16">

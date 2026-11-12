@@ -61,7 +61,7 @@ sealed class AudioMeter
 public class LevelBars : FrameworkElement
 {
     readonly AudioMeter meter = new();
-    readonly DispatcherTimer timer = new(DispatcherPriority.Render) { Interval = TimeSpan.FromMilliseconds(33) };
+    readonly DispatcherTimer timer = new(DispatcherPriority.Render) { Interval = TimeSpan.FromMilliseconds(50) }; // 20 fps is plenty for level bars
     readonly double[] bars = new double[28];
     readonly double[] speed = new double[28];
     readonly Random rnd = new();

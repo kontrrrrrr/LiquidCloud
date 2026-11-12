@@ -23,6 +23,8 @@ public partial class MainWindow
     readonly List<AnimationClock> blobClocks = new();
     readonly DispatcherTimer saveTimer = new() { Interval = TimeSpan.FromMilliseconds(600) };
     bool lastLive = true;
+    readonly DispatcherTimer idleTrim = new() { Interval = TimeSpan.FromSeconds(20) };
+    bool idleTrimHooked;
     ThemeDef? previewTheme; // the theme editor shows changes live before you save
     string? activeThemeId;  // the theme in use right now (cfg.Theme is the default one used at startup)
 
@@ -31,8 +33,17 @@ public partial class MainWindow
 
     ThemeDef CurrentTheme => previewTheme ?? ThemeStore.Find(activeThemeId ?? cfg.Theme);
 
+    /// <summary>Level bars and the play-button pulse run only while music plays and LiquidCloud is in front.</summary>
+    void UpdateLiveBits()
+    {
+        bool live = WindowState != WindowState.Minimized && (IsActive || !cfg.PauseWhenInactive);
+        Bars.Running = playing && live && !expanded && !miniMode;
+        UpdatePlayRing(live);
+    }
+
     void InitLook()
     {
+        if (!idleTrimHooked) { idleTrim.Tick += (_, _) => { idleTrim.Stop(); if (!IsActive) TrimMemory(); }; idleTrimHooked = true; }
         saveTimer.Tick += (_, _) => { saveTimer.Stop(); cfg.Save(); };
         ConfigureParticles();
         ApplyBackground();
@@ -120,6 +131,7 @@ public partial class MainWindow
         var soft = new DropShadowEffect { BlurRadius = 26, ShadowDepth = 6, Direction = 270, Opacity = Math.Clamp(th.Shadow * .85, 0, 1) };
         soft.Freeze();
         AppRes["SoftShadow"] = soft;
+        AppRes["ShadowBrush"] = Solid(A(Colors.Black, Math.Clamp(th.Shadow, 0, 1) * (lightUi ? .45 : .85)));
 
         // "blur" softens everything behind the glass (wallpaper and light blobs)
         bool hasBg = BgImage.Visibility == Visibility.Visible;
@@ -255,6 +267,7 @@ public partial class MainWindow
                 RepeatBehavior = RepeatBehavior.Forever,
                 EasingFunction = new SineEase { EasingMode = EasingMode.EaseInOut }
             };
+            Timeline.SetDesiredFrameRate(a, 20); // slow drift: 20 fps looks the same and costs a third
             var clock = a.CreateClock();
             target.ApplyAnimationClock(prop, clock);
             blobClocks.Add(clock);
@@ -284,7 +297,7 @@ public partial class MainWindow
         bool live = visible && (IsActive || !cfg.PauseWhenInactive);
 
         Particles.Running = live && cfg.ParticlesOn && !Motion.Reduced;
-        Bars.Running = playing && visible;
+        UpdateLiveBits();
 
         if (live != lastLive)
         {

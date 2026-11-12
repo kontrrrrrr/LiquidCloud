@@ -92,8 +92,9 @@ public partial class MainWindow : Window
         AllowDrop = true;
         Drop += (_, e) => { if (e.Data.GetData(DataFormats.FileDrop) is string[] paths) AddLocal(paths); };
 
-        Activated += (_, _) => ApplyActivity();
-        Deactivated += (_, _) => ApplyActivity();
+        // working in other windows for a while: hand unused memory back to Windows
+        Activated += (_, _) => { idleTrim.Stop(); ApplyActivity(); };
+        Deactivated += (_, _) => { ApplyActivity(); idleTrim.Stop(); idleTrim.Start(); };
         StateChanged += (_, _) => ApplyActivity();
     }
 
@@ -424,16 +425,27 @@ public partial class MainWindow : Window
         double scale = on ? 1.0 : 0.9; // cover swells while playing, settles when paused
         Motion.To(ArtScale, ScaleTransform.ScaleXProperty, scale, Motion.Morph, Motion.Spring);
         Motion.To(ArtScale, ScaleTransform.ScaleYProperty, scale, Motion.Morph, Motion.Spring);
-        Bars.Running = on;
+        UpdateLiveBits();
+    }
 
-        // soft pulsing ring around the play button while music plays
-        if (on && !Motion.Reduced)
+    bool ringOn;
+
+    /// <summary>Soft pulsing ring around the play button: only while playing and LiquidCloud is in front, at 30 fps.</summary>
+    void UpdatePlayRing(bool live)
+    {
+        bool want = playing && live && !Motion.Reduced && !miniMode;
+        if (want == ringOn) return;
+        ringOn = want;
+        if (want)
         {
             var dur = TimeSpan.FromSeconds(1.9);
             var grow = new DoubleAnimation(1, 1.42, dur) { RepeatBehavior = RepeatBehavior.Forever, EasingFunction = Motion.Standard };
+            var fade = new DoubleAnimation(.6, 0, dur) { RepeatBehavior = RepeatBehavior.Forever };
+            Timeline.SetDesiredFrameRate(grow, 30);
+            Timeline.SetDesiredFrameRate(fade, 30);
             PlayRingScale.BeginAnimation(ScaleTransform.ScaleXProperty, grow);
             PlayRingScale.BeginAnimation(ScaleTransform.ScaleYProperty, grow);
-            PlayRing.BeginAnimation(OpacityProperty, new DoubleAnimation(.6, 0, dur) { RepeatBehavior = RepeatBehavior.Forever });
+            PlayRing.BeginAnimation(OpacityProperty, fade);
         }
         else
         {

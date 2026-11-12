@@ -22,6 +22,7 @@
         <SolidColorBrush x:Key="Blob2Brush" Color="#4038D1FF"/>
         <SolidColorBrush x:Key="BgBaseBrush" Color="#050A18"/>
         <SolidColorBrush x:Key="SkeletonBrush" Color="#1AFFFFFF"/>
+        <SolidColorBrush x:Key="ShadowBrush" Color="#52000000"/>
         <LinearGradientBrush x:Key="GlassFill" StartPoint="0,0" EndPoint="1,1">
             <GradientStop Color="#22CFE6FF" Offset="0"/>
             <GradientStop Color="#08FFFFFF" Offset="1"/>
@@ -53,12 +54,25 @@
             <Setter Property="Background" Value="{DynamicResource GlassFill}"/>
             <Setter Property="BorderBrush" Value="{DynamicResource GlassEdge}"/>
             <Setter Property="BorderThickness" Value="1"/>
-            <Setter Property="Effect" Value="{DynamicResource GlassShadow}"/>
+        </Style>
+        <!-- static shadow drawn once behind a panel (cached), so animations inside panels stay cheap -->
+        <Style x:Key="PanelShadow" TargetType="Border">
+            <Setter Property="CornerRadius" Value="{DynamicResource GlassRadius}"/>
+            <Setter Property="BorderBrush" Value="{DynamicResource ShadowBrush}"/>
+            <Setter Property="BorderThickness" Value="22"/>
+            <Setter Property="Background" Value="Transparent"/>
+            <Setter Property="Margin" Value="-2,10,-2,-12"/>
+            <Setter Property="IsHitTestVisible" Value="False"/>
+            <Setter Property="Effect">
+                <Setter.Value><BlurEffect Radius="36" KernelType="Gaussian" RenderingBias="Performance"/></Setter.Value>
+            </Setter>
+            <Setter Property="CacheMode">
+                <Setter.Value><BitmapCache RenderAtScale="0.5"/></Setter.Value>
+            </Setter>
         </Style>
         <Style x:Key="GlassRaised" TargetType="Border" BasedOn="{StaticResource Glass}">
             <Setter Property="Background" Value="{DynamicResource GlassFillRaised}"/>
             <Setter Property="CornerRadius" Value="{DynamicResource CardRadius}"/>
-            <Setter Property="Effect" Value="{DynamicResource SoftShadow}"/>
         </Style>
 
         <!-- ===== buttons ===== -->

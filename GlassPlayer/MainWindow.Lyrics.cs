@@ -124,6 +124,7 @@ public partial class MainWindow
         });
 
         NormalView.IsHitTestVisible = !on;
+        Bars.Running = playing && !on && IsActive; // level bars are hidden behind the lyrics / queue
         ExpandedView.IsHitTestVisible = on;
         Motion.To(NormalView, OpacityProperty, on ? 0 : 1, on ? Motion.Fast + 60 : Motion.Slow);
         Motion.To(ExpandedView, OpacityProperty, on ? 1 : 0, on ? Motion.Slow + 120 : Motion.Fast + 60);
