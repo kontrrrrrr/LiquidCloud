@@ -605,6 +605,17 @@
                 </Setter.Value>
             </Setter>
         </Style>
+        <!-- keyboard focus on code-built rows and cards: a soft accent outline -->
+        <Style x:Key="FocusRing">
+            <Setter Property="Control.Template">
+                <Setter.Value>
+                    <ControlTemplate>
+                        <Rectangle Margin="-3" RadiusX="12" RadiusY="12" Stroke="{DynamicResource AccentBrush}" StrokeThickness="2" SnapsToDevicePixels="True"/>
+                    </ControlTemplate>
+                </Setter.Value>
+            </Setter>
+        </Style>
+
         <Style TargetType="ToolTip">
             <Setter Property="Foreground" Value="{DynamicResource TextBrush}"/>
             <Setter Property="HasDropShadow" Value="False"/>

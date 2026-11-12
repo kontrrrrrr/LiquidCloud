@@ -683,7 +683,6 @@ public partial class MainWindow
         var sp = new StackPanel { Margin = new Thickness(24, 0, 0, 0), VerticalAlignment = VerticalAlignment.Bottom };
         sp.Children.Add(Txt(eyebrow.ToUpperInvariant(), 11, FontWeights.SemiBold, "AccentBrush"));
         var t = Txt(title, 34, FontWeights.SemiBold, "TextBrush", true);
-        t.MaxHeight = 96; // two lines at most
         t.FontFamily = new FontFamily("Segoe UI Variable Display, Segoe UI");
         t.TextWrapping = TextWrapping.Wrap;
         t.MaxHeight = 96;

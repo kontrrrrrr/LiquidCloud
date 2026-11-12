@@ -309,6 +309,7 @@ public partial class MainWindow
         card.MouseRightButtonUp += (_, e) => { e.Handled = true; OpenMenu(TrackMenu(t, context, index, contextName, null), card); };
         MakeDraggable(card, t);
         card.ToolTip = $"{t.Title}\n{t.Artist}";
+        Accessible(card, $"{t.Title}, {t.Artist}", () => PlayContext(context, index, contextName), () => TrackMenu(t, context, index, contextName, null));
         return card;
     }
 
@@ -344,7 +345,29 @@ public partial class MainWindow
         Motion.Hoverable(card, 1.025, -4);
         card.MouseLeftButtonUp += (_, _) => open();
         if (menu != null) card.MouseRightButtonUp += (_, e) => { e.Handled = true; if (menu() is { } m) OpenMenu(m, card); };
+        Accessible(card, string.IsNullOrEmpty(subtitle) ? title : $"{title}, {subtitle}", open, menu);
         return card;
+    }
+
+    /// <summary>
+    /// Keyboard and screen-reader support for code-built rows and cards: Tab reaches them, Enter/Space opens or plays,
+    /// the context-menu key (or Shift+F10) opens the menu, and the name is read out by Narrator.
+    /// </summary>
+    void Accessible(FrameworkElement el, string name, Action activate, Func<ContextMenu?>? menu = null)
+    {
+        el.Focusable = true;
+        KeyboardNavigation.SetIsTabStop(el, true);
+        System.Windows.Automation.AutomationProperties.SetName(el, name);
+        el.FocusVisualStyle = (Style)FindResource("FocusRing");
+        el.KeyDown += (_, e) =>
+        {
+            if (e.Key is Key.Enter or Key.Space) { e.Handled = true; activate(); }
+            else if (menu != null && (e.Key == Key.Apps || (e.Key == Key.F10 && System.Windows.Input.Keyboard.Modifiers == ModifierKeys.Shift)))
+            {
+                e.Handled = true;
+                if (menu() is { } m) OpenMenu(m, el);
+            }
+        };
     }
 
     /// <summary>Big colorful tile for genres and categories.</summary>
@@ -479,6 +502,7 @@ public partial class MainWindow
         row.MouseLeftButtonUp += (_, e) => { if (e.OriginalSource is DependencyObject d && FindParent<Button>(d) != null) return; PlayContext(context, index, contextName); };
         row.MouseRightButtonUp += (_, e) => { e.Handled = true; OpenMenu(TrackMenu(t, context, index, contextName, origin), row); };
         MakeDraggable(row, t, origin is { Editable: true } ? index : -1);
+        Accessible(row, $"{t.Title}, {t.Artist}", () => PlayContext(context, index, contextName), () => TrackMenu(t, context, index, contextName, origin));
         return row;
     }
 
