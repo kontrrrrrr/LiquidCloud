@@ -47,7 +47,7 @@ public sealed class ImageCache
 
     /// <summary>The app's cache, downloading over HTTPS.</summary>
     public static ImageCache CreateDefault(string localDir, Func<bool> offline) =>
-        new(Path.Combine(localDir, "images"), (url, ct) => Http.GetByteArrayAsync(url, ct), offline);
+        new(System.IO.Path.Combine(localDir, "images"), (url, ct) => Http.GetByteArrayAsync(url, ct), offline);
 
     public string PathFor(string url) => System.IO.Path.Combine(dir, Convert.ToHexString(SHA256.HashData(Encoding.UTF8.GetBytes(url)))[..32] + ".img");
 
