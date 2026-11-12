@@ -10,8 +10,33 @@ jobs:
       - uses: actions/setup-dotnet@v4
         with:
           dotnet-version: '8.0.x'
+
       - name: Publish
-        run: dotnet publish GlassPlayer/GlassPlayer.csproj -c Release -r win-x64 --self-contained true -p:PublishReadyToRun=true -o LiquidCloud
+        id: publish
+        run: dotnet publish src/LiquidCloud/LiquidCloud.csproj -c Release -r win-x64 --self-contained true -p:PublishReadyToRun=true -o LiquidCloud
+
+      - name: Unit tests (queue, player, themes, image cache — no network, no window)
+        run: dotnet test tests/LiquidCloud.Tests/LiquidCloud.Tests.csproj -c Release --logger "trx;LogFileName=tests.trx" --logger "console;verbosity=normal" --results-directory artifacts/tests
+
+      - name: Self-check (real window, offline, generated audio)
+        if: always() && steps.publish.outcome == 'success'
+        shell: pwsh
+        run: |
+          $env:LIQUIDCLOUD_DATA = "$PWD\artifacts\smoke-data"
+          $env:LIQUIDCLOUD_SMOKE_OUT = "$PWD\artifacts\smoke"
+          $p = Start-Process -FilePath ".\LiquidCloud\LiquidCloud.exe" -ArgumentList "--smoke","--offline" -PassThru
+          if (-not $p.WaitForExit(300000)) { $p.Kill(); Write-Host "Self-check hung"; exit 2 }
+          Write-Host "Exit code: $($p.ExitCode)"
+          if (Test-Path artifacts\smoke\results.txt) { Get-Content artifacts\smoke\results.txt } else { Write-Host "no results.txt" }
+          Get-ChildItem artifacts\smoke-data -Recurse -Filter *.log | ForEach-Object { Write-Host "---- $($_.FullName)"; Get-Content $_.FullName -Tail 80 }
+          exit $p.ExitCode
+
+      - uses: actions/upload-artifact@v4
+        if: always()
+        with:
+          name: LiquidCloud-checks
+          path: artifacts
+
       - uses: actions/upload-artifact@v4
         with:
           name: LiquidCloud-win-x64

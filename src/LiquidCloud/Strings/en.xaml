@@ -1,0 +1,51 @@
+<ResourceDictionary xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+                    xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+                    xmlns:sys="clr-namespace:System;assembly=mscorlib">
+    <!-- English: only the XAML ids; code falls back to its English source text. -->
+    <sys:String xml:space="preserve" x:Key="T_UpNext">Up next</sys:String>
+    <sys:String xml:space="preserve" x:Key="T_Position">Position</sys:String>
+    <sys:String xml:space="preserve" x:Key="T_Shuffle">Shuffle (S)</sys:String>
+    <sys:String xml:space="preserve" x:Key="T_Previous">Previous (Ctrl+←)</sys:String>
+    <sys:String xml:space="preserve" x:Key="T_PlayPause">Play / pause (Space)</sys:String>
+    <sys:String xml:space="preserve" x:Key="T_Next">Next</sys:String>
+    <sys:String xml:space="preserve" x:Key="T_Mute">Mute (M)</sys:String>
+    <sys:String xml:space="preserve" x:Key="T_Volume">Volume</sys:String>
+    <sys:String xml:space="preserve" x:Key="T_Back">Back (Alt+←)</sys:String>
+    <sys:String xml:space="preserve" x:Key="T_Forward">Forward (Alt+→)</sys:String>
+    <sys:String xml:space="preserve" x:Key="T_Close">Close</sys:String>
+    <sys:String xml:space="preserve" x:Key="T_Minimize">Minimize</sys:String>
+    <sys:String xml:space="preserve" x:Key="T_Maximize">Maximize</sys:String>
+    <sys:String xml:space="preserve" x:Key="T_SearchHint">Search SoundCloud: songs, artists, albums, playlists  (Ctrl+K)</sys:String>
+    <sys:String xml:space="preserve" x:Key="T_MiniPlayer">Mini player (Ctrl+M)</sys:String>
+    <sys:String xml:space="preserve" x:Key="T_FullPlayer">Full-window player (F11)</sys:String>
+    <sys:String xml:space="preserve" x:Key="T_Settings">Settings</sys:String>
+    <sys:String xml:space="preserve" x:Key="T_Home">Home</sys:String>
+    <sys:String xml:space="preserve" x:Key="T_Discover">Discover</sys:String>
+    <sys:String xml:space="preserve" x:Key="T_Library">Library</sys:String>
+    <sys:String xml:space="preserve" x:Key="T_SoundCloudWeb">SoundCloud web</sys:String>
+    <sys:String xml:space="preserve" x:Key="T_Themes">Themes</sys:String>
+    <sys:String xml:space="preserve" x:Key="T_Playlists">PLAYLISTS</sys:String>
+    <sys:String xml:space="preserve" x:Key="T_NewPlaylist">New playlist</sys:String>
+    <sys:String xml:space="preserve" x:Key="T_SignInSc">Sign in to SoundCloud</sys:String>
+    <sys:String xml:space="preserve" x:Key="T_SignInScHint">Likes, feed and playlists</sys:String>
+    <sys:String xml:space="preserve" x:Key="T_WebBack">Back</sys:String>
+    <sys:String xml:space="preserve" x:Key="T_WebForward">Forward</sys:String>
+    <sys:String xml:space="preserve" x:Key="T_Reload">Reload</sys:String>
+    <sys:String xml:space="preserve" x:Key="T_PlayThisPage">▶  Play this page in LiquidCloud</sys:String>
+    <sys:String xml:space="preserve" x:Key="T_TabPlaying">Playing</sys:String>
+    <sys:String xml:space="preserve" x:Key="T_TabLyrics">Lyrics</sys:String>
+    <sys:String xml:space="preserve" x:Key="T_TabQueue">Up next</sys:String>
+    <sys:String xml:space="preserve" x:Key="T_BackToCover">Back to cover</sys:String>
+    <sys:String xml:space="preserve" x:Key="T_PlayingFrom">Playing from</sys:String>
+    <sys:String xml:space="preserve" x:Key="T_Clear">Clear</sys:String>
+    <sys:String xml:space="preserve" x:Key="T_ClearQueueTip">Remove everything after the current song</sys:String>
+    <sys:String xml:space="preserve" x:Key="T_AddToPlaylist">Add to playlist</sys:String>
+    <sys:String xml:space="preserve" x:Key="T_BackToWindow">Back to the full window</sys:String>
+    <sys:String xml:space="preserve" x:Key="T_Accounts">ACCOUNTS</sys:String>
+    <sys:String xml:space="preserve" x:Key="T_Connect">Connect</sys:String>
+    <sys:String xml:space="preserve" x:Key="T_ScAndYt">SoundCloud and YouTube Music</sys:String>
+    <sys:String xml:space="preserve" x:Key="T_CloseSettings">Close settings (Esc)</sys:String>
+    <sys:String xml:space="preserve" x:Key="T_Like">Add to favorites (L)</sys:String>
+    <sys:String xml:space="preserve" x:Key="T_Repeat">Repeat (R)</sys:String>
+    <sys:String xml:space="preserve" x:Key="T_Seek">Position in the song</sys:String>
+</ResourceDictionary>

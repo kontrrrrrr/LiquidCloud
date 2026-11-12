@@ -1,0 +1,28 @@
+<Project Sdk="Microsoft.NET.Sdk">
+  <PropertyGroup>
+    <TargetFramework>net8.0-windows10.0.19041.0</TargetFramework>
+    <UseWPF>true</UseWPF>
+    <Nullable>enable</Nullable>
+    <ImplicitUsings>enable</ImplicitUsings>
+    <IsPackable>false</IsPackable>
+    <PlatformTarget>x64</PlatformTarget>
+    <RootNamespace>LiquidCloud.Tests</RootNamespace>
+  </PropertyGroup>
+  <ItemGroup>
+    <PackageReference Include="Microsoft.NET.Test.Sdk" Version="17.*" />
+    <PackageReference Include="xunit" Version="2.*" />
+    <PackageReference Include="xunit.runner.visualstudio" Version="2.*" />
+  </ItemGroup>
+  <!-- the tests compile the app's logic files directly: no WPF window, no network, no audio device needed -->
+  <ItemGroup>
+    <Compile Include="..\..\src\LiquidCloud\Core\PlayQueue.cs" Link="App\PlayQueue.cs" />
+    <Compile Include="..\..\src\LiquidCloud\Core\PlayerService.cs" Link="App\PlayerService.cs" />
+    <Compile Include="..\..\src\LiquidCloud\Core\ThemeStore.cs" Link="App\ThemeStore.cs" />
+    <Compile Include="..\..\src\LiquidCloud\Core\ThemeService.cs" Link="App\ThemeService.cs" />
+    <Compile Include="..\..\src\LiquidCloud\Core\ImageCache.cs" Link="App\ImageCache.cs" />
+    <Compile Include="..\..\src\LiquidCloud\Core\Model.cs" Link="App\Model.cs" />
+    <Compile Include="..\..\src\LiquidCloud\Core\Log.cs" Link="App\Log.cs" />
+    <Compile Include="..\..\src\LiquidCloud\Core\Loc.cs" Link="App\Loc.cs" />
+    <Compile Include="..\..\src\LiquidCloud\Core\AppEnv.cs" Link="App\AppEnv.cs" />
+  </ItemGroup>
+</Project>

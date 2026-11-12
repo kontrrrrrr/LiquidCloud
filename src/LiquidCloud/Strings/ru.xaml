@@ -1,0 +1,539 @@
+<ResourceDictionary xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+                    xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+                    xmlns:sys="clr-namespace:System;assembly=mscorlib">
+    <!-- Russian interface text. Keys: the English source text (code) or T_* ids (XAML). -->
+    <sys:String xml:space="preserve" x:Key="T_UpNext">Очередь</sys:String>
+    <sys:String xml:space="preserve" x:Key="T_Position">Позиция</sys:String>
+    <sys:String xml:space="preserve" x:Key="T_Shuffle">Перемешать (S)</sys:String>
+    <sys:String xml:space="preserve" x:Key="T_Previous">Предыдущий (Ctrl+←)</sys:String>
+    <sys:String xml:space="preserve" x:Key="T_PlayPause">Воспроизвести / пауза (пробел)</sys:String>
+    <sys:String xml:space="preserve" x:Key="T_Next">Следующий трек</sys:String>
+    <sys:String xml:space="preserve" x:Key="T_Mute">Без звука (M)</sys:String>
+    <sys:String xml:space="preserve" x:Key="T_Volume">Громкость</sys:String>
+    <sys:String xml:space="preserve" x:Key="T_Back">Назад (Alt+←)</sys:String>
+    <sys:String xml:space="preserve" x:Key="T_Forward">Вперёд (Alt+→)</sys:String>
+    <sys:String xml:space="preserve" x:Key="T_Close">Закрыть</sys:String>
+    <sys:String xml:space="preserve" x:Key="T_Minimize">Свернуть</sys:String>
+    <sys:String xml:space="preserve" x:Key="T_Maximize">Развернуть</sys:String>
+    <sys:String xml:space="preserve" x:Key="T_SearchHint">Поиск по SoundCloud: треки, исполнители, альбомы, плейлисты  (Ctrl+K)</sys:String>
+    <sys:String xml:space="preserve" x:Key="T_MiniPlayer">Мини-плеер (Ctrl+M)</sys:String>
+    <sys:String xml:space="preserve" x:Key="T_FullPlayer">Плеер на всё окно (F11)</sys:String>
+    <sys:String xml:space="preserve" x:Key="T_Settings">Настройки</sys:String>
+    <sys:String xml:space="preserve" x:Key="T_Home">Главная</sys:String>
+    <sys:String xml:space="preserve" x:Key="T_Discover">Обзор</sys:String>
+    <sys:String xml:space="preserve" x:Key="T_Library">Медиатека</sys:String>
+    <sys:String xml:space="preserve" x:Key="T_SoundCloudWeb">Сайт SoundCloud</sys:String>
+    <sys:String xml:space="preserve" x:Key="T_Themes">Темы</sys:String>
+    <sys:String xml:space="preserve" x:Key="T_Playlists">ПЛЕЙЛИСТЫ</sys:String>
+    <sys:String xml:space="preserve" x:Key="T_NewPlaylist">Новый плейлист</sys:String>
+    <sys:String xml:space="preserve" x:Key="T_SignInSc">Войти в SoundCloud</sys:String>
+    <sys:String xml:space="preserve" x:Key="T_SignInScHint">Лайки, лента и плейлисты</sys:String>
+    <sys:String xml:space="preserve" x:Key="T_WebBack">Назад</sys:String>
+    <sys:String xml:space="preserve" x:Key="T_WebForward">Вперёд</sys:String>
+    <sys:String xml:space="preserve" x:Key="T_Reload">Обновить</sys:String>
+    <sys:String xml:space="preserve" x:Key="T_PlayThisPage">▶  Слушать эту страницу в LiquidCloud</sys:String>
+    <sys:String xml:space="preserve" x:Key="T_TabPlaying">Сейчас</sys:String>
+    <sys:String xml:space="preserve" x:Key="T_TabLyrics">Текст</sys:String>
+    <sys:String xml:space="preserve" x:Key="T_TabQueue">Очередь</sys:String>
+    <sys:String xml:space="preserve" x:Key="T_BackToCover">Назад к обложке</sys:String>
+    <sys:String xml:space="preserve" x:Key="T_PlayingFrom">Играет из</sys:String>
+    <sys:String xml:space="preserve" x:Key="T_Clear">Очистить</sys:String>
+    <sys:String xml:space="preserve" x:Key="T_ClearQueueTip">Убрать всё после текущего трека</sys:String>
+    <sys:String xml:space="preserve" x:Key="T_AddToPlaylist">В плейлист</sys:String>
+    <sys:String xml:space="preserve" x:Key="T_BackToWindow">Вернуться к полному окну</sys:String>
+    <sys:String xml:space="preserve" x:Key="T_Accounts">АККАУНТЫ</sys:String>
+    <sys:String xml:space="preserve" x:Key="T_Connect">Подключить</sys:String>
+    <sys:String xml:space="preserve" x:Key="T_ScAndYt">SoundCloud и YouTube Music</sys:String>
+    <sys:String xml:space="preserve" x:Key="T_CloseSettings">Закрыть настройки (Esc)</sys:String>
+    <sys:String xml:space="preserve" x:Key="T_Like">В избранное (L)</sys:String>
+    <sys:String xml:space="preserve" x:Key="T_Repeat">Повтор (R)</sys:String>
+    <sys:String xml:space="preserve" x:Key="T_Seek">Позиция в треке</sys:String>
+    <sys:String xml:space="preserve" x:Key="&quot;Hi, …&quot; intro when LiquidCloud opens">Заставка «Привет, …» при запуске LiquidCloud</sys:String>
+    <sys:String xml:space="preserve" x:Key="&quot;{0}&quot; is your default theme">«{0}» теперь тема по умолчанию</sys:String>
+    <sys:String xml:space="preserve" x:Key="A whole folder…">Целую папку…</sys:String>
+    <sys:String xml:space="preserve" x:Key="APPEARANCE">ОФОРМЛЕНИЕ</sys:String>
+    <sys:String xml:space="preserve" x:Key="Accent">Акцент</sys:String>
+    <sys:String xml:space="preserve" x:Key="Add DISCORD_CLIENT_ID to config.json first (see README), then restart LiquidCloud.">Сначала добавьте DISCORD_CLIENT_ID в config.json (см. README), затем перезапустите LiquidCloud.</sys:String>
+    <sys:String xml:space="preserve" x:Key="Add SPOTIFY_CLIENT_ID to config.json to turn it on.">Добавьте SPOTIFY_CLIENT_ID в config.json, чтобы включить.</sys:String>
+    <sys:String xml:space="preserve" x:Key="Add a description (optional)">Добавьте описание (необязательно)</sys:String>
+    <sys:String xml:space="preserve" x:Key="Add a folder…">Добавить папку…</sys:String>
+    <sys:String xml:space="preserve" x:Key="Add all to playlist">Всё в плейлист</sys:String>
+    <sys:String xml:space="preserve" x:Key="Add files from this PC…">Добавить файлы с компьютера…</sys:String>
+    <sys:String xml:space="preserve" x:Key="Add from this PC">Добавить с компьютера</sys:String>
+    <sys:String xml:space="preserve" x:Key="Add songs from any song's menu (Add to playlist), or drag songs onto it in the sidebar.">Добавляйте треки через меню трека («В плейлист») или перетаскивайте их на плейлист в боковой панели.</sys:String>
+    <sys:String xml:space="preserve" x:Key="Add to favorite artists">В избранные исполнители</sys:String>
+    <sys:String xml:space="preserve" x:Key="Add to favorites">В избранное</sys:String>
+    <sys:String xml:space="preserve" x:Key="Add to favorites (L)">В избранное (L)</sys:String>
+    <sys:String xml:space="preserve" x:Key="Add to playlist">В плейлист</sys:String>
+    <sys:String xml:space="preserve" x:Key="Add to queue">В очередь</sys:String>
+    <sys:String xml:space="preserve" x:Key="Added to &quot;{0}&quot; · saved on SoundCloud">Добавлено в «{0}» · сохранено на SoundCloud</sys:String>
+    <sys:String xml:space="preserve" x:Key="Added to favorites {0}">Добавлено в избранное {0}</sys:String>
+    <sys:String xml:space="preserve" x:Key="Added to queue">Добавлено в очередь</sys:String>
+    <sys:String xml:space="preserve" x:Key="Added {0} to &quot;{1}&quot; · saved in LiquidCloud">Добавлено в «{1}»: {0} · сохранено в LiquidCloud</sys:String>
+    <sys:String xml:space="preserve" x:Key="Added {0} to the queue">В очередь добавлено: {0}</sys:String>
+    <sys:String xml:space="preserve" x:Key="Adding a SoundCloud song to favorites also likes it on your SoundCloud account">Добавление трека SoundCloud в избранное ставит лайк и в вашем аккаунте SoundCloud</sys:String>
+    <sys:String xml:space="preserve" x:Key="Adjust">Настроить</sys:String>
+    <sys:String xml:space="preserve" x:Key="Album">Альбом</sys:String>
+    <sys:String xml:space="preserve" x:Key="Album on SoundCloud · by {0}">Альбом на SoundCloud · {0}</sys:String>
+    <sys:String xml:space="preserve" x:Key="Albums">Альбомы</sys:String>
+    <sys:String xml:space="preserve" x:Key="Albums &amp; playlists">Альбомы и плейлисты</sys:String>
+    <sys:String xml:space="preserve" x:Key="All files">Все файлы</sys:String>
+    <sys:String xml:space="preserve" x:Key="All tracks">Все треки</sys:String>
+    <sys:String xml:space="preserve" x:Key="Already in &quot;{0}&quot;">Уже есть в «{0}»</sys:String>
+    <sys:String xml:space="preserve" x:Key="Ambient">Эмбиент</sys:String>
+    <sys:String xml:space="preserve" x:Key="Ambient glow">Фоновое свечение</sys:String>
+    <sys:String xml:space="preserve" x:Key="Amount">Количество</sys:String>
+    <sys:String xml:space="preserve" x:Key="Animation speed">Скорость анимаций</sys:String>
+    <sys:String xml:space="preserve" x:Key="Approve LiquidCloud in your browser…">Разрешите доступ LiquidCloud в браузере…</sys:String>
+    <sys:String xml:space="preserve" x:Key="Artist">Исполнитель</sys:String>
+    <sys:String xml:space="preserve" x:Key="Artist not found">Исполнитель не найден</sys:String>
+    <sys:String xml:space="preserve" x:Key="Artists">Исполнители</sys:String>
+    <sys:String xml:space="preserve" x:Key="Artists you favorite or play a lot appear here.">Здесь появятся избранные и часто слушаемые исполнители.</sys:String>
+    <sys:String xml:space="preserve" x:Key="Audio files">Аудиофайлы</sys:String>
+    <sys:String xml:space="preserve" x:Key="Audio files…">Аудиофайлы…</sys:String>
+    <sys:String xml:space="preserve" x:Key="Autoplay next track">Автовоспроизведение следующего трека</sys:String>
+    <sys:String xml:space="preserve" x:Key="BACKGROUND PICTURE">ФОНОВАЯ КАРТИНКА</sys:String>
+    <sys:String xml:space="preserve" x:Key="Background">Фон</sys:String>
+    <sys:String xml:space="preserve" x:Key="Based on &quot;{0}&quot;">На основе «{0}»</sys:String>
+    <sys:String xml:space="preserve" x:Key="Because you listen to {0}">Потому что вы слушаете {0}</sys:String>
+    <sys:String xml:space="preserve" x:Key="Blur">Размытие</sys:String>
+    <sys:String xml:space="preserve" x:Key="Blur behind glass">Размытие за стеклом</sys:String>
+    <sys:String xml:space="preserve" x:Key="Blur the cover art into the background">Размытая обложка трека на фоне</sys:String>
+    <sys:String xml:space="preserve" x:Key="Bubbles">Пузыри</sys:String>
+    <sys:String xml:space="preserve" x:Key="Built-in">Встроенная</sys:String>
+    <sys:String xml:space="preserve" x:Key="Buttons and sliders take their color from your wallpaper">Кнопки и ползунки берут цвет из фоновой картинки</sys:String>
+    <sys:String xml:space="preserve" x:Key="COLORS">ЦВЕТА</sys:String>
+    <sys:String xml:space="preserve" x:Key="Cancel">Отмена</sys:String>
+    <sys:String xml:space="preserve" x:Key="Changes discarded">Изменения отменены</sys:String>
+    <sys:String xml:space="preserve" x:Key="Changes you make here save to SoundCloud">Изменения здесь сохраняются на SoundCloud</sys:String>
+    <sys:String xml:space="preserve" x:Key="Choose cover…">Выбрать обложку…</sys:String>
+    <sys:String xml:space="preserve" x:Key="Choose image or GIF…">Выбрать картинку или GIF…</sys:String>
+    <sys:String xml:space="preserve" x:Key="Classical">Классика</sys:String>
+    <sys:String xml:space="preserve" x:Key="Clear">Очистить</sys:String>
+    <sys:String xml:space="preserve" x:Key="Clear history">Очистить историю</sys:String>
+    <sys:String xml:space="preserve" x:Key="Clear image cache">Очистить кэш картинок</sys:String>
+    <sys:String xml:space="preserve" x:Key="Clear listening history">Очистить историю прослушивания</sys:String>
+    <sys:String xml:space="preserve" x:Key="Clear listening history?">Очистить историю прослушивания?</sys:String>
+    <sys:String xml:space="preserve" x:Key="Clear search history">Очистить историю поиска</sys:String>
+    <sys:String xml:space="preserve" x:Key="Click to switch. Right-click for more.">Щелчок — переключить. Правый щелчок — другие действия.</sys:String>
+    <sys:String xml:space="preserve" x:Key="Collection">Подборка</sys:String>
+    <sys:String xml:space="preserve" x:Key="Connect">Подключить</sys:String>
+    <sys:String xml:space="preserve" x:Key="Connect your Premium account to play full tracks.">Подключите аккаунт Premium, чтобы слушать треки целиком.</sys:String>
+    <sys:String xml:space="preserve" x:Key="Connected">Подключено</sys:String>
+    <sys:String xml:space="preserve" x:Key="Continue listening">Продолжить прослушивание</sys:String>
+    <sys:String xml:space="preserve" x:Key="Copied from SoundCloud ({0})">Скопировано с SoundCloud ({0})</sys:String>
+    <sys:String xml:space="preserve" x:Key="Copy link">Копировать ссылку</sys:String>
+    <sys:String xml:space="preserve" x:Key="Copy set">Скопировать</sys:String>
+    <sys:String xml:space="preserve" x:Key="Corner radius">Скругление углов</sys:String>
+    <sys:String xml:space="preserve" x:Key="Couldn't copy: another app is using the clipboard">Не удалось скопировать: буфер обмена занят другим приложением</sys:String>
+    <sys:String xml:space="preserve" x:Key="Couldn't download this track.">Не удалось скачать трек.</sys:String>
+    <sys:String xml:space="preserve" x:Key="Couldn't export: {0}">Не удалось экспортировать: {0}</sys:String>
+    <sys:String xml:space="preserve" x:Key="Couldn't load the background: {0}">Не удалось загрузить фон: {0}</sys:String>
+    <sys:String xml:space="preserve" x:Key="Couldn't load this track. Try another one.">Не удалось загрузить трек. Попробуйте другой.</sys:String>
+    <sys:String xml:space="preserve" x:Key="Couldn't load your profile. Sign out and connect again.">Не удалось загрузить профиль. Выйдите и подключитесь снова.</sys:String>
+    <sys:String xml:space="preserve" x:Key="Couldn't open SoundCloud: {0} (Microsoft Edge WebView2 Runtime is needed.)">Не удалось открыть SoundCloud: {0} (нужен Microsoft Edge WebView2 Runtime.)</sys:String>
+    <sys:String xml:space="preserve" x:Key="Couldn't play this track.">Не удалось воспроизвести трек.</sys:String>
+    <sys:String xml:space="preserve" x:Key="Couldn't play this track: {0}">Не удалось воспроизвести трек: {0}</sys:String>
+    <sys:String xml:space="preserve" x:Key="Couldn't reach SoundCloud.">Не удалось связаться с SoundCloud.</sys:String>
+    <sys:String xml:space="preserve" x:Key="Couldn't reach SoundCloud. Check your connection and try again.">Не удалось связаться с SoundCloud. Проверьте подключение и попробуйте снова.</sys:String>
+    <sys:String xml:space="preserve" x:Key="Couldn't save your settings: {0}">Не удалось сохранить настройки: {0}</sys:String>
+    <sys:String xml:space="preserve" x:Key="Couldn't start playback. Check that your Spotify Premium is active, then try again.">Не удалось начать воспроизведение. Проверьте, что Spotify Premium активен, и попробуйте снова.</sys:String>
+    <sys:String xml:space="preserve" x:Key="Couldn't start the music helper.">Не удалось запустить музыкальный помощник.</sys:String>
+    <sys:String xml:space="preserve" x:Key="Couldn't use that image: {0}">Не удалось использовать изображение: {0}</sys:String>
+    <sys:String xml:space="preserve" x:Key="Cover: made from the songs">Обложка: из обложек треков</sys:String>
+    <sys:String xml:space="preserve" x:Key="Covers and avatars are kept on disk so they load instantly offline: {0} MB now.">Обложки и аватары хранятся на диске, чтобы открываться мгновенно и без сети: сейчас {0} МБ.</sys:String>
+    <sys:String xml:space="preserve" x:Key="Create">Создать</sys:String>
+    <sys:String xml:space="preserve" x:Key="Create a playlist with +, or drag songs here later.">Создайте плейлист кнопкой + или перетащите сюда треки.</sys:String>
+    <sys:String xml:space="preserve" x:Key="Create on SoundCloud">Создать на SoundCloud</sys:String>
+    <sys:String xml:space="preserve" x:Key="Create one from any song's menu: Add to playlist → New SoundCloud playlist.">Создайте его из меню любого трека: «В плейлист» → «Новый плейлист SoundCloud».</sys:String>
+    <sys:String xml:space="preserve" x:Key="Created &quot;{0}&quot; on SoundCloud">Плейлист «{0}» создан на SoundCloud</sys:String>
+    <sys:String xml:space="preserve" x:Key="Created &quot;{0}&quot; · saved in LiquidCloud">Плейлист «{0}» создан · сохранён в LiquidCloud</sys:String>
+    <sys:String xml:space="preserve" x:Key="Custom cover: {0}">Своя обложка: {0}</sys:String>
+    <sys:String xml:space="preserve" x:Key="DIAGNOSTICS">ДИАГНОСТИКА</sys:String>
+    <sys:String xml:space="preserve" x:Key="Darken">Затемнение</sys:String>
+    <sys:String xml:space="preserve" x:Key="Default">По умолчанию</sys:String>
+    <sys:String xml:space="preserve" x:Key="Delete">Удалить</sys:String>
+    <sys:String xml:space="preserve" x:Key="Delete &quot;{0}&quot;?">Удалить «{0}»?</sys:String>
+    <sys:String xml:space="preserve" x:Key="Delete playlist">Удалить плейлист</sys:String>
+    <sys:String xml:space="preserve" x:Key="Delete playlist…">Удалить плейлист…</sys:String>
+    <sys:String xml:space="preserve" x:Key="Deleted &quot;{0}&quot;">«{0}» удалён</sys:String>
+    <sys:String xml:space="preserve" x:Key="Description">Описание</sys:String>
+    <sys:String xml:space="preserve" x:Key="Details saved to:">Подробности сохранены в:</sys:String>
+    <sys:String xml:space="preserve" x:Key="Discord desktop app must be running. Your status shows &quot;LiquidCloud&quot;.">Должно быть запущено приложение Discord. В статусе будет «LiquidCloud».</sys:String>
+    <sys:String xml:space="preserve" x:Key="Discover">Обзор</sys:String>
+    <sys:String xml:space="preserve" x:Key="Dots">Точки</sys:String>
+    <sys:String xml:space="preserve" x:Key="Drag songs to reorder.">Перетаскивайте треки, чтобы изменить порядок.</sys:String>
+    <sys:String xml:space="preserve" x:Key="Drum &amp; Bass">Драм-н-бейс</sys:String>
+    <sys:String xml:space="preserve" x:Key="Dubstep">Дабстеп</sys:String>
+    <sys:String xml:space="preserve" x:Key="Duplicate and edit">Дублировать и изменить</sys:String>
+    <sys:String xml:space="preserve" x:Key="Edit">Изменить</sys:String>
+    <sys:String xml:space="preserve" x:Key="Edit details…">Изменить данные…</sys:String>
+    <sys:String xml:space="preserve" x:Key="Edit playlist">Изменить плейлист</sys:String>
+    <sys:String xml:space="preserve" x:Key="Edit theme">Изменить тему</sys:String>
+    <sys:String xml:space="preserve" x:Key="Electronic">Электроника</sys:String>
+    <sys:String xml:space="preserve" x:Key="End of the queue">Очередь закончилась</sys:String>
+    <sys:String xml:space="preserve" x:Key="Everything you've saved, played and collected.">Всё, что вы сохранили, слушали и собрали.</sys:String>
+    <sys:String xml:space="preserve" x:Key="Exit full-window player (F11)">Выйти из полноэкранного плеера (F11)</sys:String>
+    <sys:String xml:space="preserve" x:Key="Explore genres">Жанры</sys:String>
+    <sys:String xml:space="preserve" x:Key="Exported &quot;{0}&quot;">«{0}» экспортирована</sys:String>
+    <sys:String xml:space="preserve" x:Key="Export…">Экспорт…</sys:String>
+    <sys:String xml:space="preserve" x:Key="Favorite artist">Избранный исполнитель</sys:String>
+    <sys:String xml:space="preserve" x:Key="Favorite artist ✓">Избранный исполнитель ✓</sys:String>
+    <sys:String xml:space="preserve" x:Key="Favorite artists">Избранные исполнители</sys:String>
+    <sys:String xml:space="preserve" x:Key="Favorite tracks">Избранные треки</sys:String>
+    <sys:String xml:space="preserve" x:Key="Favorites">Избранное</sys:String>
+    <sys:String xml:space="preserve" x:Key="Feed">Лента</sys:String>
+    <sys:String xml:space="preserve" x:Key="Files from this PC">Файлы с компьютера</sys:String>
+    <sys:String xml:space="preserve" x:Key="Find music">Найти музыку</sys:String>
+    <sys:String xml:space="preserve" x:Key="Find something in Discover">Найдите музыку в «Обзоре»</sys:String>
+    <sys:String xml:space="preserve" x:Key="Finding similar songs…">Ищу похожие треки…</sys:String>
+    <sys:String xml:space="preserve" x:Key="Follow artists on SoundCloud to fill your feed.">Подпишитесь на исполнителей на SoundCloud, чтобы заполнить ленту.</sys:String>
+    <sys:String xml:space="preserve" x:Key="For Spotify, paste a playlist link.">Для Spotify вставьте ссылку на плейлист.</sys:String>
+    <sys:String xml:space="preserve" x:Key="Free plan. Playback needs Premium">Бесплатный тариф. Для воспроизведения нужен Premium</sys:String>
+    <sys:String xml:space="preserve" x:Key="Fresh finds near &quot;{0}&quot;">Свежие находки рядом с «{0}»</sys:String>
+    <sys:String xml:space="preserve" x:Key="Fresh uploads in electronic music">Свежие релизы электронной музыки</sys:String>
+    <sys:String xml:space="preserve" x:Key="From a link">По ссылке</sys:String>
+    <sys:String xml:space="preserve" x:Key="From this PC">С этого компьютера</sys:String>
+    <sys:String xml:space="preserve" x:Key="Full-window player (F11)">Плеер на всё окно (F11)</sys:String>
+    <sys:String xml:space="preserve" x:Key="GLASS &amp; LIGHT">СТЕКЛО И СВЕТ</sys:String>
+    <sys:String xml:space="preserve" x:Key="Genre">Жанр</sys:String>
+    <sys:String xml:space="preserve" x:Key="Genres &amp; moods">Жанры и настроения</sys:String>
+    <sys:String xml:space="preserve" x:Key="Glass opacity">Непрозрачность стекла</sys:String>
+    <sys:String xml:space="preserve" x:Key="Glass tint">Оттенок стекла</sys:String>
+    <sys:String xml:space="preserve" x:Key="Glow intensity">Яркость свечения</sys:String>
+    <sys:String xml:space="preserve" x:Key="Go to artist">К исполнителю</sys:String>
+    <sys:String xml:space="preserve" x:Key="Good afternoon">Добрый день</sys:String>
+    <sys:String xml:space="preserve" x:Key="Good evening">Добрый вечер</sys:String>
+    <sys:String xml:space="preserve" x:Key="Good morning">Доброе утро</sys:String>
+    <sys:String xml:space="preserve" x:Key="Good night">Доброй ночи</sys:String>
+    <sys:String xml:space="preserve" x:Key="Gradient angle">Угол градиента</sys:String>
+    <sys:String xml:space="preserve" x:Key="Gradient end">Конец градиента</sys:String>
+    <sys:String xml:space="preserve" x:Key="Gradient start">Начало градиента</sys:String>
+    <sys:String xml:space="preserve" x:Key="Hi there.">Привет.</sys:String>
+    <sys:String xml:space="preserve" x:Key="Hi, {0}.">Привет, {0}.</sys:String>
+    <sys:String xml:space="preserve" x:Key="Hip-hop &amp; Rap">Хип-хоп и рэп</sys:String>
+    <sys:String xml:space="preserve" x:Key="History">История</sys:String>
+    <sys:String xml:space="preserve" x:Key="History cleared">История очищена</sys:String>
+    <sys:String xml:space="preserve" x:Key="History: {0}">История: {0}</sys:String>
+    <sys:String xml:space="preserve" x:Key="House">Хаус</sys:String>
+    <sys:String xml:space="preserve" x:Key="Image cache cleared">Кэш картинок очищен</sys:String>
+    <sys:String xml:space="preserve" x:Key="Images and GIFs">Изображения и GIF</sys:String>
+    <sys:String xml:space="preserve" x:Key="Imported &quot;{0}&quot;">«{0}» импортирована</sys:String>
+    <sys:String xml:space="preserve" x:Key="Import…">Импорт…</sys:String>
+    <sys:String xml:space="preserve" x:Key="Indie">Инди</sys:String>
+    <sys:String xml:space="preserve" x:Key="Interface language">Язык интерфейса</sys:String>
+    <sys:String xml:space="preserve" x:Key="It may have been deleted.">Возможно, он был удалён.</sys:String>
+    <sys:String xml:space="preserve" x:Key="Jazz">Джаз</sys:String>
+    <sys:String xml:space="preserve" x:Key="KEYBOARD">КЛАВИАТУРА</sys:String>
+    <sys:String xml:space="preserve" x:Key="Keep SoundCloud web loaded">Держать сайт SoundCloud загруженным</sys:String>
+    <sys:String xml:space="preserve" x:Key="Keep playing similar songs">Продолжать похожими треками</sys:String>
+    <sys:String xml:space="preserve" x:Key="LANGUAGE">ЯЗЫК</sys:String>
+    <sys:String xml:space="preserve" x:Key="LIBRARY">МЕДИАТЕКА</sys:String>
+    <sys:String xml:space="preserve" x:Key="LYRICS">ТЕКСТЫ ПЕСЕН</sys:String>
+    <sys:String xml:space="preserve" x:Key="Let's find your music">Давайте найдём вашу музыку</sys:String>
+    <sys:String xml:space="preserve" x:Key="Library">Медиатека</sys:String>
+    <sys:String xml:space="preserve" x:Key="Like &quot;{0}&quot;">Похоже на «{0}»</sys:String>
+    <sys:String xml:space="preserve" x:Key="Like on SoundCloud too">Лайкать и на SoundCloud</sys:String>
+    <sys:String xml:space="preserve" x:Key="Liked playlists">Понравившиеся плейлисты</sys:String>
+    <sys:String xml:space="preserve" x:Key="Likes">Лайки</sys:String>
+    <sys:String xml:space="preserve" x:Key="Likes, feed and playlists">Лайки, лента и плейлисты</sys:String>
+    <sys:String xml:space="preserve" x:Key="Link copied">Ссылка скопирована</sys:String>
+    <sys:String xml:space="preserve" x:Key="LiquidCloud ran into a problem:">В LiquidCloud произошла ошибка:</sys:String>
+    <sys:String xml:space="preserve" x:Key="LiquidCloud theme">Тема LiquidCloud</sys:String>
+    <sys:String xml:space="preserve" x:Key="Live preview">Живой предпросмотр</sys:String>
+    <sys:String xml:space="preserve" x:Key="Lo-fi">Лоу-фай</sys:String>
+    <sys:String xml:space="preserve" x:Key="Loading from SoundCloud…">Загрузка с SoundCloud…</sys:String>
+    <sys:String xml:space="preserve" x:Key="Loading lyrics…">Загружаю текст…</sys:String>
+    <sys:String xml:space="preserve" x:Key="Loading your SoundCloud playlists…">Загружаю ваши плейлисты SoundCloud…</sys:String>
+    <sys:String xml:space="preserve" x:Key="Loading…">Загрузка…</sys:String>
+    <sys:String xml:space="preserve" x:Key="Lyrics are read from audio files, so they aren't available for Spotify.">Тексты берутся из аудиофайлов, поэтому для Spotify они недоступны.</sys:String>
+    <sys:String xml:space="preserve" x:Key="Lyrics are read from the song file itself (its tags), or from a .lrc file with the same name next to it. Timed .lrc lyrics follow the music.">Текст берётся из самого аудиофайла (теги) или из .lrc-файла с тем же именем рядом. Синхронизированный .lrc идёт вместе с музыкой.</sys:String>
+    <sys:String xml:space="preserve" x:Key="MOTION">АНИМАЦИЯ</sys:String>
+    <sys:String xml:space="preserve" x:Key="Made for you">Для вас</sys:String>
+    <sys:String xml:space="preserve" x:Key="Main light">Основной свет</sys:String>
+    <sys:String xml:space="preserve" x:Key="Make LiquidCloud yours. Changes preview live; save to keep them.">Сделайте LiquidCloud своим. Изменения видны сразу — сохраните, чтобы оставить их.</sys:String>
+    <sys:String xml:space="preserve" x:Key="Making your {0} mix…">Собираю микс: {0}…</sys:String>
+    <sys:String xml:space="preserve" x:Key="Match accent to the background picture">Акцент по цвету фона</sys:String>
+    <sys:String xml:space="preserve" x:Key="Mix">Микс</sys:String>
+    <sys:String xml:space="preserve" x:Key="Mixes around the artists you play most">Миксы на основе любимых исполнителей</sys:String>
+    <sys:String xml:space="preserve" x:Key="More">Ещё</sys:String>
+    <sys:String xml:space="preserve" x:Key="More from {0}">Ещё от {0}</sys:String>
+    <sys:String xml:space="preserve" x:Key="More songs">Ещё треки</sys:String>
+    <sys:String xml:space="preserve" x:Key="Move on to the next song when one ends">Переходить к следующему треку, когда текущий закончится</sys:String>
+    <sys:String xml:space="preserve" x:Key="My theme">Моя тема</sys:String>
+    <sys:String xml:space="preserve" x:Key="Name">Название</sys:String>
+    <sys:String xml:space="preserve" x:Key="New LiquidCloud playlist…">Новый плейлист LiquidCloud…</sys:String>
+    <sys:String xml:space="preserve" x:Key="New SoundCloud playlist">Новый плейлист SoundCloud</sys:String>
+    <sys:String xml:space="preserve" x:Key="New SoundCloud playlist…">Новый плейлист SoundCloud…</sys:String>
+    <sys:String xml:space="preserve" x:Key="New discoveries">Новые открытия</sys:String>
+    <sys:String xml:space="preserve" x:Key="New in hip-hop">Новое в хип-хопе</sys:String>
+    <sys:String xml:space="preserve" x:Key="New in {0}">Новое: {0}</sys:String>
+    <sys:String xml:space="preserve" x:Key="New playlist">Новый плейлист</sys:String>
+    <sys:String xml:space="preserve" x:Key="New theme">Новая тема</sys:String>
+    <sys:String xml:space="preserve" x:Key="New this week">Новое за неделю</sys:String>
+    <sys:String xml:space="preserve" x:Key="Nice afternoon, isn't it?">Прекрасный день, правда?</sys:String>
+    <sys:String xml:space="preserve" x:Key="Nice evening, isn't it?">Прекрасный вечер, правда?</sys:String>
+    <sys:String xml:space="preserve" x:Key="Nice morning, isn't it?">Прекрасное утро, правда?</sys:String>
+    <sys:String xml:space="preserve" x:Key="Nice night, isn't it?">Прекрасная ночь, правда?</sys:String>
+    <sys:String xml:space="preserve" x:Key="No SoundCloud playlists">Нет плейлистов SoundCloud</sys:String>
+    <sys:String xml:space="preserve" x:Key="No Spotify device found. Open the Spotify app on this PC, then try again.">Устройство Spotify не найдено. Откройте приложение Spotify на этом компьютере и попробуйте снова.</sys:String>
+    <sys:String xml:space="preserve" x:Key="No artists yet">Исполнителей пока нет</sys:String>
+    <sys:String xml:space="preserve" x:Key="No audio files found">Аудиофайлы не найдены</sys:String>
+    <sys:String xml:space="preserve" x:Key="No connection">Нет подключения</sys:String>
+    <sys:String xml:space="preserve" x:Key="No favorites yet">В избранном пока пусто</sys:String>
+    <sys:String xml:space="preserve" x:Key="No likes yet">Лайков пока нет</sys:String>
+    <sys:String xml:space="preserve" x:Key="No lyrics for this song.">Для этого трека нет текста.</sys:String>
+    <sys:String xml:space="preserve" x:Key="No lyrics in this file. Add them to the song's tags, or put a .lrc file with the same name next to it.">В этом файле нет текста. Добавьте его в теги трека или положите рядом .lrc-файл с тем же именем.</sys:String>
+    <sys:String xml:space="preserve" x:Key="No results">Ничего не найдено</sys:String>
+    <sys:String xml:space="preserve" x:Key="No songs found">Треки не найдены</sys:String>
+    <sys:String xml:space="preserve" x:Key="No songs to show.">Нет треков для показа.</sys:String>
+    <sys:String xml:space="preserve" x:Key="No tracks">Треков нет</sys:String>
+    <sys:String xml:space="preserve" x:Key="Not changed on SoundCloud. {0}">На SoundCloud ничего не изменилось. {0}</sys:String>
+    <sys:String xml:space="preserve" x:Key="Not connected">Не подключено</sys:String>
+    <sys:String xml:space="preserve" x:Key="Not saved to SoundCloud. {0}">Не сохранено на SoundCloud. {0}</sys:String>
+    <sys:String xml:space="preserve" x:Key="Not saved. {0}">Не сохранено. {0}</sys:String>
+    <sys:String xml:space="preserve" x:Key="Nothing added yet">Пока ничего не добавлено</sys:String>
+    <sys:String xml:space="preserve" x:Key="Nothing found at that link">По этой ссылке ничего не найдено</sys:String>
+    <sys:String xml:space="preserve" x:Key="Nothing here">Здесь пусто</sys:String>
+    <sys:String xml:space="preserve" x:Key="Nothing here right now">Здесь пока пусто</sys:String>
+    <sys:String xml:space="preserve" x:Key="Nothing on SoundCloud matches “{0}”.">На SoundCloud нет ничего по запросу «{0}».</sys:String>
+    <sys:String xml:space="preserve" x:Key="Nothing playable here">Здесь нечего воспроизвести</sys:String>
+    <sys:String xml:space="preserve" x:Key="Nothing playable in this playlist">В этом плейлисте нечего воспроизвести</sys:String>
+    <sys:String xml:space="preserve" x:Key="Nothing playable on this page. Open a song, playlist or profile.">На этой странице нечего воспроизвести. Откройте трек, плейлист или профиль.</sys:String>
+    <sys:String xml:space="preserve" x:Key="Nothing played yet">Вы ещё ничего не слушали</sys:String>
+    <sys:String xml:space="preserve" x:Key="Nothing playing">Ничего не играет</sys:String>
+    <sys:String xml:space="preserve" x:Key="ON SOUNDCLOUD">НА SOUNDCLOUD</sys:String>
+    <sys:String xml:space="preserve" x:Key="ON YOUR SOUNDCLOUD">В ВАШЕМ SOUNDCLOUD</sys:String>
+    <sys:String xml:space="preserve" x:Key="On SoundCloud">На SoundCloud</sys:String>
+    <sys:String xml:space="preserve" x:Key="On this PC">На этом компьютере</sys:String>
+    <sys:String xml:space="preserve" x:Key="Only YouTube and SoundCloud links are supported.">Поддерживаются только ссылки YouTube и SoundCloud.</sys:String>
+    <sys:String xml:space="preserve" x:Key="Open Discover">Открыть «Обзор»</sys:String>
+    <sys:String xml:space="preserve" x:Key="Open Spotify when needed">Открывать Spotify при необходимости</sys:String>
+    <sys:String xml:space="preserve" x:Key="Open log folder">Открыть папку журналов</sys:String>
+    <sys:String xml:space="preserve" x:Key="Open on SoundCloud">Открыть на SoundCloud</sys:String>
+    <sys:String xml:space="preserve" x:Key="Open on {0}">Открыть в {0}</sys:String>
+    <sys:String xml:space="preserve" x:Key="Open theme studio">Открыть студию тем</sys:String>
+    <sys:String xml:space="preserve" x:Key="Opening link…">Открываю ссылку…</sys:String>
+    <sys:String xml:space="preserve" x:Key="Opens faster, but uses more memory while you're not on that page">Открывается быстрее, но расходует больше памяти, пока вы на другой странице</sys:String>
+    <sys:String xml:space="preserve" x:Key="Otherwise particles are white">Иначе частицы белые</sys:String>
+    <sys:String xml:space="preserve" x:Key="PARTICLES">ЧАСТИЦЫ</sys:String>
+    <sys:String xml:space="preserve" x:Key="PERFORMANCE">ПРОИЗВОДИТЕЛЬНОСТЬ</sys:String>
+    <sys:String xml:space="preserve" x:Key="PLAYBACK">ВОСПРОИЗВЕДЕНИЕ</sys:String>
+    <sys:String xml:space="preserve" x:Key="PLAYLISTS">ПЛЕЙЛИСТЫ</sys:String>
+    <sys:String xml:space="preserve" x:Key="PNG, JPG, JPEG or animated GIF.">PNG, JPG, JPEG или анимированный GIF.</sys:String>
+    <sys:String xml:space="preserve" x:Key="Particles, GIF, light and level bars stop while you use other windows. Music keeps playing">Частицы, GIF, свечение и индикатор уровня замирают, пока вы в других окнах. Музыка продолжает играть</sys:String>
+    <sys:String xml:space="preserve" x:Key="Pause effects when LiquidCloud isn't focused">Останавливать эффекты, когда LiquidCloud не активен</sys:String>
+    <sys:String xml:space="preserve" x:Key="Paused · {0}">Пауза · {0}</sys:String>
+    <sys:String xml:space="preserve" x:Key="Phonk">Фонк</sys:String>
+    <sys:String xml:space="preserve" x:Key="Pick up where you left off, or find something new.">Продолжите с того места, где остановились, или найдите что-то новое.</sys:String>
+    <sys:String xml:space="preserve" x:Key="Play">Слушать</sys:String>
+    <sys:String xml:space="preserve" x:Key="Play in LiquidCloud when I press play on SoundCloud web">Играть в LiquidCloud, когда я нажимаю «play» на сайте SoundCloud</sys:String>
+    <sys:String xml:space="preserve" x:Key="Play next">Играть следующим</sys:String>
+    <sys:String xml:space="preserve" x:Key="Play popular">Слушать популярное</sys:String>
+    <sys:String xml:space="preserve" x:Key="Play set">Слушать</sys:String>
+    <sys:String xml:space="preserve" x:Key="Playing on repeat">Играет по кругу</sys:String>
+    <sys:String xml:space="preserve" x:Key="Playlist">Плейлист</sys:String>
+    <sys:String xml:space="preserve" x:Key="Playlist name">Название плейлиста</sys:String>
+    <sys:String xml:space="preserve" x:Key="Playlist name (it will be private)">Название плейлиста (он будет приватным)</sys:String>
+    <sys:String xml:space="preserve" x:Key="Playlist not found">Плейлист не найден</sys:String>
+    <sys:String xml:space="preserve" x:Key="Playlist on SoundCloud · by {0}">Плейлист на SoundCloud · {0}</sys:String>
+    <sys:String xml:space="preserve" x:Key="Playlist saved in LiquidCloud">Плейлист сохранён в LiquidCloud</sys:String>
+    <sys:String xml:space="preserve" x:Key="Playlist · saved in LiquidCloud">Плейлист · сохранён в LiquidCloud</sys:String>
+    <sys:String xml:space="preserve" x:Key="Playlists">Плейлисты</sys:String>
+    <sys:String xml:space="preserve" x:Key="Plays next">Сыграет следующим</sys:String>
+    <sys:String xml:space="preserve" x:Key="Pop">Поп</sys:String>
+    <sys:String xml:space="preserve" x:Key="Popular">Популярное</sys:String>
+    <sys:String xml:space="preserve" x:Key="Popular artists">Популярные исполнители</sys:String>
+    <sys:String xml:space="preserve" x:Key="Popular in {0}">Популярное: {0}</sys:String>
+    <sys:String xml:space="preserve" x:Key="Popular playlists">Популярные плейлисты</sys:String>
+    <sys:String xml:space="preserve" x:Key="Popular right now">Популярное сейчас</sys:String>
+    <sys:String xml:space="preserve" x:Key="Press play to continue where you left off">Нажмите «play», чтобы продолжить с того же места</sys:String>
+    <sys:String xml:space="preserve" x:Key="Queue cleared">Очередь очищена</sys:String>
+    <sys:String xml:space="preserve" x:Key="R&amp;B &amp; Soul">R&amp;B и соул</sys:String>
+    <sys:String xml:space="preserve" x:Key="RECENT SEARCHES">НЕДАВНИЕ ЗАПРОСЫ</sys:String>
+    <sys:String xml:space="preserve" x:Key="Real SoundCloud results for this genre">Настоящие результаты SoundCloud в этом жанре</sys:String>
+    <sys:String xml:space="preserve" x:Key="Recent searches">Недавние запросы</sys:String>
+    <sys:String xml:space="preserve" x:Key="Recently added">Недавно добавленные</sys:String>
+    <sys:String xml:space="preserve" x:Key="Recently played">Недавно игравшие</sys:String>
+    <sys:String xml:space="preserve" x:Key="Recommended">Рекомендации</sys:String>
+    <sys:String xml:space="preserve" x:Key="Recommended for you">Рекомендации для вас</sys:String>
+    <sys:String xml:space="preserve" x:Key="Reduce motion">Меньше движения</sys:String>
+    <sys:String xml:space="preserve" x:Key="Remember volume">Запоминать громкость</sys:String>
+    <sys:String xml:space="preserve" x:Key="Remove">Убрать</sys:String>
+    <sys:String xml:space="preserve" x:Key="Remove cover">Убрать обложку</sys:String>
+    <sys:String xml:space="preserve" x:Key="Remove from favorites">Убрать из избранного</sys:String>
+    <sys:String xml:space="preserve" x:Key="Remove from favorites (L)">Убрать из избранного (L)</sys:String>
+    <sys:String xml:space="preserve" x:Key="Remove from history">Удалить из истории</sys:String>
+    <sys:String xml:space="preserve" x:Key="Remove from queue">Убрать из очереди</sys:String>
+    <sys:String xml:space="preserve" x:Key="Remove from this SoundCloud playlist">Убрать из этого плейлиста SoundCloud</sys:String>
+    <sys:String xml:space="preserve" x:Key="Remove from this playlist">Убрать из этого плейлиста</sys:String>
+    <sys:String xml:space="preserve" x:Key="Removed from &quot;{0}&quot; · saved in LiquidCloud">Убрано из «{0}» · сохранено в LiquidCloud</sys:String>
+    <sys:String xml:space="preserve" x:Key="Removed from favorites {0}">Убрано из избранного {0}</sys:String>
+    <sys:String xml:space="preserve" x:Key="Removed {0} from favorite artists">{0} убран из избранных исполнителей</sys:String>
+    <sys:String xml:space="preserve" x:Key="Removed · saved on SoundCloud">Убрано · сохранено на SoundCloud</sys:String>
+    <sys:String xml:space="preserve" x:Key="Repeat">Повтор</sys:String>
+    <sys:String xml:space="preserve" x:Key="Repeat all">Повтор всех</sys:String>
+    <sys:String xml:space="preserve" x:Key="Repeat off">Повтор выключен</sys:String>
+    <sys:String xml:space="preserve" x:Key="Repeat this song">Повтор трека</sys:String>
+    <sys:String xml:space="preserve" x:Key="Repeat: all (R)">Повтор: все (R)</sys:String>
+    <sys:String xml:space="preserve" x:Key="Repeat: off (R)">Повтор: выкл. (R)</sys:String>
+    <sys:String xml:space="preserve" x:Key="Repeat: this song (R)">Повтор: этот трек (R)</sys:String>
+    <sys:String xml:space="preserve" x:Key="Results from {0}">Результаты из {0}</sys:String>
+    <sys:String xml:space="preserve" x:Key="Rock">Рок</sys:String>
+    <sys:String xml:space="preserve" x:Key="SAVED IN LIQUIDCLOUD">В LIQUIDCLOUD</sys:String>
+    <sys:String xml:space="preserve" x:Key="SC Feed">Лента SC</sys:String>
+    <sys:String xml:space="preserve" x:Key="SC Likes">Лайки SC</sys:String>
+    <sys:String xml:space="preserve" x:Key="SC Playlists">Плейлисты SC</sys:String>
+    <sys:String xml:space="preserve" x:Key="Save">Сохранить</sys:String>
+    <sys:String xml:space="preserve" x:Key="Save a copy in LiquidCloud">Сохранить копию в LiquidCloud</sys:String>
+    <sys:String xml:space="preserve" x:Key="Save and set as default">Сохранить и сделать по умолчанию</sys:String>
+    <sys:String xml:space="preserve" x:Key="Save as new">Сохранить как новую</sys:String>
+    <sys:String xml:space="preserve" x:Key="Saved &quot;{0}&quot;">«{0}» сохранена</sys:String>
+    <sys:String xml:space="preserve" x:Key="Saved a copy of &quot;{0}&quot; in LiquidCloud ({1})">Копия «{0}» сохранена в LiquidCloud ({1})</sys:String>
+    <sys:String xml:space="preserve" x:Key="Saved in LiquidCloud">Сохранено в LiquidCloud</sys:String>
+    <sys:String xml:space="preserve" x:Key="Saved in LiquidCloud only. SoundCloud: {0}">Сохранено только в LiquidCloud. SoundCloud: {0}</sys:String>
+    <sys:String xml:space="preserve" x:Key="Saving to &quot;{0}&quot; on SoundCloud…">Сохраняю в «{0}» на SoundCloud…</sys:String>
+    <sys:String xml:space="preserve" x:Key="Scroll left">Прокрутить влево</sys:String>
+    <sys:String xml:space="preserve" x:Key="Scroll right">Прокрутить вправо</sys:String>
+    <sys:String xml:space="preserve" x:Key="Search">Поиск</sys:String>
+    <sys:String xml:space="preserve" x:Key="Search SoundCloud for any song, artist or playlist, or explore a genre below. Everything you play and like shows up here.">Ищите на SoundCloud любой трек, исполнителя или плейлист или выберите жанр ниже. Всё, что вы слушаете и лайкаете, появится здесь.</sys:String>
+    <sys:String xml:space="preserve" x:Key="Search history cleared">История поиска очищена</sys:String>
+    <sys:String xml:space="preserve" x:Key="Search the whole of SoundCloud, or browse by genre.">Ищите по всему SoundCloud или выбирайте по жанрам.</sys:String>
+    <sys:String xml:space="preserve" x:Key="Search works out of the box. Sign in to SoundCloud (bottom of the sidebar) for your likes, feed and playlists.">Поиск работает сразу. Войдите в SoundCloud (внизу боковой панели), чтобы видеть лайки, ленту и плейлисты.</sys:String>
+    <sys:String xml:space="preserve" x:Key="Search: {0}">Поиск: {0}</sys:String>
+    <sys:String xml:space="preserve" x:Key="Second light">Второй свет</sys:String>
+    <sys:String xml:space="preserve" x:Key="See all">Все</sys:String>
+    <sys:String xml:space="preserve" x:Key="See your likes, feed and playlists here, and save changes to your SoundCloud playlists.">Смотрите здесь свои лайки, ленту и плейлисты и сохраняйте изменения в плейлистах SoundCloud.</sys:String>
+    <sys:String xml:space="preserve" x:Key="Set as default">Сделать темой по умолчанию</sys:String>
+    <sys:String xml:space="preserve" x:Key="Settings">Настройки</sys:String>
+    <sys:String xml:space="preserve" x:Key="Shadow intensity">Сила тени</sys:String>
+    <sys:String xml:space="preserve" x:Key="Show particles">Показывать частицы</sys:String>
+    <sys:String xml:space="preserve" x:Key="Show what I'm listening to">Показывать, что я слушаю</sys:String>
+    <sys:String xml:space="preserve" x:Key="Shuffle">Перемешать</sys:String>
+    <sys:String xml:space="preserve" x:Key="Shuffle off">Перемешивание выключено</sys:String>
+    <sys:String xml:space="preserve" x:Key="Shuffle on">Перемешивание включено</sys:String>
+    <sys:String xml:space="preserve" x:Key="Shuffle play">Перемешать и слушать</sys:String>
+    <sys:String xml:space="preserve" x:Key="Shuffle set">Перемешать</sys:String>
+    <sys:String xml:space="preserve" x:Key="Sign in">Войти</sys:String>
+    <sys:String xml:space="preserve" x:Key="Sign in on the SoundCloud page. LiquidCloud picks it up automatically.">Войдите на странице SoundCloud — LiquidCloud подхватит вход автоматически.</sys:String>
+    <sys:String xml:space="preserve" x:Key="Sign in to SoundCloud">Войти в SoundCloud</sys:String>
+    <sys:String xml:space="preserve" x:Key="Sign in to SoundCloud first.">Сначала войдите в SoundCloud.</sys:String>
+    <sys:String xml:space="preserve" x:Key="Sign out">Выйти</sys:String>
+    <sys:String xml:space="preserve" x:Key="Sign out of SoundCloud">Выйти из SoundCloud</sys:String>
+    <sys:String xml:space="preserve" x:Key="Signed in to SoundCloud">Вход в SoundCloud выполнен</sys:String>
+    <sys:String xml:space="preserve" x:Key="Signed in to SoundCloud as {0}">Вы вошли в SoundCloud как {0}</sys:String>
+    <sys:String xml:space="preserve" x:Key="Signed out of SoundCloud">Вы вышли из SoundCloud</sys:String>
+    <sys:String xml:space="preserve" x:Key="Similar songs">Похожие треки</sys:String>
+    <sys:String xml:space="preserve" x:Key="Size">Размер</sys:String>
+    <sys:String xml:space="preserve" x:Key="Snow">Снег</sys:String>
+    <sys:String xml:space="preserve" x:Key="Something went wrong">Что-то пошло не так</sys:String>
+    <sys:String xml:space="preserve" x:Key="Song, artist, cover, progress and session time in your Discord status">Трек, исполнитель, обложка, прогресс и время сессии в статусе Discord</sys:String>
+    <sys:String xml:space="preserve" x:Key="Songs">Треки</sys:String>
+    <sys:String xml:space="preserve" x:Key="Songs similar to {0} by {1}">Треки, похожие на «{0}» ({1})</sys:String>
+    <sys:String xml:space="preserve" x:Key="Songs that can't be played outside SoundCloud (Go+ or region-locked) are hidden: {0}. They stay in the playlist.">Скрыты треки, которые нельзя слушать вне SoundCloud (Go+ или региональные ограничения): {0}. В плейлисте они остаются.</sys:String>
+    <sys:String xml:space="preserve" x:Key="Songs you favorite or add to playlists appear here, newest first.">Здесь появятся треки, добавленные в избранное или плейлисты, — сначала новые.</sys:String>
+    <sys:String xml:space="preserve" x:Key="Songs you like on SoundCloud show up here.">Здесь появятся треки, которые вы лайкнули на SoundCloud.</sys:String>
+    <sys:String xml:space="preserve" x:Key="Songs you play by this artist, mixed with similar music">Треки этого исполнителя, которые вы слушаете, вперемешку с похожей музыкой</sys:String>
+    <sys:String xml:space="preserve" x:Key="Songs you play show up here.">Здесь появятся треки, которые вы слушаете.</sys:String>
+    <sys:String xml:space="preserve" x:Key="Songs you start in the SoundCloud web page play here instead">Треки, запущенные на сайте SoundCloud, будут играть здесь</sys:String>
+    <sys:String xml:space="preserve" x:Key="SoundCloud asks to slow down. Try again in a minute.">SoundCloud просит не торопиться. Попробуйте через минуту.</sys:String>
+    <sys:String xml:space="preserve" x:Key="SoundCloud didn't accept your sign-in. Sign in again.">SoundCloud не принял вход. Войдите снова.</sys:String>
+    <sys:String xml:space="preserve" x:Key="SoundCloud didn't return songs for this genre. Try again later.">SoundCloud не вернул треки для этого жанра. Попробуйте позже.</sys:String>
+    <sys:String xml:space="preserve" x:Key="SoundCloud doesn't have a profile for this artist.">На SoundCloud нет профиля этого исполнителя.</sys:String>
+    <sys:String xml:space="preserve" x:Key="SoundCloud doesn't have this anymore.">Этого больше нет на SoundCloud.</sys:String>
+    <sys:String xml:space="preserve" x:Key="SoundCloud error ({0}).">Ошибка SoundCloud ({0}).</sys:String>
+    <sys:String xml:space="preserve" x:Key="SoundCloud found nothing for “{0}”. Check the spelling or try fewer words.">SoundCloud ничего не нашёл по запросу «{0}». Проверьте написание или сократите запрос.</sys:String>
+    <sys:String xml:space="preserve" x:Key="SoundCloud is having problems right now. Try again later.">У SoundCloud сейчас проблемы. Попробуйте позже.</sys:String>
+    <sys:String xml:space="preserve" x:Key="SoundCloud is taking too long to answer. Try again in a moment.">SoundCloud слишком долго отвечает. Попробуйте чуть позже.</sys:String>
+    <sys:String xml:space="preserve" x:Key="SoundCloud playlists">Плейлисты SoundCloud</sys:String>
+    <sys:String xml:space="preserve" x:Key="SoundCloud refused the change ({0}).">SoundCloud отклонил изменение ({0}).</sys:String>
+    <sys:String xml:space="preserve" x:Key="SoundCloud user">Пользователь SoundCloud</sys:String>
+    <sys:String xml:space="preserve" x:Key="SoundCloud: signed in as {0}. Your likes, feed and playlists are in Library.">SoundCloud: вход как {0}. Лайки, лента и плейлисты — в Медиатеке.</sys:String>
+    <sys:String xml:space="preserve" x:Key="Space play/pause · Ctrl+→ / Ctrl+← next / previous · Shift+→ / Shift+← seek 10 s · Ctrl+↑ / Ctrl+↓ volume · M mute · S shuffle · R repeat · L favorite · Q up next · Ctrl+K search · Ctrl+M mini player · F11 full player · Alt+← back. Media keys work even when LiquidCloud is in the background.">Пробел — пауза/воспроизведение · Ctrl+→ / Ctrl+← — следующий / предыдущий · Shift+→ / Shift+← — перемотка на 10 с · Ctrl+↑ / Ctrl+↓ — громкость · M — без звука · S — перемешать · R — повтор · L — в избранное · Q — очередь · Ctrl+K — поиск · Ctrl+M — мини-плеер · F11 — плеер на всё окно · Alt+← — назад. Медиаклавиши работают, даже когда LiquidCloud в фоне.</sys:String>
+    <sys:String xml:space="preserve" x:Key="Speed">Скорость</sys:String>
+    <sys:String xml:space="preserve" x:Key="Spotify Premium is required for playback.">Для воспроизведения нужен Spotify Premium.</sys:String>
+    <sys:String xml:space="preserve" x:Key="Spotify needs a Client ID first (see Settings).">Сначала укажите Client ID для Spotify (см. Настройки).</sys:String>
+    <sys:String xml:space="preserve" x:Key="Spotify needs a free Client ID. Add SPOTIFY_CLIENT_ID to config.json (see Settings).">Для Spotify нужен бесплатный Client ID. Добавьте SPOTIFY_CLIENT_ID в config.json (см. Настройки).</sys:String>
+    <sys:String xml:space="preserve" x:Key="Spotify sign-in failed.">Не удалось войти в Spotify.</sys:String>
+    <sys:String xml:space="preserve" x:Key="Spotify sign-in was cancelled.">Вход в Spotify отменён.</sys:String>
+    <sys:String xml:space="preserve" x:Key="Spotify user">Пользователь Spotify</sys:String>
+    <sys:String xml:space="preserve" x:Key="Spotify wouldn't share that playlist with LiquidCloud. Playlists you own usually work.">Spotify не отдал этот плейлист. Обычно работают плейлисты, которые принадлежат вам.</sys:String>
+    <sys:String xml:space="preserve" x:Key="Stars">Звёзды</sys:String>
+    <sys:String xml:space="preserve" x:Key="Start at the level you left it on">Запускаться с прежней громкостью</sys:String>
+    <sys:String xml:space="preserve" x:Key="Start the Spotify app if it isn't running">Запускать приложение Spotify, если оно не открыто</sys:String>
+    <sys:String xml:space="preserve" x:Key="Starts where you stopped">С того места, где вы остановились</sys:String>
+    <sys:String xml:space="preserve" x:Key="Stream didn't start, trying another way…">Поток не запустился, пробую другой способ…</sys:String>
+    <sys:String xml:space="preserve" x:Key="Style">Стиль</sys:String>
+    <sys:String xml:space="preserve" x:Key="Tap the heart on any song to keep it here.">Нажмите на сердечко у любого трека, чтобы сохранить его здесь.</sys:String>
+    <sys:String xml:space="preserve" x:Key="Techno">Техно</sys:String>
+    <sys:String xml:space="preserve" x:Key="Text">Текст</sys:String>
+    <sys:String xml:space="preserve" x:Key="Text size">Размер текста</sys:String>
+    <sys:String xml:space="preserve" x:Key="That file isn't a LiquidCloud theme.">Этот файл не является темой LiquidCloud.</sys:String>
+    <sys:String xml:space="preserve" x:Key="That file isn't a valid theme: {0}">Файл не является корректной темой: {0}</sys:String>
+    <sys:String xml:space="preserve" x:Key="That isn't a valid link.">Это не похоже на ссылку.</sys:String>
+    <sys:String xml:space="preserve" x:Key="The music helper download failed its safety check. Try again later.">Загруженный музыкальный помощник не прошёл проверку безопасности. Попробуйте позже.</sys:String>
+    <sys:String xml:space="preserve" x:Key="The music helper took too long. Try again.">Музыкальный помощник отвечает слишком долго. Попробуйте снова.</sys:String>
+    <sys:String xml:space="preserve" x:Key="The playlist is removed from LiquidCloud. The songs themselves stay where they are.">Плейлист будет удалён из LiquidCloud. Сами треки останутся на месте.</sys:String>
+    <sys:String xml:space="preserve" x:Key="Theme studio">Студия тем</sys:String>
+    <sys:String xml:space="preserve" x:Key="Theme: {0}">Тема: {0}</sys:String>
+    <sys:String xml:space="preserve" x:Key="Theme: {0}. Right-click it to make it the default.">Тема: {0}. Правый щелчок по ней — сделать темой по умолчанию.</sys:String>
+    <sys:String xml:space="preserve" x:Key="Themes">Темы</sys:String>
+    <sys:String xml:space="preserve" x:Key="This PC">Этот ПК</sys:String>
+    <sys:String xml:space="preserve" x:Key="This artist hasn't uploaded any public tracks.">У этого исполнителя нет публичных треков.</sys:String>
+    <sys:String xml:space="preserve" x:Key="This playlist is empty">Плейлист пуст</sys:String>
+    <sys:String xml:space="preserve" x:Key="This playlist is empty, or its songs can't be streamed outside SoundCloud.">Плейлист пуст, или его треки нельзя слушать вне SoundCloud.</sys:String>
+    <sys:String xml:space="preserve" x:Key="This removes your history and &quot;Continue listening&quot;. Favorites and playlists stay.">Будут удалены история и «Продолжить прослушивание». Избранное и плейлисты останутся.</sys:String>
+    <sys:String xml:space="preserve" x:Key="This theme will be removed. You can't undo this.">Тема будет удалена. Это действие нельзя отменить.</sys:String>
+    <sys:String xml:space="preserve" x:Key="This track can't be streamed.">Этот трек нельзя воспроизвести потоком.</sys:String>
+    <sys:String xml:space="preserve" x:Key="Tip: drag any song onto a playlist in the sidebar to add it.">Совет: перетащите трек на плейлист в боковой панели, чтобы добавить его.</sys:String>
+    <sys:String xml:space="preserve" x:Key="Tip: paste a SoundCloud or YouTube link into search to play it">Совет: вставьте ссылку SoundCloud или YouTube в поиск, чтобы её воспроизвести</sys:String>
+    <sys:String xml:space="preserve" x:Key="Today">Сегодня</sys:String>
+    <sys:String xml:space="preserve" x:Key="Top">Лучшее</sys:String>
+    <sys:String xml:space="preserve" x:Key="Top result">Лучший результат</sys:String>
+    <sys:String xml:space="preserve" x:Key="Tracks">Треки</sys:String>
+    <sys:String xml:space="preserve" x:Key="Trap">Трэп</sys:String>
+    <sys:String xml:space="preserve" x:Key="Trending on SoundCloud">В тренде на SoundCloud</sys:String>
+    <sys:String xml:space="preserve" x:Key="Try again">Повторить</sys:String>
+    <sys:String xml:space="preserve" x:Key="Turns off movement-heavy animations (also follows Windows' animation setting)">Отключает активные анимации (также учитывает настройку анимаций Windows)</sys:String>
+    <sys:String xml:space="preserve" x:Key="Unknown source: {0}">Неизвестный источник: {0}</sys:String>
+    <sys:String xml:space="preserve" x:Key="Up next: {0} similar songs">Дальше: похожих треков — {0}</sys:String>
+    <sys:String xml:space="preserve" x:Key="Uploaded in the last 7 days">Загружено за последние 7 дней</sys:String>
+    <sys:String xml:space="preserve" x:Key="Uploaded in the last week">Загружено за последнюю неделю</sys:String>
+    <sys:String xml:space="preserve" x:Key="Use accent color">Цвет акцента</sys:String>
+    <sys:String xml:space="preserve" x:Key="Use this theme">Использовать тему</sys:String>
+    <sys:String xml:space="preserve" x:Key="Using: {0}">Используется: {0}</sys:String>
+    <sys:String xml:space="preserve" x:Key="Welcome screen at start">Приветствие при запуске</sys:String>
+    <sys:String xml:space="preserve" x:Key="What people are playing right now">Что слушают прямо сейчас</sys:String>
+    <sys:String xml:space="preserve" x:Key="What you've had on repeat this month">Что вы чаще всего слушали в этом месяце</sys:String>
+    <sys:String xml:space="preserve" x:Key="When LiquidCloud is minimized it gives its memory back to Windows.">Когда LiquidCloud свёрнут, он возвращает память Windows.</sys:String>
+    <sys:String xml:space="preserve" x:Key="When the queue ends, continue with songs SoundCloud / YouTube suggests">Когда очередь закончится, играть треки, которые предлагает SoundCloud / YouTube</sys:String>
+    <sys:String xml:space="preserve" x:Key="With similar artists">С похожими исполнителями</sys:String>
+    <sys:String xml:space="preserve" x:Key="Yesterday">Вчера</sys:String>
+    <sys:String xml:space="preserve" x:Key="You play a lot">Вы часто слушаете</sys:String>
+    <sys:String xml:space="preserve" x:Key="You're offline. Check your internet connection and try again.">Нет подключения к интернету. Проверьте соединение и попробуйте снова.</sys:String>
+    <sys:String xml:space="preserve" x:Key="Your SoundCloud feed">Ваша лента SoundCloud</sys:String>
+    <sys:String xml:space="preserve" x:Key="Your SoundCloud likes">Ваши лайки на SoundCloud</sys:String>
+    <sys:String xml:space="preserve" x:Key="Your SoundCloud playlists">Ваши плейлисты SoundCloud</sys:String>
+    <sys:String xml:space="preserve" x:Key="Your SoundCloud sign-in expired. Sign in again.">Вход в SoundCloud истёк. Войдите снова.</sys:String>
+    <sys:String xml:space="preserve" x:Key="Your feed">Ваша лента</sys:String>
+    <sys:String xml:space="preserve" x:Key="Your feed is empty">Ваша лента пуста</sys:String>
+    <sys:String xml:space="preserve" x:Key="Your likes">Ваши лайки</sys:String>
+    <sys:String xml:space="preserve" x:Key="Your playlists">Ваши плейлисты</sys:String>
+    <sys:String xml:space="preserve" x:Key="Your queue">Ваша очередь</sys:String>
+    <sys:String xml:space="preserve" x:Key="Your rotation">Ваша ротация</sys:String>
+    <sys:String xml:space="preserve" x:Key="Yours">Ваши</sys:String>
+    <sys:String xml:space="preserve" x:Key="Yours on SoundCloud · changes save to SoundCloud">Ваш на SoundCloud · изменения сохраняются на SoundCloud</sys:String>
+    <sys:String xml:space="preserve" x:Key="by {0}">исп. {0}</sys:String>
+    <sys:String xml:space="preserve" x:Key="enjoying for {0}">слушаю уже {0}</sys:String>
+    <sys:String xml:space="preserve" x:Key="in LiquidCloud">в LiquidCloud</sys:String>
+    <sys:String xml:space="preserve" x:Key="in LiquidCloud and on SoundCloud">в LiquidCloud и на SoundCloud</sys:String>
+    <sys:String xml:space="preserve" x:Key="{}{0} Mix">Микс: {0}</sys:String>
+    <sys:String xml:space="preserve" x:Key="{}{0} copy">{0} (копия)</sys:String>
+    <sys:String xml:space="preserve" x:Key="{}{0} followers">{0} подписчиков</sys:String>
+    <sys:String xml:space="preserve" x:Key="{}{0} found nothing for “{1}”. Try other words.">{0} ничего не нашёл по запросу «{1}». Попробуйте другие слова.</sys:String>
+    <sys:String xml:space="preserve" x:Key="{}{0} h {1} min">{0} ч {1} мин</sys:String>
+    <sys:String xml:space="preserve" x:Key="{}{0} is now a favorite artist">{0} теперь в избранных исполнителях</sys:String>
+    <sys:String xml:space="preserve" x:Key="{}{0} min">{0} мин</sys:String>
+    <sys:String xml:space="preserve" x:Key="{}{0} tracks">{0} треков</sys:String>
+    <sys:String xml:space="preserve" x:Key="{}{0}: popular">{0}: популярное</sys:String>
+</ResourceDictionary>

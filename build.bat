@@ -1,7 +1,7 @@
 @echo off
 chcp 65001 >nul
 title LiquidCloud - build
-cd /d "%~dp0GlassPlayer"
+cd /d "%~dp0src\LiquidCloud"
 
 where dotnet >nul 2>nul
 if errorlevel 1 (

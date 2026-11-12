@@ -2,4 +2,6 @@ bin/
 obj/
 *.user
 .vs/
-LiquidCloud/
+/LiquidCloud/
+/artifacts/
+TestResults/
