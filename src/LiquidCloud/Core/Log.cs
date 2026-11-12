@@ -2,6 +2,7 @@ using System;
 using System.IO;
 using System.Linq;
 using System.Text.RegularExpressions;
+using System.Threading;
 using System.Threading.Tasks;
 
 namespace LiquidCloud;
@@ -66,4 +67,10 @@ static class Bg
     }
 
     public static void Run(Func<Task> work, string component, string what) => Run(Task.Run(work), component, what);
+
+    /// <summary>Marks a shared task's failure as handled (its callers get the error; this only stops "unobserved" noise
+    /// when every caller already stopped waiting).</summary>
+    public static void Observe(Task task) =>
+        task.ContinueWith(t => t.Exception?.Handle(_ => true), CancellationToken.None,
+            TaskContinuationOptions.OnlyOnFaulted | TaskContinuationOptions.ExecuteSynchronously, TaskScheduler.Default);
 }

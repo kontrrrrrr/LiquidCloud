@@ -64,7 +64,7 @@ static class ScApi
     {
         var t = FetchAsync(path, withAuth, auth);
         // if every caller stopped waiting (page closed), the error is still observed here instead of surfacing as "unobserved"
-        t.ContinueWith(x => x.Exception?.Handle(_ => true), TaskContinuationOptions.OnlyOnFaulted | TaskContinuationOptions.ExecuteSynchronously);
+        Bg.Observe(t);
         try { return await t; }
         finally { InFlight.TryRemove(key, out _); }
     }
