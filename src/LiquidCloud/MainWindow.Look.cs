@@ -2,6 +2,7 @@ using System;
 using System.Collections.Generic;
 using System.IO;
 using System.Linq;
+using System.Threading.Tasks;
 using System.Windows;
 using System.Windows.Controls;
 using System.Windows.Controls.Primitives;
@@ -87,7 +88,7 @@ public partial class MainWindow
 
         // "blur" softens everything behind the glass (wallpaper and light blobs)
         bool hasBg = BgImage.Visibility == Visibility.Visible;
-        BgBlurFx.Radius = Math.Max(cfg.BgBlur, th.Blur);
+        UpdateBackgroundBlur(Math.Max(cfg.BgBlur, th.Blur));
         Ambient.Effect = th.Blur > 0.5 ? new BlurEffect { Radius = th.Blur * 2, KernelType = KernelType.Gaussian } : null;
         double autoDim = hasBg ? Math.Clamp((bgLum - .45) * 1.2, 0, .5) : 0;
         BgDim.Opacity = hasBg ? Math.Max(cfg.BgDim, autoDim) : 0;
@@ -95,17 +96,46 @@ public partial class MainWindow
         Particles.SetColor(cfg.ParticleAccent ? accent : (lightUi ? A(ink, .6) : Colors.White));
         Bars.SetBrush(Solid(A(accent, .85)));
         if (!cfg.AmbientGlow) Glow.Source = null;
-        else if (Glow.Source == null && ArtBrush.ImageSource != null) { Glow.Source = ArtBrush.ImageSource; Glow.Opacity = th.Glow; }
+        else if (Glow.Source == null && ArtBrush.ImageSource is BitmapSource art) SetGlow(art);
         else Glow.Opacity = Glow.Source != null ? th.Glow : 0;
 
         if (IsLoaded) { UpdateModeButtons(); UpdateLikeButton(); }
     }
 
     // ---- background image / gif ----
+    BitmapSource? bgOriginal;   // the wallpaper as loaded (static pictures only)
+    double bgBlurDone = -1;
+    int bgBlurVersion;
+
+    /// <summary>
+    /// Static wallpaper: blurred once into a small bitmap (SoftBlur) instead of a live BlurEffect, which re-blurred only the
+    /// changed parts of the window and left mismatched rectangles. Animated GIFs repaint fully every frame, so they keep the live effect.
+    /// </summary>
+    void UpdateBackgroundBlur(double radius)
+    {
+        bool gif = AnimationBehavior.GetSourceUri(BgImage) != null;
+        BgImage.Effect = gif && radius > 0.5 ? BgBlurFx : null;
+        BgBlurFx.Radius = radius;
+        if (gif || bgOriginal == null) return;
+        if (Math.Abs(radius - bgBlurDone) < 0.5) return;
+        bgBlurDone = radius;
+        int v = ++bgBlurVersion;
+        if (radius < 0.5) { BgImage.Source = bgOriginal; return; }
+        var src = bgOriginal;
+        double width = Math.Max(ActualWidth, 1200);
+        Bg.Run(Task.Run(() => SoftBlur.Make(src, radius, width)).ContinueWith(t =>
+        {
+            if (t.IsFaulted) { Log.Warn("Look", "Couldn't blur the wallpaper", t.Exception?.GetBaseException()); return; }
+            if (v == bgBlurVersion && t.IsCompletedSuccessfully && bgOriginal == src) BgImage.Source = t.Result;
+        }, TaskScheduler.FromCurrentSynchronizationContext()), "Look", "Blur wallpaper");
+    }
+
     void ApplyBackground()
     {
         bgAccent = null;
         bgLum = 0;
+        bgOriginal = null;
+        bgBlurDone = -1;
         AnimationBehavior.SetSourceUri(BgImage, null);
         BgImage.Source = null;
         var path = cfg.Background;
@@ -132,6 +162,7 @@ public partial class MainWindow
                 img.DecodePixelWidth = (int)Math.Min(SystemParameters.PrimaryScreenWidth * 1.25, 3840);
                 img.EndInit();
                 img.Freeze();
+                bgOriginal = img;
                 BgImage.Source = img;
             }
             BgImage.Visibility = Visibility.Visible;

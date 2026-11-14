@@ -90,7 +90,15 @@ public sealed class PlayerService
         {
             if (Current == null) return (0, 0);
             long len = audio.LengthMs > 0 ? audio.LengthMs : Current.DurationMs;
-            return (Math.Max(0, pendingSeekMs > 0 ? pendingSeekMs : audio.TimeMs), len);
+            long pos = pendingSeekMs > 0 ? pendingSeekMs : audio.TimeMs;
+            // right after a seek the player still reports the old time for a moment (network streams need to buffer):
+            // show where you asked to go instead of the thumb jumping back and forth
+            if (seekTargetMs >= 0)
+            {
+                if (Math.Abs(pos - seekTargetMs) < 1500 || now() - seekAt > TimeSpan.FromSeconds(4)) seekTargetMs = -1;
+                else pos = seekTargetMs;
+            }
+            return (Math.Max(0, pos), len);
         }
     }
 
@@ -140,6 +148,7 @@ public sealed class PlayerService
         Current = t;
         triedFallback = false;
         pendingSeekMs = startAtMs;
+        seekTargetMs = -1;
         SetState(PlayState.Loading);
         TrackChanged?.Invoke();
 
@@ -289,12 +298,23 @@ public sealed class PlayerService
         }
     }
 
+    long seekTargetMs = -1;
+    DateTime seekAt;
+
     public void Seek(long ms)
     {
         if (Current == null) return;
         var (_, len) = Times;
+        ms = Math.Clamp(ms, 0, len > 0 ? Math.Max(0, len - 500) : long.MaxValue);
+        if (State == PlayState.Loading || audio.LengthMs <= 0)
+        {
+            pendingSeekMs = Math.Max(1, ms); // the song isn't open yet: jump there as soon as it is (see Tick)
+            return;
+        }
         pendingSeekMs = 0;
-        audio.TimeMs = Math.Clamp(ms, 0, len > 0 ? Math.Max(0, len - 500) : long.MaxValue);
+        seekTargetMs = ms;
+        seekAt = now();
+        audio.TimeMs = ms;
     }
 
     public void SeekBy(long deltaMs) => Seek(Times.Position + deltaMs);

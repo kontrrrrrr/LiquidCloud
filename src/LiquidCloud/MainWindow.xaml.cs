@@ -118,6 +118,10 @@ public partial class MainWindow : Window
 
     void WireCommands()
     {
+        // seek slider: hold → move freely, release → one jump (also when the thumb loses the mouse unexpectedly)
+        Seek.PreviewMouseLeftButtonDown += (_, _) => vm.HoldSeek = true;
+        Seek.PreviewMouseLeftButtonUp += (_, _) => vm.CommitSeek();
+        Seek.LostMouseCapture += (_, _) => { if (vm.HoldSeek && Mouse.LeftButton == MouseButtonState.Released) vm.CommitSeek(); };
         vm.PlayPauseCommand = new RelayCommand(() => Bg.Run(TogglePlayAsync(), "Player", "Play/pause"));
         vm.NextCommand = new RelayCommand(() => Bg.Run(player.NextAsync(), "Player", "Next"));
         vm.PreviousCommand = new RelayCommand(() => Bg.Run(player.PreviousAsync(), "Player", "Previous"));
@@ -179,7 +183,7 @@ public partial class MainWindow : Window
     void Tick()
     {
         player.Tick();
-        vm.Refresh(Seek.IsMouseCaptureWithin);
+        vm.Refresh(vm.HoldSeek || Seek.IsMouseCaptureWithin);
         var (pos, len) = player.Times;
         UpdateLyrics(pos);
         MaybePrepareNext(pos, len);
@@ -352,8 +356,26 @@ public partial class MainWindow : Window
         ArtBrush.ImageSource = img;
         MiniArt.ImageSource = img;
         ArtPlaceholder.Visibility = img == null ? Visibility.Visible : Visibility.Collapsed;
-        Glow.Source = cfg.AmbientGlow ? img : null;
-        if (img != null && cfg.AmbientGlow) Motion.FromTo(Glow, OpacityProperty, 0, CurrentTheme.Glow, Motion.Slow * 3);
+        SetGlow(img as BitmapSource);
+    }
+
+    BitmapSource? glowArt;
+    int glowVersion;
+
+    /// <summary>The blurred cover behind everything. Made once per cover on a background thread (see SoftBlur).</summary>
+    void SetGlow(BitmapSource? art)
+    {
+        glowArt = art;
+        int v = ++glowVersion;
+        if (art == null || !cfg.AmbientGlow) { Glow.Source = null; return; }
+        double width = Math.Max(ActualWidth, 800);
+        Bg.Run(Task.Run(() => SoftBlur.Make(art, 120, width)).ContinueWith(t =>
+        {
+            if (t.IsFaulted) { Log.Warn("Look", "Couldn't blur the cover", t.Exception?.GetBaseException()); return; }
+            if (v != glowVersion || !t.IsCompletedSuccessfully) return;
+            Glow.Source = t.Result;
+            Motion.FromTo(Glow, OpacityProperty, 0, CurrentTheme.Glow, Motion.Slow * 3);
+        }, TaskScheduler.FromCurrentSynchronizationContext()), "Look", "Cover glow");
     }
 
     void SetPlayingVisuals(bool on)

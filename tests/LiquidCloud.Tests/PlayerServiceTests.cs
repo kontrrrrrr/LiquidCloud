@@ -211,6 +211,36 @@ public class PlayerServiceTests
     }
 
     [Fact]
+    public async Task Position_shows_the_seek_target_until_the_stream_catches_up()
+    {
+        var p = Make();
+        await p.PlayContextAsync(T.Many(1), 0, "q");
+        audio.LengthMs = 200_000;
+        audio.TimeMs = 10_000;
+        p.Seek(90_000);
+        audio.TimeMs = 10_200;                    // a network stream still reports the old time…
+        Assert.Equal(90_000, p.Times.Position);   // …the slider must not jump back
+        audio.TimeMs = 90_300;                    // caught up
+        Assert.Equal(90_300, p.Times.Position);
+        p.Seek(150_000);
+        audio.TimeMs = 20_000;
+        Elapse(5);                                // never got there: stop pretending after a few seconds
+        Assert.Equal(20_000, p.Times.Position);
+    }
+
+    [Fact]
+    public async Task Seek_before_the_song_is_open_is_applied_when_it_opens()
+    {
+        var p = Make();
+        await p.PlayContextAsync(T.Many(1), 0, "q");   // fake output: length still unknown
+        p.Seek(30_000);
+        Assert.Equal(0, audio.TimeMs);
+        audio.LengthMs = 180_000;
+        p.Tick();
+        Assert.Equal(30_000, audio.TimeMs);
+    }
+
+    [Fact]
     public void Mute_remembers_volume()
     {
         var p = Make();

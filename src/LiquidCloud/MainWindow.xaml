@@ -26,10 +26,8 @@
         <Image x:Name="BgImage" Stretch="UniformToFill" Visibility="Collapsed" IsHitTestVisible="False" RenderOptions.BitmapScalingMode="HighQuality">
             <Image.Effect><BlurEffect x:Name="BgBlurFx" Radius="0" KernelType="Gaussian"/></Image.Effect>
         </Image>
-        <Image x:Name="Glow" Stretch="UniformToFill" Opacity="0" IsHitTestVisible="False">
-            <Image.CacheMode><BitmapCache RenderAtScale="0.35"/></Image.CacheMode>
-            <Image.Effect><BlurEffect Radius="120"/></Image.Effect>
-        </Image>
+        <!-- pre-blurred (SoftBlur), no live effect: live blur on a window-sized layer left stale rectangles -->
+        <Image x:Name="Glow" Stretch="UniformToFill" Opacity="0" IsHitTestVisible="False" RenderOptions.BitmapScalingMode="Linear"/>
         <Border x:Name="BgDim" Background="Black" Opacity="0" IsHitTestVisible="False"/>
         <local:ParticleLayer x:Name="Particles"/>
 

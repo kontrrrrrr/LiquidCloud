@@ -136,6 +136,29 @@ public partial class MainWindow
             await player.TogglePlayAsync(); await Settle(300);
             Check("resume", player.State == PlayState.Playing);
 
+            // ---- seeking: drag-and-release jumps once; the slider doesn't snap back ----
+            player.Seek(500); await Settle(800);
+            var pos0 = player.Times.Position;
+            vm.HoldSeek = true;
+            for (double x = 1; x <= 5; x += 0.5) vm.Position = x;     // a drag
+            Check("dragging doesn't seek yet", Math.Abs(player.Times.Position - pos0) < 1000, $"{pos0} → {player.Times.Position}");
+            vm.CommitSeek();
+            await Settle(1200);
+            var afterSeek = player.Times.Position;
+            Check("release seeks", afterSeek >= 4800 && afterSeek < 7900, afterSeek + " ms");
+            player.Seek(1000); await Settle(1000);
+            Check("seek back", player.Times.Position is >= 800 and < 3500, player.Times.Position + " ms");
+
+            // ---- fast switching: only the last pick plays, right away ----
+            var before = player.Queue.Position;
+            await player.NextAsync(); await player.NextAsync(); await player.PreviousAsync(); await player.NextAsync();
+            await Settle(1500);
+            var t1 = player.Times.Position;
+            await Settle(800);
+            Check("fast switching settles on the last pick", player.Queue.Position == Math.Min(before + 2, 2), $"{before} → {player.Queue.Position}");
+            Check("playing after fast switching", player.State == PlayState.Playing && player.Times.Position > t1, $"{player.State} {t1}→{player.Times.Position}");
+            await player.JumpToAsync(0); await Settle(1200);
+
             ToggleShuffle(); await Settle(300);
             Check("shuffle on", player.Queue.Shuffle && vm.Shuffle && player.Current?.Id == first);
             ToggleShuffle();
@@ -173,6 +196,20 @@ public partial class MainWindow
                 Shot("theme-" + id);
             }
             Check("themes applied", Application.Current.Resources["AccentBrush"] is SolidColorBrush);
+
+            // ---- wallpaper: blurred once, no live blur effect ----
+            var wall = Path.Combine(dir, "wall.png");
+            {
+                var wb = BitmapSource.Create(64, 36, 96, 96, PixelFormats.Bgr32, null, Enumerable.Range(0, 64 * 36).SelectMany(i => new byte[] { (byte)(i * 7), (byte)(i * 3), (byte)i, 255 }).ToArray(), 64 * 4);
+                var pe = new PngBitmapEncoder(); pe.Frames.Add(BitmapFrame.Create(wb));
+                using (var fs = File.Create(wall)) pe.Save(fs);
+            }
+            cfg.Background = wall; cfg.BgBlur = 30; ApplyBackground(); await Settle(1200);
+            Check("wallpaper shown", BgImage.Visibility == Visibility.Visible);
+            Check("wallpaper blur is baked, not a live effect", BgImage.Effect == null && BgImage.Source is BitmapSource bs && !ReferenceEquals(bs, bgOriginal));
+            Shot("wallpaper-blur");
+            Check("cover glow has no live effect", Glow.Effect == null);
+            cfg.Background = null; cfg.BgBlur = 0; ApplyBackground(); await Settle(400);
 
             // ---- settings + language ----
             ToggleSettings(true); await Settle(900); Shot("settings");

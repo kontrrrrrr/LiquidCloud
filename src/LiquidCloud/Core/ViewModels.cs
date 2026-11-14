@@ -138,9 +138,28 @@ public sealed class PlayerViewModel : ViewModelBase
             if (Math.Abs(value - position) < 0.01) return;
             position = value;
             Raise();
-            if (!refreshing) player.Seek((long)(value * 1000));
+            if (!refreshing)
+            {
+                if (HoldSeek) seekDirty = true;      // dragging: only move the thumb and the time label
+                else player.Seek((long)(value * 1000));
+            }
             PositionText = Fmt((long)(value * 1000));
         }
+    }
+
+    bool seekDirty;
+
+    /// <summary>True while the mouse holds the seek slider. The song jumps once, when you let go
+    /// (seeking a network stream on every pixel of a drag made it stutter or not seek at all).</summary>
+    public bool HoldSeek { get; set; }
+
+    /// <summary>Mouse released on the slider: jump to where the thumb is.</summary>
+    public void CommitSeek()
+    {
+        HoldSeek = false;
+        if (!seekDirty) return;
+        seekDirty = false;
+        player.Seek((long)(position * 1000));
     }
 
     public double Duration { get => duration; private set { if (Set(ref duration, Math.Max(value, 0.001))) Raise(nameof(Progress)); } }
